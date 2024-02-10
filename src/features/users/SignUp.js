@@ -1,0 +1,214 @@
+import React, { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+  Avatar,
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  CssBaseline,
+  FormControlLabel,
+  Grid,
+  Link,
+  TextField,
+  Typography,
+} from '@mui/material';
+import { LockOutlined } from '@mui/icons-material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import { userService } from '../../_services/user.service';
+
+const theme = createTheme();
+
+export default function SignUp({ history }) {
+  const [formData, setFormData] = useState({
+    firstName: 'Darryll',
+    lastName: 'Robinson',
+    email: 'darryllrobinson@icloud.com',
+    password: 'newpassss',
+    confirmPassword: 'newpassss',
+    acceptTerms: false,
+    acceptMarketing: false,
+  });
+  console.log(formData.acceptTerms);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData(
+      (prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }),
+      console.log(formData.acceptTerms)
+    );
+  };
+
+  const handleTermsChange = (event) => {
+    const { name, checked } = event.target;
+    console.log('name', name);
+    console.log('checked', checked);
+    setFormData(
+      (prevFormData) => ({
+        ...prevFormData,
+        [name]: checked,
+      }),
+      console.log(formData.acceptTerms)
+    );
+  };
+
+  const handleMarketingChange = (event) => {
+    const { name, checked } = event.target;
+    console.log('name', name);
+    console.log('checked', checked);
+    setFormData(
+      (prevFormData) => ({
+        ...prevFormData,
+        [name]: checked,
+      }),
+      console.log(formData.acceptMarketing)
+    );
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    userService.register(formData);
+  };
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlined />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 3 }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  autoComplete="given-name"
+                  name="firstName"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  autoFocus
+                  defaultValue={formData.firstName}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="family-name"
+                  defaultValue={formData.lastName}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  defaultValue={formData.email}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                  defaultValue={formData.password}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  id="confirmPassword"
+                  autoComplete="confirm-password"
+                  defaultValue={formData.confirmPassword}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.acceptTerms}
+                      color="primary"
+                      name="acceptTerms"
+                    />
+                  }
+                  label="I accept the terms and conditions."
+                  onChange={handleTermsChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={formData.acceptMarketing}
+                      color="primary"
+                      name="acceptMarketing"
+                    />
+                  }
+                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  onChange={handleMarketingChange}
+                />
+              </Grid>
+            </Grid>
+            <Button
+              type="submit"
+              disabled={!formData.acceptTerms}
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign Up
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link component={RouterLink} to="/signin" variant="body2">
+                  Already have an account? Sign in
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
+  );
+}
