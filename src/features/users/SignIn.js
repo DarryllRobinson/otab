@@ -106,7 +106,7 @@ export default function SignIn({ history }) {
                 </Link>
               </Grid>
               <Grid item>
-                <Link component={RouterLink} to="/signup" variant="body2">
+                <Link component={RouterLink} to="/user/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

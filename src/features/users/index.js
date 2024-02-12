@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import { userService } from '../../_services';
 
+import SignIn from './SignIn';
+import SignUp from './SignUp';
 import { VerifyEmail } from './VerifyEmail';
 
-function User({ match }) {
-  const { path } = match;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // redirect to home if already logged in
-    if (userService.userValue) {
-      navigate('/', { replace: true });
-    }
-  }, []);
-
+function User() {
   return (
     <Routes>
-      <Route path={`${path}/verify-email`} component={VerifyEmail} />
+      <Route path="signin" element={<SignIn />} />
+      <Route path="signup" element={<SignUp />} />
+      <Route path="verify-email" element={<VerifyEmail />} />
     </Routes>
   );
 }

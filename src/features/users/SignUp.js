@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -17,10 +17,13 @@ import { LockOutlined } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { userService } from '../../_services/user.service';
+import { alertService } from '../../_services';
 
 const theme = createTheme();
 
 export default function SignUp({ history }) {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: 'Darryll',
     lastName: 'Robinson',
@@ -72,7 +75,21 @@ export default function SignUp({ history }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    userService.register(formData);
+    userService
+      .register(formData)
+      .then(() => {
+        alertService.success(
+          'Sign up successful, please check your email for verification instructions',
+          {
+            keepAfterRouteChange: true,
+          }
+        );
+        //navigate('/user/signin');
+        console.log('Signed up!');
+      })
+      .catch((error) => {
+        alertService.error(error);
+      });
   };
 
   return (
@@ -201,7 +218,7 @@ export default function SignUp({ history }) {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link component={RouterLink} to="/signin" variant="body2">
+                <Link component={RouterLink} to="/user/signin" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

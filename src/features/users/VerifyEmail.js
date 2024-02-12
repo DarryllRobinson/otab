@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import queryString from 'query-string';
+import {
+  Link,
+  Navigate,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 
 import { userService, alertService } from '../../_services';
 
-function VerifyEmail({ history }) {
-  console.log('history: ', history);
+function VerifyEmail() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  let [searchParams] = useSearchParams();
+
   const EmailStatus = {
     Verifying: 'Verifying',
     Failed: 'Failed',
@@ -14,18 +22,17 @@ function VerifyEmail({ history }) {
   const [emailStatus, setEmailStatus] = useState(EmailStatus.Verifying);
 
   useEffect(() => {
-    const { token } = queryString.parse(window.location.search);
-
     // remove token from url to prevent http referer leakage
-    history.replace(window.location.pathname);
+    navigate(location.pathname);
 
     userService
-      .verifyEmail(token)
+      .verifyEmail(searchParams.get('token'))
       .then(() => {
         alertService.success('Verification successful, you can now login', {
           keepAfterRouteChange: true,
         });
-        history.push('sigin');
+        console.log('verified!');
+        navigate('/');
       })
       .catch(() => {
         setEmailStatus(EmailStatus.Failed);
@@ -43,6 +50,8 @@ function VerifyEmail({ history }) {
             <Link to="forgot-password">forgot password</Link> page.
           </div>
         );
+      default:
+        return <div>Default emailStatus - something has gone wrong</div>;
     }
   }
 

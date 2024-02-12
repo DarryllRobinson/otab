@@ -7,7 +7,6 @@ import Container from '@mui/material/Container';
 import Layout from './components/generic/Layout';
 import Home from './components/generic/Home';
 import PrivateRoute from './components/generic/PrivateRoute';
-import RequireAuth from './components/generic/RequireAuth';
 
 // Navigation elements
 import NavbarLayout from './components/navigation/NavbarLayout';
@@ -75,7 +74,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
-            <Route path="user/*" element={<User />} />
+            <Route path="/user" element={<User />} />
 
             <>
               <Route
@@ -83,14 +82,10 @@ export default function App() {
                   <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
                 }
               >
-                <Route
-                  path="/play/*"
-                  element={
-                    <RequireAuth>
-                      <PrivateRoute />
-                    </RequireAuth>
-                  }
-                />
+                <Routes>
+                  <PrivateRoute exact path="/play" element={<Play />} />
+                  <PrivateRoute exact path="/board" element={<Board />} />
+                </Routes>
 
                 {/* Using path="*"" means "match anything", so this route acts like a catch-all for URLs that we don't have explicit routes for. */}
                 <Route path="*" element={<ErrorPage />} />
