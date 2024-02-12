@@ -21,7 +21,7 @@ import { alertService } from '../../_services';
 
 const theme = createTheme();
 
-export default function SignUp({ history }) {
+export default function SignUp() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -33,43 +33,29 @@ export default function SignUp({ history }) {
     acceptTerms: false,
     acceptMarketing: false,
   });
-  console.log(formData.acceptTerms);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFormData(
-      (prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }),
-      console.log(formData.acceptTerms)
-    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
 
   const handleTermsChange = (event) => {
     const { name, checked } = event.target;
-    console.log('name', name);
-    console.log('checked', checked);
-    setFormData(
-      (prevFormData) => ({
-        ...prevFormData,
-        [name]: checked,
-      }),
-      console.log(formData.acceptTerms)
-    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: checked,
+    }));
   };
 
   const handleMarketingChange = (event) => {
     const { name, checked } = event.target;
-    console.log('name', name);
-    console.log('checked', checked);
-    setFormData(
-      (prevFormData) => ({
-        ...prevFormData,
-        [name]: checked,
-      }),
-      console.log(formData.acceptMarketing)
-    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: checked,
+    }));
   };
 
   const handleSubmit = (event) => {
@@ -84,8 +70,7 @@ export default function SignUp({ history }) {
             keepAfterRouteChange: true,
           }
         );
-        //navigate('/user/signin');
-        console.log('Signed up!');
+        navigate('/user/signin');
       })
       .catch((error) => {
         alertService.error(error);
