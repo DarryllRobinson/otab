@@ -7,9 +7,9 @@ import { userService } from './_services/user.service';
 import App from './App';
 
 // attempt silent token refresh before startup
-//userService.refreshToken().finally(startApp);
+userService.refreshToken().finally(startApp);
 
-startApp();
+//startApp();
 
 function startApp() {
   ReactDOM.createRoot(document.getElementById('root')).render(

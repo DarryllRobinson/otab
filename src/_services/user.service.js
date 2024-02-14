@@ -26,15 +26,13 @@ export const userService = {
   },
 };
 
-function login(email, password) {
-  return fetchWrapper
-    .post(`${baseUrl}/authenticate`, { email, password })
-    .then((user) => {
-      // publish user to subscribers and start timer to refresh token
-      userSubject.next(user);
-      startRefreshTokenTimer();
-      return user;
-    });
+function login(params) {
+  return fetchWrapper.post(`${baseUrl}/authenticate`, params).then((user) => {
+    // publish user to subscribers and start timer to refresh token
+    userSubject.next(user);
+    startRefreshTokenTimer();
+    return user;
+  });
 }
 
 function logout() {

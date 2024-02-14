@@ -39,6 +39,7 @@ export default function SignIn({ history }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
     userService
       .login(formData)
       .then(() => {

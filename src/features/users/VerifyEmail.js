@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Link,
-  Navigate,
   useLocation,
   useNavigate,
   useSearchParams,
@@ -32,7 +31,7 @@ function VerifyEmail() {
           keepAfterRouteChange: true,
         });
         console.log('verified!');
-        navigate('/');
+        navigate('/signin');
       })
       .catch(() => {
         setEmailStatus(EmailStatus.Failed);
