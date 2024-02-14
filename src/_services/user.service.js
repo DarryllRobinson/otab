@@ -36,11 +36,13 @@ function login(params) {
 }
 
 function logout() {
+  console.log('signing out');
   // revoke token, stop refresh timer, publish null to user subscribers and redirect to login page
-  fetchWrapper.post(`${baseUrl}/revoke-token`, {});
+  //console.log('userSubject.value: ', userSubject.value);
+  fetchWrapper.post(`${baseUrl}/revoke-token`, userSubject.value);
   stopRefreshTokenTimer();
   userSubject.next(null);
-  history.push('/signin');
+  history.push('/user/signin');
 }
 
 function refreshToken() {

@@ -31,7 +31,7 @@ function VerifyEmail() {
           keepAfterRouteChange: true,
         });
         console.log('verified!');
-        navigate('/signin');
+        navigate('/user/signin');
       })
       .catch(() => {
         setEmailStatus(EmailStatus.Failed);

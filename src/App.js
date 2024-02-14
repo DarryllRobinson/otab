@@ -87,7 +87,7 @@ export default function App() {
                   path="/play/*"
                   element={
                     <RequireAuth>
-                      <PrivateRoute />
+                      <Play />
                     </RequireAuth>
                   }
                 />

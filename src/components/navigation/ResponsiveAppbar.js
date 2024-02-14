@@ -18,6 +18,7 @@ import {
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 
 import MaterialUISwitch from './MaterialUISwitch';
+import { userService } from '../../_services';
 
 const pages = ['How it works', 'New board', "Songs I've missed"];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -40,6 +41,12 @@ function ResponsiveAppBar(props) {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleLogout = () => {
+    console.log('logout triggered');
+    userService.logout();
+    handleCloseUserMenu();
   };
 
   return (
@@ -156,7 +163,7 @@ function ResponsiveAppBar(props) {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <MenuItem key={setting} onClick={handleLogout}>
                     <Typography textAlign="center">{setting}</Typography>
                   </MenuItem>
                 ))}

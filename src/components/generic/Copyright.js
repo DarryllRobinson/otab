@@ -11,7 +11,7 @@ function Copyright(props) {
     >
       {'Copyright © '}
       <Link component={RouterLink} color="inherit" href="#">
-        Over The Air Bingo
+        Over The Air Engagement
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
