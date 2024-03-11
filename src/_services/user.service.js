@@ -47,6 +47,7 @@ function logout() {
 
 function refreshToken() {
   return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
+    console.log('user: ', user);
     // publish user to subscribers and start timer to refresh token
     userSubject.next(user);
     startRefreshTokenTimer();
