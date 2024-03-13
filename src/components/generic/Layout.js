@@ -4,6 +4,7 @@ import { Box, Container, CssBaseline } from '@mui/material';
 import { useTheme, ThemeProvider } from '@mui/material/styles';
 
 import Copyright from './Copyright';
+import AlertComp from './Alert';
 
 export default function Layout() {
   const theme = useTheme();
@@ -25,6 +26,7 @@ export default function Layout() {
                 : theme.palette.grey[800],
           }}
         >
+          <AlertComp />
           <Outlet />
           <Box
             component="footer"

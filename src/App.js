@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 // Generic elements
 import Layout from './components/generic/Layout';
 import Home from './components/generic/Home';
-import PrivateRoute from './components/generic/PrivateRoute';
+// import PrivateRoute from './components/generic/PrivateRoute';
 import RequireAuth from './components/generic/RequireAuth';
 
 // Navigation elements
@@ -21,7 +21,7 @@ import { User } from './features/users';
 
 // Play
 import Play from './features/Play/Play';
-import Board from './features/Play/Board';
+// import Board from './features/Play/Board';
 
 // Define theme settings
 const light = {
