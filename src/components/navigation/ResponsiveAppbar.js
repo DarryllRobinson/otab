@@ -19,6 +19,7 @@ import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 
 import MaterialUISwitch from './MaterialUISwitch';
 import { userService } from '../../_services';
+import { useNavigate } from 'react-router-dom';
 
 const pages = ['How it works', 'New board', "Songs I've missed"];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -27,6 +28,7 @@ function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -47,6 +49,8 @@ function ResponsiveAppBar(props) {
     console.log('logout triggered');
     userService.logout();
     handleCloseUserMenu();
+    // console.log('logged out, trying to navigate...');
+    navigate('/user/signin');
   };
 
   return (

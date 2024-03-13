@@ -59,7 +59,7 @@ function authHeader(url) {
 }
 
 function handleResponse(response) {
-  // console.log('response: ', response);
+  console.log('response: ', response);
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
 
@@ -76,6 +76,7 @@ function handleResponse(response) {
       }
 
       const error = (data && data.message) || response.statusText;
+      console.log('error: ', error);
       return Promise.reject(error);
     }
 

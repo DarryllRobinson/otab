@@ -36,22 +36,26 @@ function login(params) {
 }
 
 function logout() {
-  console.log('signing out');
+  // console.log('signing out');
   // revoke token, stop refresh timer, publish null to user subscribers and redirect to login page
-  //console.log('userSubject.value: ', userSubject.value);
+  // console.log('userSubject.value: ', userSubject.value);
   fetchWrapper.post(`${baseUrl}/revoke-token`, userSubject.value);
   stopRefreshTokenTimer();
   userSubject.next(null);
-  history.push('/user/signin');
+  // console.log('userSubject.value after revoke: ', userSubject.value);
+  // history.push('/user/signin');
 }
 
 function refreshToken() {
   return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
-    console.log('user: ', user);
-    // publish user to subscribers and start timer to refresh token
-    userSubject.next(user);
-    startRefreshTokenTimer();
-    return user;
+    // console.log('user: ', user);
+
+    if (user.email) {
+      // publish user to subscribers and start timer to refresh token
+      userSubject.next(user);
+      startRefreshTokenTimer();
+      return user;
+    }
   });
 }
 
