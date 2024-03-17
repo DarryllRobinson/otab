@@ -21,7 +21,7 @@ import { alertService, userService } from '../../_services';
 
 const theme = createTheme();
 
-export default function SignIn({ history }) {
+export default function SignIn() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -39,18 +39,24 @@ export default function SignIn({ history }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    alertService.clear();
 
     userService
       .login(formData)
       .then(() => {
-        alertService.success('Sign in successful', {
-          keepAfterRouteChange: true,
-        });
+        alertService.caller('Sign in successful', null, 'Welcome', 'success');
         console.log('Signed in');
         navigate('/');
       })
       .catch((error) => {
-        alertService.error(error);
+        console.log('SignIn error: ', error);
+        alertService.caller(
+          error,
+          // { keepAfterRouteChange: true },
+          null,
+          'Please check your credentials',
+          'error'
+        );
       });
   };
 

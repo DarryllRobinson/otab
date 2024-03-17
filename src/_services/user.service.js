@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 
 import config from '../_config/config';
 import { fetchWrapper, history } from '../_helpers';
+import { alertService } from './alert.service';
 
 const userSubject = new BehaviorSubject(null);
 const baseUrl = `${config.apiUrl}/users`;
@@ -28,6 +29,10 @@ export const userService = {
 
 function login(params) {
   return fetchWrapper.post(`${baseUrl}/authenticate`, params).then((user) => {
+    console.log('login user: ', user);
+    if (typeof user !== 'object' || user === null) {
+      throw 'Email or password is incorrect';
+    }
     // publish user to subscribers and start timer to refresh token
     userSubject.next(user);
     startRefreshTokenTimer();
@@ -36,27 +41,32 @@ function login(params) {
 }
 
 function logout() {
-  // console.log('signing out');
   // revoke token, stop refresh timer, publish null to user subscribers and redirect to login page
-  // console.log('userSubject.value: ', userSubject.value);
   fetchWrapper.post(`${baseUrl}/revoke-token`, userSubject.value);
   stopRefreshTokenTimer();
   userSubject.next(null);
-  // console.log('userSubject.value after revoke: ', userSubject.value);
-  // history.push('/user/signin');
 }
 
 function refreshToken() {
-  return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
-    // console.log('user: ', user);
+  try {
+    return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
+      console.log('user: ', user);
 
-    if (user.email) {
-      // publish user to subscribers and start timer to refresh token
-      userSubject.next(user);
-      startRefreshTokenTimer();
-      return user;
-    }
-  });
+      if (user.email) {
+        // publish user to subscribers and start timer to refresh token
+        userSubject.next(user);
+        // try {
+        startRefreshTokenTimer();
+        // } catch (error) {
+        //   alertService.caller(error, null, 'Error', 'Problem');
+        // }
+
+        return user;
+      }
+    });
+  } catch (error) {
+    console.log('user.service error: ', error);
+  }
 }
 
 function register(params) {

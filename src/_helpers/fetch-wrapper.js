@@ -76,8 +76,9 @@ function handleResponse(response) {
       }
 
       const error = (data && data.message) || response.statusText;
-      console.log('error: ', error);
+      console.log('fetchwrapper error: ', error);
       // return Promise.reject(error);
+      return error;
     }
 
     return data;

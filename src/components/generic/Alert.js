@@ -6,7 +6,7 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Fade from '@mui/material/Fade';
 import Stack from '@mui/material/Stack';
 
-import { alertService, AlertType } from '../../_services';
+import { alertService } from '../../_services';
 import { Container } from '@mui/material';
 
 export default function AlertComp({ id, fade }) {
@@ -69,37 +69,14 @@ export default function AlertComp({ id, fade }) {
     }
   }
 
-  function cssClasses(alert) {
-    if (!alert) return;
-
-    // const classes = ['alert', 'alert-dismissable'];
-
-    const alertTypeClass = {
-      [AlertType.Success]: 'success',
-      [AlertType.Error]: 'danger',
-      [AlertType.Info]: 'info',
-      [AlertType.Warning]: 'warning',
-    };
-
-    return alertTypeClass;
-
-    // classes.push(alertTypeClass[alert.type]);
-
-    // if (alert.fade) {
-    //   classes.push('fade');
-    // }
-
-    // return classes.join(' ');
-  }
-
   if (!alerts.length) return null;
 
   return (
     <Container>
-      {console.log('Peekaboo! ')}
       {alerts.map((alert, index) => (
         <Alert key={index} severity={alert.type}>
-          {alert.id}
+          <AlertTitle>{alert.title}</AlertTitle>
+          {alert.message}
         </Alert>
       ))}
     </Container>
