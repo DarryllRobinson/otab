@@ -4,7 +4,7 @@ import { userService } from '../../_services';
 function RequireAuth({ children }) {
   //let location = useLocation;
   const user = userService.userValue;
-  console.log('user: ', user);
+  // console.log('user: ', user);
 
   if (!user) {
     // Redirect them to the /login page, but save the current location they were

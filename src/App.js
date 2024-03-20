@@ -21,6 +21,7 @@ import { User } from './features/users';
 
 // Play
 import Play from './features/Play/Play';
+import Boards from './features/Play/Boards';
 // import Board from './features/Play/Board';
 
 // Define theme settings
@@ -88,6 +89,14 @@ export default function App() {
                   element={
                     <RequireAuth>
                       <Play />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/boards/*"
+                  element={
+                    <RequireAuth>
+                      <Boards />
                     </RequireAuth>
                   }
                 />

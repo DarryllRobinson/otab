@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Container, Grid, useTheme } from '@mui/material';
 
+import { boardService } from '../../_services';
 import Tile from './Tile';
 
 // Check if new board must be created
@@ -269,6 +270,11 @@ const fakeArtistsDb = [
 ];
 
 export default function Board(props) {
+  const { boardId } = props;
+  boardService.retrieve(boardId).then((board) => {
+    console.log('Retrieved board: ', board);
+  });
+
   const theme = useTheme();
   const { boardBorder, boardBackgroundColor } = theme.palette;
   const { setBox } = props;

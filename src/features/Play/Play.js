@@ -3,8 +3,12 @@ import { Box, Grid } from '@mui/material';
 
 import Board from './Board';
 import Side from './Side';
+import { useLocation } from 'react-router-dom';
 
 export default function Play() {
+  let { state } = useLocation();
+  const { boardId } = state;
+  console.log('boardId: ', boardId);
   const [box, setBox] = useState(false);
 
   return (
@@ -14,7 +18,7 @@ export default function Play() {
           <Side box={box} />
         </Grid>
         <Grid item xs={10} sx={{ border: 1 }}>
-          <Board setBox={setBox} />
+          <Board boardId={boardId} setBox={setBox} />
         </Grid>
       </Grid>
     </Box>
