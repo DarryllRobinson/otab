@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Container, Grid, useTheme } from '@mui/material';
 
-import { boardService } from '../../_services';
-import Tile from './Tile';
+import { boardService } from './board.service';
+import Tile from '../Tiles/Tile';
 
 // Check if new board must be created
 // If not, retrieve board and tiles from db
@@ -271,7 +271,7 @@ const fakeArtistsDb = [
 
 export default function Board(props) {
   const { boardId } = props;
-  boardService.retrieve(boardId).then((board) => {
+  boardService.getById(boardId).then((board) => {
     console.log('Retrieved board: ', board);
   });
 

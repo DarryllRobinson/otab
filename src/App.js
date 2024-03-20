@@ -21,7 +21,8 @@ import { User } from './features/users';
 
 // Play
 import Play from './features/Play/Play';
-import Boards from './features/Play/Boards';
+import Boards from './features/Boards/Boards';
+import Competitions from './features/Competitions/Competitions';
 // import Board from './features/Play/Board';
 
 // Define theme settings
@@ -97,6 +98,14 @@ export default function App() {
                   element={
                     <RequireAuth>
                       <Boards />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/competitions/*"
+                  element={
+                    <RequireAuth>
+                      <Competitions />
                     </RequireAuth>
                   }
                 />

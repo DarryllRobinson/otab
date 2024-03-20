@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 
-import config from '../_config/config';
-import { fetchWrapper } from '../_helpers';
+import config from '../../_config/config';
+import { fetchWrapper } from '../../_helpers';
 
 const userSubject = new BehaviorSubject(null);
 const baseUrl = `${config.apiUrl}/users`;

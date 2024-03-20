@@ -6,7 +6,8 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { userService, alertService } from '../../_services';
+import { alertService } from '../../_services';
+import { userService } from './user.service';
 
 function VerifyEmail() {
   const location = useLocation();

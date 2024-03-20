@@ -15,7 +15,8 @@ import {
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { alertService, userService } from '../../_services';
+import { alertService } from '../../_services';
+import { userService } from './user.service';
 
 //import { userService } from './user.service';
 

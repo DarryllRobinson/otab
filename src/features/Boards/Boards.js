@@ -1,33 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link as RouterLink, useFetcher } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { Box, Button } from '@mui/material';
-import { alertService, boardService } from '../../_services';
-
-// const boards = [
-//   {
-//     id: 1,
-//     name: 'Comp 1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Comp 44',
-//   },
-//   {
-//     id: 5,
-//     name: 'Comp 78',
-//   },
-// ];
+import { boardService } from './board.service';
 
 export default function Boards() {
   const [status, setStatus] = useState('idle');
   // Display boards on the screen from the database query
-  const [boards, setBoards] = useState(null);
+  const [boards, setBoards] = useState([]);
 
   const fetchBoards = useCallback(async () => {
     setStatus('fetching');
-    const records = await boardService.retrieveBoards();
-    setStatus('fetching');
-    console.log('fetched boards: ', boards);
+    const records = await boardService.getAll();
 
     setStatus('succeeded');
     setBoards(records);
@@ -35,25 +18,24 @@ export default function Boards() {
 
   useEffect(() => {
     if (status === 'idle') {
-      console.log('Idling like a motherfucker');
       fetchBoards();
     }
   }, [fetchBoards, status]);
 
-  // const renderBoards = boards.map((board) => {
-  //   const { id, name } = board;
+  const renderBoards = boards.map((board) => {
+    const { id, name } = board;
 
-  //   return (
-  //     <Button
-  //       key={id}
-  //       component={RouterLink}
-  //       to="/play"
-  //       state={{ boardId: id }}
-  //     >
-  //       {name}
-  //     </Button>
-  //   );
-  // });
+    return (
+      <Button
+        key={id}
+        component={RouterLink}
+        to="/play"
+        state={{ boardId: id }}
+      >
+        {name}
+      </Button>
+    );
+  });
 
   let content;
 
@@ -65,10 +47,10 @@ export default function Boards() {
     content = 'Error';
   } else if (status === 'succeeded' && boards.length > 0) {
     console.log('status: ', status);
-    // renderBoards();
+    renderBoards();
   } else {
     console.log('status: ', status);
-    content = 'No boards found';
+    content = <div>No boards found. Please join one of our competitions</div>;
   }
 
   return (

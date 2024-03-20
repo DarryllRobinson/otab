@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Grid } from '@mui/material';
 
-import Board from './Board';
+import Board from '../Boards/Board';
 import Side from './Side';
 import { useLocation } from 'react-router-dom';
 

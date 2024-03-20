@@ -19,8 +19,8 @@ export default function Home() {
       <Button component={RouterLink} to="/user/signup">
         Sign Up
       </Button>
-      <Button component={RouterLink} to="/boards">
-        Boards
+      <Button component={RouterLink} to="/competitions">
+        Competitions
       </Button>
     </Box>
   );
