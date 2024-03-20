@@ -51,10 +51,9 @@ export default function SignIn() {
       .catch((error) => {
         console.log('SignIn error: ', error);
         alertService.caller(
-          error,
-          // { keepAfterRouteChange: true },
-          null,
           'Please check your credentials',
+          null,
+          'Sign in problem',
           'error'
         );
       });

@@ -73,7 +73,13 @@ export default function SignUp() {
         navigate('/user/signin');
       })
       .catch((error) => {
-        alertService.error(error);
+        alertService.caller(
+          error,
+          // { keepAfterRouteChange: true },
+          null,
+          'Sign up problem',
+          'error'
+        );
       });
   };
 
