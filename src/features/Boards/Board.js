@@ -276,7 +276,12 @@ export default function Board(props) {
   });
 
   const theme = useTheme();
-  const { boardBorder, boardBackgroundColor } = theme.palette;
+  const { boardBorder, boardBackgroundColor, themes } = theme.palette;
+  const chosenTheme = 'babyblue';
+
+  const boardTheme = themes.find((x) => x.theming === chosenTheme);
+  console.log('boardTheme: ', boardTheme);
+
   const { setBox } = props;
   // Need to record which songs have been chosen already
   const [songs, setSongs] = useState([]);
@@ -396,6 +401,7 @@ export default function Board(props) {
           actualArtist={actualArtist}
           artists={artists}
           setBox={setBox}
+          boardTheme={boardTheme}
         />
       </Grid>
     );
@@ -415,7 +421,6 @@ export default function Board(props) {
       >
         <Grid
           container
-          columns={{ xs: 4, sm: 8, md: 12 }}
           spacing={2}
           direction="row"
           justifyContent="space-evenly"

@@ -1,22 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
-import { competitionService } from './competition.service';
 
-// const competitions = [
-//   {
-//     id: 1,
-//     name: 'Comp 1',
-//   },
-//   {
-//     id: 2,
-//     name: 'Comp 44',
-//   },
-//   {
-//     id: 5,
-//     name: 'Comp 78',
-//   },
-// ];
+import { competitionService } from './competition.service';
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  Typography,
+} from '@mui/material';
 
 export default function Competitions() {
   const [status, setStatus] = useState('idle');
@@ -37,35 +31,46 @@ export default function Competitions() {
     }
   }, [fetchCompetitions, status]);
 
-  const renderCompetitions = competitions.map((competition) => {
-    console.log('competition: ', competition);
-    const { id, name } = competition;
+  const renderCompetitions = () => {
+    return competitions.map((competition) => {
+      console.log('competition: ', competition);
+      const { id, name } = competition;
 
-    return (
-      <Button
-        key={id}
-        component={RouterLink}
-        to="/play"
-        state={{ competitionId: id }}
-      >
-        {name}
-      </Button>
-    );
-  });
+      return (
+        <Card key={id} sx={{ maxWidth: 345 }}>
+          <CardActionArea>
+            <Button
+              component={RouterLink}
+              to="/play"
+              state={{ competitionId: id }}
+            >
+              <CardActions>
+                <CardContent>
+                  <Typography variant="h5" component="div">
+                    {name}
+                  </Typography>
+                </CardContent>
+              </CardActions>
+            </Button>
+          </CardActionArea>
+        </Card>
+      );
+    });
+  };
 
   let content;
 
   if (status === 'fetching') {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = <div>Fetching</div>;
   } else if (status === 'error') {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = 'Error';
   } else if (status === 'succeeded' && competitions.length > 0) {
-    console.log('status: ', status);
-    renderCompetitions();
+    // console.log('status: ', status);
+    content = renderCompetitions();
   } else {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = (
       <div>No competitions found. Please join one of our competitions</div>
     );

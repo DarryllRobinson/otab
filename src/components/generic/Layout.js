@@ -19,7 +19,7 @@ export default function Layout() {
             display: 'flex',
             flexDirection: 'column',
             p: '8px',
-            minHeight: '100vh',
+            minHeight: '1650px',
             backgroundColor: (theme) =>
               theme.palette.mode === 'light'
                 ? theme.palette.grey[200]

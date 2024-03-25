@@ -17,7 +17,7 @@ import {
   CheckCircleOutlineSharp,
   DangerousOutlined,
 } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import { alpha } from '@mui/material/styles';
 
 //import useTimer from '../hooks/useTimer';
@@ -25,7 +25,10 @@ import { alpha } from '@mui/material/styles';
 import './Tile.css';
 
 export default function Tile(props) {
-  const { title, actualArtist, artists /*, setBox*/ } = props;
+  const { title, actualArtist, artists, boardTheme /*, setBox*/ } = props;
+  const { tileBgColour, tileBgColourHover } = boardTheme;
+  // console.log('boardTheme: ', boardTheme);
+  // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
   const [artistValue, setArtistValue] = useState('');
   const [songValue, setSongValue] = useState('');
@@ -192,9 +195,10 @@ export default function Tile(props) {
             <Card
               sx={{
                 '&:hover': {
-                  backgroundColor: 'grey',
+                  backgroundColor: tileBgColourHover,
                   boxShadow: 10,
                 },
+                backgroundColor: tileBgColour,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',

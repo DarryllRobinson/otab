@@ -22,34 +22,36 @@ export default function Boards() {
     }
   }, [fetchBoards, status]);
 
-  const renderBoards = boards.map((board) => {
-    const { id, name } = board;
+  const renderBoards = () => {
+    boards.map((board) => {
+      const { id, name } = board;
 
-    return (
-      <Button
-        key={id}
-        component={RouterLink}
-        to="/play"
-        state={{ boardId: id }}
-      >
-        {name}
-      </Button>
-    );
-  });
+      return (
+        <Button
+          key={id}
+          component={RouterLink}
+          to="/play"
+          state={{ boardId: id }}
+        >
+          {name}
+        </Button>
+      );
+    });
+  };
 
   let content;
 
   if (status === 'fetching') {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = <div>Fetching</div>;
   } else if (status === 'error') {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = 'Error';
   } else if (status === 'succeeded' && boards.length > 0) {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     renderBoards();
   } else {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = <div>No boards found. Please join one of our competitions</div>;
   }
 

@@ -5,6 +5,7 @@ const baseUrl = `${config.apiUrl}/boards`;
 export const boardService = { getAll, getById };
 
 function getAll() {
+  console.log('fetching all boards');
   return fetchWrapper.get(baseUrl);
 }
 
