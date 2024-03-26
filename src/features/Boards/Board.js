@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Grid, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Container,
+  Grid,
+  useTheme,
+} from '@mui/material';
 
 import { boardService } from './board.service';
 import Tile from '../Tiles/Tile';
+import { map } from 'lodash';
 
 // Check if new board must be created
 // If not, retrieve board and tiles from db
@@ -271,16 +279,34 @@ const fakeArtistsDb = [
 
 export default function Board(props) {
   const { boardId } = props;
+  const [chosenTheme, setChosenTheme] = useState('babyblue');
+
   boardService.getById(boardId).then((board) => {
     console.log('Retrieved board: ', board);
   });
 
+  // Setting the theme for the board
   const theme = useTheme();
   const { boardBorder, boardBackgroundColor, themes } = theme.palette;
-  const chosenTheme = 'babyblue';
-
   const boardTheme = themes.find((x) => x.theming === chosenTheme);
   console.log('boardTheme: ', boardTheme);
+
+  // Display part of the theme buttons
+  const renderThemeButtons = themes.map((theme, id) => {
+    console.log('theme: ', theme);
+    const { theming } = theme;
+
+    return (
+      <Button
+        key={id}
+        onClick={() => {
+          setChosenTheme(theming);
+        }}
+      >
+        {theming}
+      </Button>
+    );
+  });
 
   const { setBox } = props;
   // Need to record which songs have been chosen already
@@ -419,6 +445,9 @@ export default function Board(props) {
           p: 3,
         }}
       >
+        <ButtonGroup variant="outlined" aria-label="Theming button group">
+          {renderThemeButtons}
+        </ButtonGroup>
         <Grid
           container
           spacing={2}
