@@ -20,7 +20,7 @@ export default function Play() {
         {/*<Grid item xs={2} sx={{ border: 1 }}>
           <Side box={box} />
   </Grid>*/}
-        <Grid item xs={12} sx={{ border: 1 }}>
+        <Grid item xs={12}>
           <Board boardId={competitionId} setBox={setBox} />
         </Grid>
       </Grid>

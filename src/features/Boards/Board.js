@@ -10,7 +10,6 @@ import {
 
 import { boardService } from './board.service';
 import Tile from '../Tiles/Tile';
-import { map } from 'lodash';
 
 // Check if new board must be created
 // If not, retrieve board and tiles from db
@@ -279,7 +278,7 @@ const fakeArtistsDb = [
 
 export default function Board(props) {
   const { boardId } = props;
-  const [chosenTheme, setChosenTheme] = useState('babyblue');
+  const [chosenTheme, setChosenTheme] = useState('Babyblue');
 
   boardService.getById(boardId).then((board) => {
     console.log('Retrieved board: ', board);
@@ -287,13 +286,15 @@ export default function Board(props) {
 
   // Setting the theme for the board
   const theme = useTheme();
-  const { boardBorder, boardBackgroundColor, themes } = theme.palette;
+  const { themes } = theme.palette;
   const boardTheme = themes.find((x) => x.theming === chosenTheme);
-  console.log('boardTheme: ', boardTheme);
+  //   console.log('boardTheme: ', boardTheme);
+  const { boardBgColour, boardBorderColour, tileSpacing } = boardTheme;
+  //   console.log('boardBgColour: ', boardBgColour);
 
   // Display part of the theme buttons
   const renderThemeButtons = themes.map((theme, id) => {
-    console.log('theme: ', theme);
+    // console.log('theme: ', theme);
     const { theming } = theme;
 
     return (
@@ -415,14 +416,15 @@ export default function Board(props) {
     }
   }, []);
 
-  const renderSongs = songs.map((song, id) => {
+  const renderTiles = songs.map((song, id) => {
     //console.log(song);
     const { title, actualArtist, artists } = song;
 
     return (
-      <Grid key={id} item>
+      <Grid className="tile grid" key={id} item>
         <Tile
           key={id}
+          id={id}
           title={title}
           actualArtist={actualArtist}
           artists={artists}
@@ -435,28 +437,30 @@ export default function Board(props) {
 
   return (
     <Container>
+      <ButtonGroup variant="outlined" aria-label="Theming button group">
+        {renderThemeButtons}
+      </ButtonGroup>
       <Box
-        className="thisistheone"
+        className="board"
+        aria-label="board"
         sx={{
-          backgroundColor: boardBackgroundColor,
-          border: boardBorder,
-          borderRadius: 5,
-          my: 8,
-          p: 3,
+          backgroundColor: boardBgColour,
+          borderColor: boardBorderColour,
+          // borderRadius: 5,
+          my: 2,
+          p: 2,
         }}
       >
-        <ButtonGroup variant="outlined" aria-label="Theming button group">
-          {renderThemeButtons}
-        </ButtonGroup>
         <Grid
+          className="board grid"
           container
-          spacing={2}
+          spacing={tileSpacing}
           direction="row"
-          justifyContent="space-evenly"
+          justifyContent="center"
           alignItems="center"
         >
           {/*console.log(theme.palette)*/}
-          {renderSongs}
+          {renderTiles}
         </Grid>
       </Box>
     </Container>

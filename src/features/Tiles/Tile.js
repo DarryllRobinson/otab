@@ -25,9 +25,16 @@ import { alpha } from '@mui/material/styles';
 import './Tile.css';
 
 export default function Tile(props) {
-  const { title, actualArtist, artists, boardTheme /*, setBox*/ } = props;
-  const { tileBgColour, tileBgColourHover } = boardTheme;
-  // console.log('boardTheme: ', boardTheme);
+  const { id, title, actualArtist, artists, boardTheme /*, setBox*/ } = props;
+
+  const {
+    tileBgColour,
+    tileBgColour2,
+    tileBgColourHover,
+    tileBorderColour,
+    tileBorderRadius,
+    tileTextColour,
+  } = boardTheme;
   // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
   const [artistValue, setArtistValue] = useState('');
@@ -199,11 +206,13 @@ export default function Tile(props) {
                   boxShadow: 10,
                 },
                 backgroundColor: tileBgColour,
+                color: tileTextColour,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 border: 1,
-                borderRadius: 3,
+                borderColor: tileBorderColour,
+                borderRadius: tileBorderRadius,
                 height: 250,
                 width: 200,
               }}
@@ -222,7 +231,7 @@ export default function Tile(props) {
             <Card
               sx={{
                 border: 1,
-                borderRadius: 3,
+                borderRadius: tileBorderRadius,
                 height: 250,
                 width: 200,
               }}
