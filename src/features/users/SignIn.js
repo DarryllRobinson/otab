@@ -15,13 +15,14 @@ import {
 } from '@mui/material';
 import { LockOutlined } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { alertService, userService } from '../../_services';
+import { alertService } from '../../_services';
+import { userService } from './user.service';
 
 //import { userService } from './user.service';
 
 const theme = createTheme();
 
-export default function SignIn({ history }) {
+export default function SignIn() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -39,18 +40,23 @@ export default function SignIn({ history }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    alertService.clear();
 
     userService
       .login(formData)
       .then(() => {
-        alertService.success('Sign in successful', {
-          keepAfterRouteChange: true,
-        });
+        alertService.caller('Sign in successful', null, 'Welcome', 'success');
         console.log('Signed in');
         navigate('/');
       })
       .catch((error) => {
-        alertService.error(error);
+        console.log('SignIn error: ', error);
+        alertService.caller(
+          'Please check your credentials',
+          null,
+          'Sign in problem',
+          'error'
+        );
       });
   };
 

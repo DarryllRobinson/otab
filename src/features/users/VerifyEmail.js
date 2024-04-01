@@ -6,7 +6,8 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { userService, alertService } from '../../_services';
+import { alertService } from '../../_services';
+import { userService } from './user.service';
 
 function VerifyEmail() {
   const location = useLocation();
@@ -27,9 +28,12 @@ function VerifyEmail() {
     userService
       .verifyEmail(searchParams.get('token'))
       .then(() => {
-        alertService.success('Verification successful, you can now login', {
-          keepAfterRouteChange: true,
-        });
+        alertService.caller(
+          'Verification successful, you can now login',
+          null,
+          'Verified!',
+          'success'
+        );
         console.log('verified!');
         navigate('/user/signin');
       })

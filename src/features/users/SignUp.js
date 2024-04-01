@@ -16,7 +16,7 @@ import {
 import { LockOutlined } from '@mui/icons-material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import { userService } from '../../_services/user.service';
+import { userService } from './user.service';
 import { alertService } from '../../_services';
 
 const theme = createTheme();
@@ -73,7 +73,13 @@ export default function SignUp() {
         navigate('/user/signin');
       })
       .catch((error) => {
-        alertService.error(error);
+        alertService.caller(
+          error,
+          // { keepAfterRouteChange: true },
+          null,
+          'Sign up problem',
+          'error'
+        );
       });
   };
 

@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Grid, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Container,
+  Grid,
+  useTheme,
+} from '@mui/material';
 
-import Tile from './Tile';
+import { boardService } from './board.service';
+import Tile from '../Tiles/Tile';
 
 // Check if new board must be created
 // If not, retrieve board and tiles from db
@@ -9,7 +17,7 @@ import Tile from './Tile';
 // Retrieve song title and artist from radio db/api
 
 // Mocked data
-const numTiles = 20;
+const numTiles = 25;
 const numArtists = 2;
 
 const songsDb = [
@@ -269,8 +277,46 @@ const fakeArtistsDb = [
 ];
 
 export default function Board(props) {
+  const { boardId } = props;
+  const [chosenTheme, setChosenTheme] = useState('Babyblue');
+
+  boardService.getById(boardId).then((board) => {
+    console.log('Retrieved board: ', board);
+  });
+
+  // Setting the theme for the board
   const theme = useTheme();
-  const { boardBorder, boardBackgroundColor } = theme.palette;
+  const { themes } = theme.palette;
+  const boardTheme = themes.find((x) => x.theming === chosenTheme);
+  //   console.log('boardTheme: ', boardTheme);
+  const {
+    boardBgColour,
+    boardBorderColour,
+    tileBgColour,
+    tileBgColourHover,
+    tileBorderColour,
+    tileTextColour,
+    tileBorderRadius,
+    tileSpacing,
+  } = boardTheme;
+
+  // Display part of the theme buttons
+  const renderThemeButtons = themes.map((theme, id) => {
+    // console.log('theme: ', theme);
+    const { theming } = theme;
+
+    return (
+      <Button
+        key={id}
+        onClick={() => {
+          setChosenTheme(theming);
+        }}
+      >
+        {theming}
+      </Button>
+    );
+  });
+
   const { setBox } = props;
   // Need to record which songs have been chosen already
   const [songs, setSongs] = useState([]);
@@ -378,18 +424,25 @@ export default function Board(props) {
     }
   }, []);
 
-  const renderSongs = songs.map((song, id) => {
+  const renderTiles = songs.map((song, id) => {
+    // Working out the colours
+    const picker = id % tileBgColour.length;
     //console.log(song);
     const { title, actualArtist, artists } = song;
-
     return (
-      <Grid key={id} item>
+      <Grid className="tile grid" key={id} item xs={12 / 5}>
         <Tile
           key={id}
+          id={id}
           title={title}
           actualArtist={actualArtist}
           artists={artists}
           setBox={setBox}
+          tileBgColour={tileBgColour[picker]}
+          tileBgColourHover={tileBgColourHover[picker]}
+          tileBorderColour={tileBorderColour[picker]}
+          tileTextColour={tileTextColour[picker]}
+          tileBorderRadius={tileBorderRadius}
         />
       </Grid>
     );
@@ -397,26 +450,30 @@ export default function Board(props) {
 
   return (
     <Container>
+      <ButtonGroup variant="outlined" aria-label="Theming button group">
+        {renderThemeButtons}
+      </ButtonGroup>
       <Box
-        className="thisistheone"
+        className="board"
+        aria-label="board"
         sx={{
-          backgroundColor: boardBackgroundColor,
-          border: boardBorder,
-          borderRadius: 5,
-          my: 8,
-          p: 3,
+          backgroundColor: boardBgColour,
+          borderColor: boardBorderColour,
+          // borderRadius: 5,
+          my: 2,
+          p: 2,
         }}
       >
         <Grid
+          className="board grid"
           container
-          columns={{ xs: 4, sm: 8, md: 12 }}
-          spacing={2}
+          spacing={tileSpacing}
           direction="row"
-          justifyContent="space-evenly"
+          justifyContent="center"
           alignItems="center"
         >
           {/*console.log(theme.palette)*/}
-          {renderSongs}
+          {renderTiles}
         </Grid>
       </Box>
     </Container>

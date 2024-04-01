@@ -1,8 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { userService } from '../../_services';
-
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import { VerifyEmail } from './VerifyEmail';

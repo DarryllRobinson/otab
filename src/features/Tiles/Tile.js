@@ -17,7 +17,7 @@ import {
   CheckCircleOutlineSharp,
   DangerousOutlined,
 } from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
+import { makeStyles, useTheme } from '@mui/styles';
 import { alpha } from '@mui/material/styles';
 
 //import useTimer from '../hooks/useTimer';
@@ -25,7 +25,19 @@ import { alpha } from '@mui/material/styles';
 import './Tile.css';
 
 export default function Tile(props) {
-  const { title, actualArtist, artists /*, setBox*/ } = props;
+  const {
+    id,
+    title,
+    actualArtist,
+    artists,
+    tileBgColour,
+    tileBgColourHover,
+    tileBorderColour,
+    tileTextColour,
+    tileBorderRadius /*, setBox*/,
+  } = props;
+
+  // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
   const [artistValue, setArtistValue] = useState('');
   const [songValue, setSongValue] = useState('');
@@ -192,14 +204,17 @@ export default function Tile(props) {
             <Card
               sx={{
                 '&:hover': {
-                  backgroundColor: 'grey',
+                  backgroundColor: tileBgColourHover,
                   boxShadow: 10,
                 },
+                backgroundColor: tileBgColour,
+                color: tileTextColour,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
                 border: 1,
-                borderRadius: 3,
+                borderColor: tileBorderColour,
+                borderRadius: tileBorderRadius,
                 height: 250,
                 width: 200,
               }}
@@ -218,7 +233,7 @@ export default function Tile(props) {
             <Card
               sx={{
                 border: 1,
-                borderRadius: 3,
+                borderRadius: tileBorderRadius,
                 height: 250,
                 width: 200,
               }}

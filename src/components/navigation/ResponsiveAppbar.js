@@ -18,7 +18,7 @@ import {
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 
 import MaterialUISwitch from './MaterialUISwitch';
-import { userService } from '../../_services';
+import { userService } from '../../features/users/user.service';
 import { useNavigate } from 'react-router-dom';
 
 const pages = ['How it works', 'New board', "Songs I've missed"];

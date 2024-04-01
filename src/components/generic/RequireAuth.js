@@ -1,10 +1,10 @@
 import { Navigate } from 'react-router-dom';
-import { userService } from '../../_services';
+import { userService } from '../../features/users/user.service';
 
 function RequireAuth({ children }) {
   //let location = useLocation;
   const user = userService.userValue;
-  console.log('user: ', user);
+  // console.log('user: ', user);
 
   if (!user) {
     // Redirect them to the /login page, but save the current location they were
