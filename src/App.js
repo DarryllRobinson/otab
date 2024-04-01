@@ -210,7 +210,6 @@ const light = {
         tileTextColour: ['black', 'black', 'black', 'black'],
         tileSpacing: 2,
         tileBorderRadius: 0,
-        test: 'because',
       },
       {
         theming: 'Purplest',
