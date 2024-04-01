@@ -20,6 +20,8 @@ import {
 import { makeStyles, useTheme } from '@mui/styles';
 import { alpha } from '@mui/material/styles';
 
+import { tileService } from './tile.service';
+
 //import useTimer from '../hooks/useTimer';
 
 import './Tile.css';
@@ -76,7 +78,8 @@ export default function Tile(props) {
       setError(false);
       setSubmitted(true);
       // Check if artist is correct
-      checkArtist();
+      console.log('checkArtist');
+      checkArtist(artistValue);
       // Check if song is playing
       checkSong();
       saveTile();
@@ -91,20 +94,23 @@ export default function Tile(props) {
     }
   };
 
-  const checkArtist = () => {
+  const checkArtist = (artistValue) => {
+    console.log({ artistValue });
     const check = artistValue === actualArtist ? true : false;
     setCorrectArtist(check);
   };
 
-  const checkSong = (song) => {
+  const checkSong = (title) => {
     // Will need to check against RDS
     // Tolerance of plus minus a minute maybe?
     // const currentSong value coming from RDS
     // Will need to replace "currentSong = title" with actual value
-    const currentSong = title;
-    const check = song === currentSong ? true : false;
+    const currentSong = tileService.getCurrentSong();
+    const check = title === currentSong ? false : true;
     console.log('check: ', check);
     setCorrectSong(check);
+    // Record if song correct in db
+    // tileService.recordSongChosen(title);
   };
 
   const saveTile = () => {
