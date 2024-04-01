@@ -25,16 +25,18 @@ import { alpha } from '@mui/material/styles';
 import './Tile.css';
 
 export default function Tile(props) {
-  const { id, title, actualArtist, artists, boardTheme /*, setBox*/ } = props;
-
   const {
+    id,
+    title,
+    actualArtist,
+    artists,
     tileBgColour,
-    tileBgColour2,
     tileBgColourHover,
     tileBorderColour,
-    tileBorderRadius,
     tileTextColour,
-  } = boardTheme;
+    tileBorderRadius /*, setBox*/,
+  } = props;
+
   // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
   const [artistValue, setArtistValue] = useState('');

@@ -55,7 +55,7 @@ export default function Test(props) {
   }));
 
   return (
-    <Container>
+    <Container fixed>
       <ButtonGroup variant="outlined" aria-label="Theming button group">
         {renderThemeButtons}
       </ButtonGroup>
@@ -67,9 +67,15 @@ export default function Test(props) {
           borderColor: boardBorderColour,
         }}
       >
-        <Grid container>
-          {Array.from(Array(6)).map((_, index) => (
-            <Grid item xs={2} sm={4} md={4} key={index}>
+        <Grid
+          container
+          spacing={1}
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          {Array.from(Array(25)).map((_, index) => (
+            <Grid item xs={12} key={index}>
               <Item>xs=2</Item>
             </Grid>
           ))}
