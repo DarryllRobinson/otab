@@ -17,7 +17,7 @@ import Tile from '../Tiles/Tile';
 // Retrieve song title and artist from radio db/api
 
 // Mocked data
-const numTiles = 20;
+const numTiles = 25;
 const numArtists = 2;
 
 const songsDb = [
@@ -289,8 +289,16 @@ export default function Board(props) {
   const { themes } = theme.palette;
   const boardTheme = themes.find((x) => x.theming === chosenTheme);
   //   console.log('boardTheme: ', boardTheme);
-  const { boardBgColour, boardBorderColour, tileSpacing } = boardTheme;
-  //   console.log('boardBgColour: ', boardBgColour);
+  const {
+    boardBgColour,
+    boardBorderColour,
+    tileBgColour,
+    tileBgColourHover,
+    tileBorderColour,
+    tileTextColour,
+    tileBorderRadius,
+    tileSpacing,
+  } = boardTheme;
 
   // Display part of the theme buttons
   const renderThemeButtons = themes.map((theme, id) => {
@@ -417,11 +425,12 @@ export default function Board(props) {
   }, []);
 
   const renderTiles = songs.map((song, id) => {
+    // Working out the colours
+    const picker = id % tileBgColour.length;
     //console.log(song);
     const { title, actualArtist, artists } = song;
-
     return (
-      <Grid className="tile grid" key={id} item>
+      <Grid className="tile grid" key={id} item xs={12 / 5}>
         <Tile
           key={id}
           id={id}
@@ -429,7 +438,11 @@ export default function Board(props) {
           actualArtist={actualArtist}
           artists={artists}
           setBox={setBox}
-          boardTheme={boardTheme}
+          tileBgColour={tileBgColour[picker]}
+          tileBgColourHover={tileBgColourHover[picker]}
+          tileBorderColour={tileBorderColour[picker]}
+          tileTextColour={tileTextColour[picker]}
+          tileBorderRadius={tileBorderRadius}
         />
       </Grid>
     );

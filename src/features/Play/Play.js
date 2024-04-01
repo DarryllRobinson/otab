@@ -8,7 +8,8 @@ import { userService } from '../users/user.service';
 
 export default function Play() {
   let { state } = useLocation();
-  const { competitionId } = state;
+
+  const { competitionId } = state || {};
   console.log('competitionId: ', competitionId);
   const user = userService.userValue;
   console.log('user: ', user);
