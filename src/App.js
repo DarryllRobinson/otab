@@ -499,7 +499,7 @@ export default function App() {
                       <Competitions />
                     </RequireAuth>
                   }
-                />
+                ></Route>
 
                 {/* Using path="*"" means "match anything", so this route acts like a catch-all for URLs that we don't have explicit routes for. */}
                 <Route path="*" element={<ErrorPage />} />

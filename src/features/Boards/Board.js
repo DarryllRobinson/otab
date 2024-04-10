@@ -288,7 +288,6 @@ export default function Board(props) {
   const theme = useTheme();
   const { themes } = theme.palette;
   const boardTheme = themes.find((x) => x.theming === chosenTheme);
-  //   console.log('boardTheme: ', boardTheme);
   const {
     boardBgColour,
     boardBorderColour,
@@ -364,7 +363,7 @@ export default function Board(props) {
             //console.log('tiles: ', tiles);
           }
         }
-        //console.log('tiles: ', tiles);
+        // console.log('tiles: ', tiles);
         return tiles;
       };
 
