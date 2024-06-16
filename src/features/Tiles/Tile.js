@@ -117,7 +117,7 @@ export default function Tile(props) {
       correctSong,
       submitted: true,
     });
-    tileService.updateTile(id, {
+    tileService.update(id, {
       id,
       chosenArtist,
       correctArtist,

@@ -10,6 +10,7 @@ import {
 
 import { boardService } from './board.service';
 import Tile from '../Tiles/Tile';
+import { tileService } from '../Tiles/tile.service';
 
 // Check if new board must be created
 // If not, retrieve board and tiles from db
@@ -355,15 +356,18 @@ export default function Board(props) {
             const { title } = findArrayElementById(songsDb, songId);
             //console.log('title: ', title, artist);
 
+            // Save tile to database
+            tileService.create({ title, artists, boardId });
+
             tiles.push({
               title,
               actualArtist: artist,
               artists,
             });
-            //console.log('tiles: ', tiles);
+            console.log('title, artists, boardId: ', title, artists, boardId);
           }
         }
-        // console.log('tiles: ', tiles);
+        console.log('tiles: ', tiles);
         return tiles;
       };
 
