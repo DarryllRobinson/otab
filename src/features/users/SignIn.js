@@ -46,8 +46,8 @@ export default function SignIn() {
       .login(formData)
       .then(() => {
         alertService.caller('Sign in successful', null, 'Welcome', 'success');
-        console.log('Signed in');
-        navigate('/');
+        // console.log('Signed in');
+        navigate('/boards');
       })
       .catch((error) => {
         console.log('SignIn error: ', error);
