@@ -459,7 +459,6 @@ export default function App() {
       >
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
             <Route path="user/*" element={<User />} />
 
             <>
@@ -468,6 +467,7 @@ export default function App() {
                   <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
                 }
               >
+                <Route index element={<Home />} />
                 <Route
                   path="/play/*"
                   element={
