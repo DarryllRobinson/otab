@@ -22,22 +22,41 @@ export default function Boards() {
     }
   }, [fetchBoards, status]);
 
-  const renderBoards = () => {
-    boards.map((board) => {
-      const { id, name } = board;
-
-      return (
+  const renderBoards = boards.map((board) => {
+    // console.log(board);
+    return (
+      <Box sx={{ mt: 10 }}>
         <Button
-          key={id}
+          key={board.id}
           component={RouterLink}
           to="/play"
-          state={{ boardId: id }}
+          state={{ boardId: board.id }}
         >
-          {name}
+          Name: {board.name}
         </Button>
-      );
-    });
-  };
+      </Box>
+    );
+  });
+
+  // const ddrenderBoards = () => {
+  //   // console.log('going to render some boards: ', boards);
+  //   boards.map((board) => {
+  //     const { id, name } = board;
+
+  //     return (
+  //       <Box sx={{ mt: 10 }}>
+  //         <Button
+  //           key={id}
+  //           component={RouterLink}
+  //           to="/play"
+  //           state={{ boardId: id }}
+  //         >
+  //           Name: {name}
+  //         </Button>
+  //       </Box>
+  //     );
+  //   });
+  // };
 
   let content;
 
@@ -49,7 +68,19 @@ export default function Boards() {
     content = 'Error';
   } else if (status === 'succeeded' && boards.length > 0) {
     // console.log('status: ', status);
-    renderBoards();
+    // console.log('boards: ', boards);
+    content = boards.map((board) => (
+      <Box key={board.id}>
+        <Button
+          key={board.id}
+          component={RouterLink}
+          to="/play"
+          state={{ boardId: board.id }}
+        >
+          Competition ID: {board.competitionId}
+        </Button>
+      </Box>
+    ));
   } else {
     // console.log('status: ', status);
     content = <div>No boards found. Please join one of our competitions</div>;
@@ -65,7 +96,16 @@ export default function Boards() {
       }}
     >
       Choose an existing board to capture songs
-      <div>{content}</div>
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        {content}
+      </Box>
     </Box>
   );
 }
