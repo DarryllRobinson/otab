@@ -10,7 +10,6 @@ export default function Play() {
   let { state } = useLocation();
 
   const { boardId } = state || {};
-  const { compId } = state || {};
   console.log('boardId: ', boardId);
   const user = userService.userValue;
   console.log('user: ', user);
@@ -23,7 +22,7 @@ export default function Play() {
           <Side box={box} />
   </Grid>*/}
         <Grid item xs={12}>
-          <Board boardId={boardId} compId={compId} setBox={setBox} />
+          <Board boardId={boardId} setBox={setBox} />
         </Grid>
       </Grid>
     </Box>

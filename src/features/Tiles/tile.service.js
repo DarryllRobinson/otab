@@ -2,7 +2,7 @@ import config from '../../_config/config';
 import { fetchWrapper } from '../../_helpers';
 const baseUrl = `${config.apiUrl}/tiles`;
 
-export const tileService = { getSong, create, update };
+export const tileService = { getSong, getTiles, create, update };
 
 function getSong() {
   console.log('getting getSong');
@@ -10,7 +10,13 @@ function getSong() {
   //   return fetchWrapper.get(`${baseUrl}/get-song`);
 }
 
+function getTiles(params) {
+  console.log('getTiles params', params);
+  return fetchWrapper.post(baseUrl, params);
+}
+
 function create(params) {
+  console.log('creating tile params', params);
   return fetchWrapper.post(baseUrl, params);
 }
 

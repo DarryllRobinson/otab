@@ -8,7 +8,6 @@ import {
   useTheme,
 } from '@mui/material';
 
-import { boardService } from './board.service';
 import Tile from '../Tiles/Tile';
 import { tileService } from '../Tiles/tile.service';
 
@@ -282,8 +281,8 @@ export default function Board(props) {
   const { boardId } = props;
   const [chosenTheme, setChosenTheme] = useState('Babyblue');
 
-  boardService.getById(boardId).then((board) => {
-    console.log('Retrieved board: ', board);
+  tileService.getTiles({ boardId }).then((tiles) => {
+    console.log('Retrieved tiles: ', tiles);
   });
 
   // Setting the theme for the board

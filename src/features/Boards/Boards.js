@@ -13,7 +13,7 @@ export default function Boards() {
 
   const fetchBoards = useCallback(async () => {
     setStatus('fetching');
-    const records = await boardService.getAllByUserId(user.id);
+    const records = await boardService.getAllByUserId({ userId: user.id });
 
     setStatus('succeeded');
     setBoards(records);
@@ -78,7 +78,7 @@ export default function Boards() {
           key={board.id}
           component={RouterLink}
           to="/play"
-          state={{ boardId: board.id, compId: board.competitionId }}
+          state={{ boardId: board.id }}
         >
           Competition ID: {board.competitionId}
         </Button>
