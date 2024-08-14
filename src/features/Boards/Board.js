@@ -278,6 +278,7 @@ const fakeArtistsDb = [
 ];
 
 export default function Board(props) {
+  console.log('Board props: ', props);
   const { boardId } = props;
   const [chosenTheme, setChosenTheme] = useState('Babyblue');
 
@@ -364,7 +365,7 @@ export default function Board(props) {
               actualArtist: artist,
               artists,
             });
-            console.log('title, artists, boardId: ', title, artists, boardId);
+            // console.log('title, artists, boardId: ', title, artists, boardId);
           }
         }
         console.log('tiles: ', tiles);

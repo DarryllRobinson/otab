@@ -2,14 +2,16 @@ import config from '../../_config/config';
 import { fetchWrapper } from '../../_helpers';
 const baseUrl = `${config.apiUrl}/boards`;
 
-export const boardService = { getAll, getById, getBoardByCompUserId };
+export const boardService = { getAll, getAllByUserId, getBoardByCompUserId };
 
 function getAll() {
   console.log('fetching all boards');
   return fetchWrapper.get(baseUrl);
 }
 
-function getById(id) {
+function getAllByUserId(id) {
+  // console.log('getAllByUserId id:', id);
+  console.log('getAllByUserId url:', `${baseUrl}/${id}`);
   return fetchWrapper.get(`${baseUrl}/${id}`);
 }
 

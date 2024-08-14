@@ -22,6 +22,9 @@ export default function Home() {
       <Button component={RouterLink} to="/competitions">
         Competitions
       </Button>
+      <Button component={RouterLink} to="/boards">
+        My Boards
+      </Button>
     </Box>
   );
 }
