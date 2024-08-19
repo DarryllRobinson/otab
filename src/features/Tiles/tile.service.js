@@ -17,7 +17,7 @@ function getTiles(params) {
 
 function create(params) {
   console.log('creating tile params', params);
-  return fetchWrapper.post(baseUrl, params);
+  return fetchWrapper.post(`${baseUrl}/create`, params);
 }
 
 function update(id, params) {

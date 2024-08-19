@@ -10,7 +10,7 @@ export default function Play() {
   let { state } = useLocation();
 
   const { boardId } = state || {};
-  console.log('boardId: ', boardId);
+  console.log('Board boardId: ', boardId);
   const user = userService.userValue;
   console.log('user: ', user);
   const [box, setBox] = useState(false);
