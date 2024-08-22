@@ -173,13 +173,28 @@ function ResponsiveAppBar(props) {
           display: { xs: 'block', md: 'none' },
         }}
       >
-        <MenuItem key={0} onClick={handleCloseNavMenu}>
+        <MenuItem
+          key={0}
+          onClick={() => {
+            alert('Under development');
+          }}
+        >
           <Typography textAlign="center">How it works</Typography>
         </MenuItem>
-        <MenuItem key={1} onClick={handleCloseNavMenu}>
+        <MenuItem
+          key={1}
+          onClick={() => {
+            navigate('/boards');
+          }}
+        >
           <Typography textAlign="center">My boards</Typography>
         </MenuItem>
-        <MenuItem key={2} onClick={handleCloseNavMenu}>
+        <MenuItem
+          key={2}
+          onClick={() => {
+            alert('Under development');
+          }}
+        >
           <Typography textAlign="center">Songs I've missed</Typography>
         </MenuItem>
       </Menu>
@@ -190,21 +205,27 @@ function ResponsiveAppBar(props) {
     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
       <Button
         key={0}
-        onClick={handleCloseNavMenu}
+        onClick={() => {
+          alert('Under development');
+        }}
         sx={{ my: 2, color: 'white', display: 'block' }}
       >
         How it works
       </Button>
       <Button
         key={1}
-        onClick={handleCloseNavMenu}
+        onClick={() => {
+          navigate('/boards');
+        }}
         sx={{ my: 2, color: 'white', display: 'block' }}
       >
         My boards
       </Button>
       <Button
         key={2}
-        onClick={handleCloseNavMenu}
+        onClick={() => {
+          alert('Under development');
+        }}
         sx={{ my: 2, color: 'white', display: 'block' }}
       >
         Songs I've missed
