@@ -64,13 +64,13 @@ export default function Boards() {
   let content;
 
   if (status === 'fetching') {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     content = <div>Fetching</div>;
   } else if (status === 'error') {
     console.log('status: ', status);
     content = 'Error';
   } else if (status === 'succeeded' && boards.length > 0) {
-    console.log('status: ', status);
+    // console.log('status: ', status);
     console.log('boards: ', boards);
     content = boards.map((board) => (
       <Box key={board.id}>

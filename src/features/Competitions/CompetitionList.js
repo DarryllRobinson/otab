@@ -33,14 +33,14 @@ export default function CompetitionList() {
   const renderCompetitions = () => {
     return competitions.map((competition) => {
       console.log('competition: ', competition);
-      const { id, name } = competition;
+      const { id, name, numTiles } = competition;
 
       return (
         <Card key={id} sx={{ maxWidth: 345 }}>
           <CardActionArea>
             <RouterLink
               to="/competitions/competition"
-              state={{ id: id, name: name }}
+              state={{ id: id, name: name, numTiles: numTiles }}
             >
               <CardActions>
                 <CardContent>
