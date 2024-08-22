@@ -275,7 +275,7 @@ const fakeArtistsDb = [
 ];
 
 export default function Board(props) {
-  const { boardId } = props || {};
+  const { boardId, compId, create } = props || {};
   const [status, setStatus] = useState('idle');
   const [tiles, setTiles] = useState([]);
   const [chosenTheme, setChosenTheme] = useState('Babyblue');

@@ -184,13 +184,21 @@ function ResponsiveAppBar(props) {
         <MenuItem
           key={1}
           onClick={() => {
+            navigate('/competitions');
+          }}
+        >
+          <Typography textAlign="center">Competitions</Typography>
+        </MenuItem>
+        <MenuItem
+          key={2}
+          onClick={() => {
             navigate('/boards');
           }}
         >
           <Typography textAlign="center">My boards</Typography>
         </MenuItem>
         <MenuItem
-          key={2}
+          key={3}
           onClick={() => {
             alert('Under development');
           }}
@@ -215,6 +223,15 @@ function ResponsiveAppBar(props) {
       <Button
         key={1}
         onClick={() => {
+          navigate('/competitions');
+        }}
+        sx={{ my: 2, color: 'white', display: 'block' }}
+      >
+        Competitions
+      </Button>
+      <Button
+        key={2}
+        onClick={() => {
           navigate('/boards');
         }}
         sx={{ my: 2, color: 'white', display: 'block' }}
@@ -222,7 +239,7 @@ function ResponsiveAppBar(props) {
         My boards
       </Button>
       <Button
-        key={2}
+        key={3}
         onClick={() => {
           alert('Under development');
         }}

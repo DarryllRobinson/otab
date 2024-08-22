@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { boardService } from './board.service';
 import { userService } from '../../features/users/user.service';
 
@@ -25,47 +25,15 @@ export default function Boards() {
     }
   }, [fetchBoards, status]);
 
-  // const renderBoards = boards.map((board) => {
-  //   // console.log(board);
-  //   return (
-  //     <Box sx={{ mt: 10 }}>
-  //       <Button
-  //         key={board.id}
-  //         component={RouterLink}
-  //         to="/play"
-  //         state={{ boardId: board.id }}
-  //       >
-  //         Name: {board.name}
-  //       </Button>
-  //     </Box>
-  //   );
-  // });
-
-  // const ddrenderBoards = () => {
-  //   // console.log('going to render some boards: ', boards);
-  //   boards.map((board) => {
-  //     const { id, name } = board;
-
-  //     return (
-  //       <Box sx={{ mt: 10 }}>
-  //         <Button
-  //           key={id}
-  //           component={RouterLink}
-  //           to="/play"
-  //           state={{ boardId: id }}
-  //         >
-  //           Name: {name}
-  //         </Button>
-  //       </Box>
-  //     );
-  //   });
-  // };
-
   let content;
 
   if (status === 'fetching') {
     // console.log('status: ', status);
-    content = <div>Fetching</div>;
+    content = (
+      <div>
+        <CircularProgress color="inherit" />
+      </div>
+    );
   } else if (status === 'error') {
     console.log('status: ', status);
     content = 'Error';
@@ -78,7 +46,11 @@ export default function Boards() {
           key={board.id}
           component={RouterLink}
           to="/play"
-          state={{ boardId: board.id }}
+          state={{
+            boardId: board.id,
+            compId: board.competitionId,
+            create: false,
+          }}
         >
           Competition ID: {board.competitionId}
         </Button>

@@ -9,6 +9,7 @@ function Competition() {
   let navigate = useNavigate();
   let { state } = useLocation();
   const { id, name } = state || {};
+  console.log('competition: ', state);
 
   // Check if there is an id or userId, if not, navigate to CompetitionList
   if (name === undefined) navigate('../');

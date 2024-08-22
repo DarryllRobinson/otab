@@ -1,20 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link as RouterLink, Outlet } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { competitionService } from './competition.service';
 import {
   Box,
+  Button,
   Card,
   CardActionArea,
   CardActions,
   CardContent,
+  CircularProgress,
+  Grid,
   Typography,
 } from '@mui/material';
+
+import CompetitionDetails from './CompetitionDetails';
 
 export default function CompetitionList() {
   const [status, setStatus] = useState('idle');
   // Display competitions on the screen from the database query
   const [competitions, setCompetitions] = useState([]);
+  const [id, setId] = useState(null);
+  const [name, setName] = useState('');
 
   const fetchCompetitions = useCallback(async () => {
     setStatus('fetching');
@@ -30,26 +37,35 @@ export default function CompetitionList() {
     }
   }, [fetchCompetitions, status]);
 
+  const handleClick = (e) => {
+    setId(e.id);
+    setName(e.name);
+  };
+
   const renderCompetitions = () => {
     return competitions.map((competition) => {
       console.log('competition: ', competition);
-      const { id, name, numTiles } = competition;
+      const { id, name } = competition;
 
       return (
         <Card key={id} sx={{ maxWidth: 345 }}>
-          <CardActionArea>
-            <RouterLink
+          <CardActionArea
+            onClick={() => {
+              handleClick({ id, name });
+            }}
+          >
+            {/* <RouterLink
               to="/competitions/competition"
               state={{ id: id, name: name, numTiles: numTiles }}
-            >
-              <CardActions>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    {name}
-                  </Typography>
-                </CardContent>
-              </CardActions>
-            </RouterLink>
+            > */}
+            <CardActions>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {name}
+                </Typography>
+              </CardContent>
+            </CardActions>
+            {/* </RouterLink> */}
           </CardActionArea>
         </Card>
       );
@@ -60,7 +76,11 @@ export default function CompetitionList() {
 
   if (status === 'fetching') {
     // console.log('status: ', status);
-    content = <div>Fetching</div>;
+    content = (
+      <div>
+        <CircularProgress color="inherit" />
+      </div>
+    );
   } else if (status === 'error') {
     // console.log('status: ', status);
     content = 'Error';
@@ -83,9 +103,19 @@ export default function CompetitionList() {
         alignItems: 'center',
       }}
     >
-      Choose an existing competition to join
-      <div>{content}</div>
-      <Outlet />
+      Choose an exciting competition to join!
+      <Grid container spacing={2}>
+        <Grid item>
+          <Box>{content}</Box>
+        </Grid>
+        <Grid item>
+          {id && (
+            <Box>
+              <CompetitionDetails id={id} name={name} />
+            </Box>
+          )}
+        </Grid>
+      </Grid>
     </Box>
   );
 }

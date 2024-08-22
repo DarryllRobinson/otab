@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Skeleton } from '@mui/material';
 
 export default function Home() {
   return (
@@ -19,6 +19,7 @@ export default function Home() {
       <Button component={RouterLink} to="/boards">
         My Boards
       </Button>
+      <Skeleton variant="rectangular" width={210} height={118} />
     </Box>
   );
 }
