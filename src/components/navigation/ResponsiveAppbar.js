@@ -4,6 +4,7 @@ import {
   Avatar,
   Box,
   Button,
+  ButtonGroup,
   Container,
   IconButton,
   Menu,
@@ -12,17 +13,18 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-  //useScrollTrigger,
+  //useScrollTrigger
 } from '@mui/material';
 
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 
 import MaterialUISwitch from './MaterialUISwitch';
 import { userService } from '../../features/users/user.service';
-import { useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
-const pages = ['How it works', 'New board', "Songs I've missed"];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pagesLoggedIn = ['How it works', 'My boards', "Songs I've missed"];
+const pagesLoggedOut = ['How it works'];
+const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
@@ -55,141 +57,239 @@ function ResponsiveAppBar(props) {
     navigate('/user/signin');
   };
 
+  const logoWithIcon = (
+    <>
+      <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+      <Typography
+        variant="h6"
+        noWrap
+        component="a"
+        href="/"
+        sx={{
+          mr: 2,
+          display: { xs: 'none', md: 'flex' },
+          fontFamily: 'monospace',
+          fontWeight: 700,
+          letterSpacing: '.3rem',
+          color: 'inherit',
+          textDecoration: 'none',
+        }}
+      >
+        LOGO
+      </Typography>
+    </>
+  );
+
+  const logoWithIconResponsive = (
+    <>
+      <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+      <Typography
+        variant="h5"
+        noWrap
+        component="a"
+        href=""
+        sx={{
+          mr: 2,
+          display: { xs: 'flex', md: 'none' },
+          flexGrow: 1,
+          fontFamily: 'monospace',
+          fontWeight: 700,
+          letterSpacing: '.3rem',
+          color: 'inherit',
+          textDecoration: 'none',
+        }}
+      >
+        LOGO
+      </Typography>
+    </>
+  );
+
+  const loggedOutMenuResponsive = (
+    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+      <IconButton
+        size="large"
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleOpenNavMenu}
+        color="inherit"
+      >
+        <MenuIcon />
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorElNav}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        open={Boolean(anchorElNav)}
+        onClose={handleCloseNavMenu}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+        }}
+      >
+        {pagesLoggedOut.map((page) => (
+          <MenuItem key={page} onClick={handleCloseNavMenu}>
+            <Typography textAlign="center">{page}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </Box>
+  );
+
+  const loggedInMenuResponsive = (
+    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+      <IconButton
+        size="large"
+        aria-label="account of current user"
+        aria-controls="menu-appbar"
+        aria-haspopup="true"
+        onClick={handleOpenNavMenu}
+        color="inherit"
+      >
+        <MenuIcon />
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorElNav}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+        open={Boolean(anchorElNav)}
+        onClose={handleCloseNavMenu}
+        sx={{
+          display: { xs: 'block', md: 'none' },
+        }}
+      >
+        <MenuItem key={0} onClick={handleCloseNavMenu}>
+          <Typography textAlign="center">How it works</Typography>
+        </MenuItem>
+        <MenuItem key={1} onClick={handleCloseNavMenu}>
+          <Typography textAlign="center">My boards</Typography>
+        </MenuItem>
+        <MenuItem key={2} onClick={handleCloseNavMenu}>
+          <Typography textAlign="center">Songs I've missed</Typography>
+        </MenuItem>
+      </Menu>
+    </Box>
+  );
+
+  const loggedInMenu = (
+    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+      <Button
+        key={0}
+        onClick={handleCloseNavMenu}
+        sx={{ my: 2, color: 'white', display: 'block' }}
+      >
+        How it works
+      </Button>
+      <Button
+        key={1}
+        onClick={handleCloseNavMenu}
+        sx={{ my: 2, color: 'white', display: 'block' }}
+      >
+        My boards
+      </Button>
+      <Button
+        key={2}
+        onClick={handleCloseNavMenu}
+        sx={{ my: 2, color: 'white', display: 'block' }}
+      >
+        Songs I've missed
+      </Button>
+    </Box>
+  );
+
+  const loggedOutMenu = (
+    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+      {pagesLoggedOut.map((page) => (
+        <Button
+          key={page}
+          onClick={handleCloseNavMenu}
+          sx={{ my: 2, color: 'white', display: 'block' }}
+        >
+          {page}
+        </Button>
+      ))}
+    </Box>
+  );
+
+  const profileDropdown = (
+    <Box sx={{ flexGrow: 0 }}>
+      <Tooltip title="Open settings">
+        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+        </IconButton>
+      </Tooltip>
+      <Menu
+        sx={{ mt: '45px' }}
+        id="menu-appbar"
+        anchorEl={anchorElUser}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={Boolean(anchorElUser)}
+        onClose={handleCloseUserMenu}
+      >
+        <MenuItem key={0} onClick={null}>
+          <Typography textAlign="center">Profile</Typography>
+        </MenuItem>
+        <MenuItem key={1} onClick={handleLogout}>
+          <Typography textAlign="center">Logout</Typography>
+        </MenuItem>
+        <MenuItem>
+          <MaterialUISwitch
+            aria-label="dark-switch"
+            checked={checked}
+            onChange={onChange}
+            sx={{ display: 'flex' }}
+          />
+        </MenuItem>
+      </Menu>
+    </Box>
+  );
+
+  const signInUp = (
+    <ButtonGroup variant="contained" aria-label="Basic button group">
+      <Button component={RouterLink} to="/user/signin">
+        Sign In
+      </Button>
+      <Button component={RouterLink} to="/user/signup">
+        Sign Up
+      </Button>
+    </ButtonGroup>
+  );
+
   return (
     <>
       <AppBar position="fixed">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-            <Typography
-              variant="h6"
-              noWrap
-              component="a"
-              href="/"
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              LOGO
-            </Typography>
+            {logoWithIcon}
 
-            {user && (
-              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: 'block', md: 'none' },
-                  }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            )}
-            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href=""
-              sx={{
-                mr: 2,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              LOGO
-            </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page}
-                </Button>
-              ))}
-            </Box>
+            {user ? loggedInMenuResponsive : loggedOutMenuResponsive}
+            {logoWithIconResponsive}
+            {user ? loggedInMenu : loggedOutMenu}
 
-            {user && (
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      alt="Remy Sharp"
-                      src="/static/images/avatar/2.jpg"
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleLogout}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
-                  <MenuItem>
-                    <MaterialUISwitch
-                      aria-label="dark-switch"
-                      checked={checked}
-                      onChange={onChange}
-                      sx={{ display: 'flex' }}
-                    />
-                  </MenuItem>
-                </Menu>
-              </Box>
-            )}
+            {user ? profileDropdown : signInUp}
           </Toolbar>
         </Container>
       </AppBar>

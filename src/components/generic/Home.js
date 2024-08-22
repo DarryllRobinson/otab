@@ -13,12 +13,6 @@ export default function Home() {
       }}
     >
       Welcome to Radio Bingo!
-      <Button component={RouterLink} to="/user/signin">
-        Sign In
-      </Button>
-      <Button component={RouterLink} to="/user/signup">
-        Sign Up
-      </Button>
       <Button component={RouterLink} to="/competitions">
         Competitions
       </Button>
