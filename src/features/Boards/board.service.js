@@ -7,6 +7,7 @@ export const boardService = {
   getById,
   getAllByUserId,
   getBoardByCompUserId,
+  create,
 };
 
 function getAll() {
@@ -16,20 +17,26 @@ function getAll() {
 
 function getById(params) {
   console.log('fetching board by id: ', params);
-  return fetchWrapper.post(baseUrl, params);
+  return fetchWrapper.get(baseUrl, params);
 }
 
 function getAllByUserId(params) {
-  console.log('getAllByUserId params:', params);
+  // console.log('getAllByUserId params:', params);
+  // console.log('getAllByUserId url:', `${baseUrl}/user/`);
   return fetchWrapper.post(`${baseUrl}/user/`, params);
 }
 
 function getBoardByCompUserId(params) {
-  console.log({ params });
+  console.log('getBoardByCompUserId: ', params);
   return fetchWrapper
     .post(`${baseUrl}/competition/user/`, params)
     .then((board) => {
       console.log('found board: ', board);
       return board;
     });
+}
+
+function create(params) {
+  console.log('create: ', params);
+  return fetchWrapper.post(baseUrl, params);
 }

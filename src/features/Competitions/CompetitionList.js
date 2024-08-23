@@ -22,6 +22,7 @@ export default function CompetitionList() {
   const [competitions, setCompetitions] = useState([]);
   const [id, setId] = useState(null);
   const [name, setName] = useState('');
+  const [numTiles, setNumTiles] = useState(0);
 
   const fetchCompetitions = useCallback(async () => {
     setStatus('fetching');
@@ -40,18 +41,19 @@ export default function CompetitionList() {
   const handleClick = (e) => {
     setId(e.id);
     setName(e.name);
+    setNumTiles(e.numTiles);
   };
 
   const renderCompetitions = () => {
     return competitions.map((competition) => {
       console.log('competition: ', competition);
-      const { id, name } = competition;
+      const { id, name, numTiles } = competition;
 
       return (
         <Card key={id} sx={{ maxWidth: 345 }}>
           <CardActionArea
             onClick={() => {
-              handleClick({ id, name });
+              handleClick({ id, name, numTiles });
             }}
           >
             {/* <RouterLink
@@ -111,7 +113,7 @@ export default function CompetitionList() {
         <Grid item>
           {id && (
             <Box>
-              <CompetitionDetails id={id} name={name} />
+              <CompetitionDetails id={id} name={name} numTiles={numTiles} />
             </Box>
           )}
         </Grid>

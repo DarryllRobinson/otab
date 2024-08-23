@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -10,6 +10,7 @@ import {
 
 import Tile from '../Tiles/Tile';
 import { tileService } from '../Tiles/tile.service';
+import { boardService } from './board.service';
 
 // Check if new board must be created
 // If not, retrieve board and tiles from db
@@ -276,22 +277,13 @@ const fakeArtistsDb = [
   },
 ];
 
-export default function Board(props) {
+export default function BoardCreate(props) {
   console.log('Board props: ', props);
-  const { boardId } = props;
+  const { compId } = props;
+  const [status, setStatus] = useState('idle');
+  const [boardId, setBoardId] = useState(null);
   const [chosenTheme, setChosenTheme] = useState('Babyblue');
-  const [create, setCreate] = useState(false);
   const [tiles, setTiles] = useState(null);
-
-  tileService.getTiles({ boardId }).then((tiles) => {
-    console.log('Retrieved tiles: ', tiles);
-    console.log('Retrieved tiles.length: ', tiles.length);
-    if (tiles.length === 0) {
-      setCreate(true);
-    } else {
-      setTiles(tiles);
-    }
-  });
 
   // Setting the theme for the board
   const theme = useTheme();
@@ -325,113 +317,122 @@ export default function Board(props) {
     );
   });
 
+  // Functions to actually create the new board
+  const createBoard = useCallback(async () => {
+    setStatus('fetching');
+    const id = await boardService.create(compId);
+
+    setStatus('succeeded');
+    setBoardId(id);
+    // Fetch randon song title and artist per numTiles
+    setSongs(selectRandomSongs(numTiles));
+  }, []);
+
+  useEffect(() => {
+    if (status === 'idle') {
+      createBoard(compId);
+    }
+  }, [compId, createBoard, status]);
+
   const { setBox } = props;
   // Need to record which songs have been chosen already
   const [songs, setSongs] = useState([]);
 
-  // Check if new board must be created
-  // Assume yes for dev purposes
-  useEffect(() => {
-    if (create) {
-      const createBoard = () => {
-        // Call <Tile /> and send title, artists
-        // Fetch randon song title and artist per numTiles
-        setSongs(selectRandomSongs(numTiles));
-      };
+  // useEffect(() => {
+  //   const createBoard = async () => {
+  //     // Save a new board to get the boardId
+  //     console.log('BoardCreate create: ', compId);
+  //     const id = await boardService.create(compId);
+  //     setBoardId(id);
 
-      const selectRandomSongs = (numTiles) => {
-        let tiles = [];
-        let songIds = [];
-        for (let tile = 0; songIds.length < numTiles; tile++) {
-          const songId = getRandomId(songsDb.length);
-          const found = songIds.includes(songId);
+  //   };
 
-          if (!found) {
-            // Fetch numArtists fake artists, making sure they're not the same as the artist provided
-            const { artist } = findArrayElementById(songsDb, songId);
-            //console.log('actual artist: ', artist);
-            //setArtists(fetchFakeArtists(artist));
-            let artists = fetchFakeArtists(artist);
-            artists.push(artist);
-            //console.log('artists: ', artists);
-            artists = artists.sort(() => Math.random() - 0.5);
-            //console.log('artists shuffled: ', artists);
+  const selectRandomSongs = (numTiles) => {
+    let tiles = [];
+    let songIds = [];
+    for (let tile = 0; songIds.length < numTiles; tile++) {
+      const songId = getRandomId(songsDb.length);
+      const found = songIds.includes(songId);
 
-            // Insert song object, songId into arrays
-            songIds.push(songId);
-            const { title } = findArrayElementById(songsDb, songId);
-            //console.log('title: ', title, artist);
+      if (!found) {
+        // Fetch numArtists fake artists, making sure they're not the same as the artist provided
+        const { artist } = findArrayElementById(songsDb, songId);
+        //console.log('actual artist: ', artist);
+        //setArtists(fetchFakeArtists(artist));
+        let artists = fetchFakeArtists(artist);
+        artists.push(artist);
+        //console.log('artists: ', artists);
+        artists = artists.sort(() => Math.random() - 0.5);
+        //console.log('artists shuffled: ', artists);
 
-            // Save tile to database
-            tileService.create({ title, artists, boardId });
+        // Insert song object, songId into arrays
+        songIds.push(songId);
+        const { title } = findArrayElementById(songsDb, songId);
+        //console.log('title: ', title, artist);
 
-            tiles.push({
-              title,
-              actualArtist: artist,
-              artists,
-            });
-            // console.log('title, artists, boardId: ', title, artists, boardId);
-          }
-        }
-        console.log('tiles: ', tiles);
-        return tiles;
-      };
+        // Save tile to database
+        tileService.create({ title, artists, boardId });
 
-      const getRandomId = (max) => {
-        return Math.floor(Math.random() * max);
-      };
-
-      const findArrayElementById = (array, id) => {
-        return array.find((element) => {
-          return element.id === id;
+        tiles.push({
+          title,
+          actualArtist: artist,
+          artists,
         });
-      };
-
-      const fetchFakeArtists = (actualArtist) => {
-        //console.log('fetchFakeArtists');
-        let artistList = [];
-        let artistIds = [];
-        for (let artistLoop = 0; artistIds.length < numArtists; artistLoop++) {
-          const artistId = getRandomId(fakeArtistsDb.length);
-          //console.log('artistId: ', artistId);
-          //console.log('artistList: ', artistList);
-
-          // Check to make sure the artist hasn't already been chosen for this tile - small chance but definitely non-zero
-          const found = artistIds.includes(artistId);
-          //console.log('found: ', found);
-
-          if (!found) {
-            // Now check to make sure the artist isn't the same as the actual artist - again, small chance but definitely non-zero
-            const { artist } = findArrayElementById(fakeArtistsDb, artistId);
-            //console.log('artist: ', artist);
-            if (artist !== actualArtist) {
-              //console.log('no match');
-
-              // Insert artist object, artistId into arrays
-              //artistList.push(findArrayElementById(fakeArtistsDb, artistId));
-              artistList.push(artist);
-              artistIds.push(artistId);
-              //console.log('artistList: ', artistList);
-            }
-          }
-        }
-        return artistList;
-      };
-
-      const saveBoard = () => {
-        console.log('saveBoard');
-      };
-
-      createBoard();
-      saveBoard();
-    } else {
-      const retrieveBoard = () => {
-        console.log('Retrieve');
-      };
-
-      retrieveBoard();
+        // console.log('title, artists, boardId: ', title, artists, boardId);
+      }
     }
-  }, []);
+    console.log('tiles: ', tiles);
+    return tiles;
+  };
+
+  const getRandomId = (max) => {
+    return Math.floor(Math.random() * max);
+  };
+
+  const findArrayElementById = (array, id) => {
+    return array.find((element) => {
+      return element.id === id;
+    });
+  };
+
+  const fetchFakeArtists = (actualArtist) => {
+    //console.log('fetchFakeArtists');
+    let artistList = [];
+    let artistIds = [];
+    for (let artistLoop = 0; artistIds.length < numArtists; artistLoop++) {
+      const artistId = getRandomId(fakeArtistsDb.length);
+      //console.log('artistId: ', artistId);
+      //console.log('artistList: ', artistList);
+
+      // Check to make sure the artist hasn't already been chosen for this tile - small chance but definitely non-zero
+      const found = artistIds.includes(artistId);
+      //console.log('found: ', found);
+
+      if (!found) {
+        // Now check to make sure the artist isn't the same as the actual artist - again, small chance but definitely non-zero
+        const { artist } = findArrayElementById(fakeArtistsDb, artistId);
+        //console.log('artist: ', artist);
+        if (artist !== actualArtist) {
+          //console.log('no match');
+
+          // Insert artist object, artistId into arrays
+          //artistList.push(findArrayElementById(fakeArtistsDb, artistId));
+          artistList.push(artist);
+          artistIds.push(artistId);
+          //console.log('artistList: ', artistList);
+        }
+      }
+    }
+    return artistList;
+  };
+
+  const saveBoard = () => {
+    console.log('saveBoard');
+  };
+
+  createBoard();
+  saveBoard();
+  // }, [boardId, compId]);
 
   const renderTiles = songs.map((song, id) => {
     // Working out the colours
