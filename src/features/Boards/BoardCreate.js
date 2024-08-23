@@ -52,11 +52,10 @@ export default function BoardCreate(props) {
     );
   });
 
-  const createBoard = useCallback(async (compId) => {
+  const createBoard = useCallback(async (compId, userId) => {
     setStatus('fetching');
     const id = await boardService.create({
       competitionId: compId,
-      userId: user.id,
     });
 
     setStatus('succeeded');
@@ -65,9 +64,9 @@ export default function BoardCreate(props) {
 
   useEffect(() => {
     if (status === 'idle') {
-      createBoard(compId);
+      createBoard(compId, user.id);
     }
-  }, [compId, createBoard, status]);
+  }, [compId, createBoard, status, user.id]);
 
   return (
     <Container>
