@@ -17,6 +17,7 @@ export default function BoardCreate(props) {
   //   console.log('user: ', user);
   const [status, setStatus] = useState('idle');
   const [boardId, setBoardId] = useState(null);
+  const [songs, setSongs] = useState([]);
   const [chosenTheme, setChosenTheme] = useState('Babyblue');
   const [tiles, setTiles] = useState(null);
 
@@ -54,12 +55,16 @@ export default function BoardCreate(props) {
 
   const createBoard = useCallback(async (compId, userId) => {
     setStatus('fetching');
-    const id = await boardService.create({
+    const board = await boardService.create({
       competitionId: compId,
+      userId,
     });
 
     setStatus('succeeded');
-    setBoardId(id);
+    setBoardId(board.id);
+
+    // Fetch randon song title and artist per numTiles
+    setSongs(selectRandomSongs());
   }, []);
 
   useEffect(() => {
@@ -67,6 +72,10 @@ export default function BoardCreate(props) {
       createBoard(compId, user.id);
     }
   }, [compId, createBoard, status, user.id]);
+
+  const selectRandomSongs = () => {
+    return ['songs'];
+  };
 
   return (
     <Container>
