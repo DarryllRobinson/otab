@@ -11,7 +11,7 @@ export default function Play() {
   let { state } = useLocation();
   console.log('Play state: ', state);
 
-  const { boardId, compId, create } = state || {};
+  const { boardId, compId, create, numTiles } = state || {};
   const [box, setBox] = useState(false);
 
   // Create
@@ -33,7 +33,7 @@ export default function Play() {
 
         <Grid item xs={12}>
           {create ? (
-            <BoardCreate compId={compId} setBox={setBox} />
+            <BoardCreate compId={compId} numTiles={numTiles} setBox={setBox} />
           ) : (
             <Board boardId={boardId} setBox={setBox} />
           )}
