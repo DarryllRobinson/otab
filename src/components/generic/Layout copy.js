@@ -417,7 +417,7 @@ export default function Layout() {
 
   useEffect(() => {
     // Check to see if it changes at any point
-    // console.log('isDarkTheme just changed');
+    console.log('isDarkTheme just changed');
     window
       .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', (event) => {
@@ -429,7 +429,7 @@ export default function Layout() {
 
   // Toggling theme
   const changeTheme = () => {
-    // console.log('change the theme');
+    console.log('change the theme');
     setIsDarkTheme(!isDarkTheme);
   };
   // const theme = useTheme();
@@ -455,7 +455,7 @@ export default function Layout() {
         >
           <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
           <AlertComp />
-          <Outlet />
+          {/* <Outlet /> */}
           <Box
             component="footer"
             sx={{
