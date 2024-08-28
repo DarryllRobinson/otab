@@ -456,6 +456,7 @@ export default function Layout() {
           <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
           <AlertComp />
           <Outlet />
+
           <Box
             component="footer"
             sx={{
