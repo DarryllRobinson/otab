@@ -40,6 +40,7 @@ function login(params) {
 }
 
 function logout() {
+  // console.log('logout userSubject.value: ', userSubject.value);
   // revoke token, stop refresh timer, publish null to user subscribers and redirect to login page
   fetchWrapper.post(`${baseUrl}/revoke-token`, userSubject.value);
   stopRefreshTokenTimer();

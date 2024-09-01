@@ -7,7 +7,7 @@ import Fade from '@mui/material/Fade';
 import Stack from '@mui/material/Stack';
 
 import { alertService } from '../../_services';
-import { Container } from '@mui/material';
+import { Box } from '@mui/material';
 
 export default function AlertComp({ id, fade }) {
   const location = useLocation();
@@ -72,14 +72,14 @@ export default function AlertComp({ id, fade }) {
   if (!alerts.length) return null;
 
   return (
-    <Container>
+    <Box sx={{ mt: 10 }}>
       {alerts.map((alert, index) => (
         <Alert key={index} severity={alert.type}>
           <AlertTitle>{alert.title}</AlertTitle>
           {alert.message}
         </Alert>
       ))}
-    </Container>
+    </Box>
   );
 }
 

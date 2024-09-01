@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -17,8 +17,10 @@ import {
   CheckCircleOutlineSharp,
   DangerousOutlined,
 } from '@mui/icons-material';
-import { makeStyles, useTheme } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { alpha } from '@mui/material/styles';
+
+import { tileService } from './tile.service';
 
 //import useTimer from '../hooks/useTimer';
 
@@ -39,8 +41,8 @@ export default function Tile(props) {
 
   // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
-  const [artistValue, setArtistValue] = useState('');
-  const [songValue, setSongValue] = useState('');
+  const [chosenArtist, setChosenArtist] = useState('');
+  // const [songValue, setSongValue] = useState('');
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("Who's singing?");
   const [submitted, setSubmitted] = useState(false);
@@ -57,7 +59,7 @@ export default function Tile(props) {
   };
 
   const handleChange = (event) => {
-    setArtistValue(event.target.value);
+    setChosenArtist(event.target.value);
     setHelperText('Lock it in!');
     setError(false);
   };
@@ -68,7 +70,7 @@ export default function Tile(props) {
     // Check if spot prize
 
     // Check if artist is selected - done
-    if (artistValue === '') {
+    if (chosenArtist === '') {
       setHelperText('Please choose an artist');
       setError(true);
     } else {
@@ -76,9 +78,9 @@ export default function Tile(props) {
       setError(false);
       setSubmitted(true);
       // Check if artist is correct
-      checkArtist();
+      checkArtist(chosenArtist);
       // Check if song is playing
-      checkSong();
+      checkSong(title);
       saveTile();
       handleClick();
       //setBox(true);
@@ -91,23 +93,37 @@ export default function Tile(props) {
     }
   };
 
-  const checkArtist = () => {
-    const check = artistValue === actualArtist ? true : false;
+  const checkArtist = (chosenArtist) => {
+    const check = chosenArtist === actualArtist ? true : false;
     setCorrectArtist(check);
   };
 
-  const checkSong = (song) => {
+  const checkSong = (title) => {
     // Will need to check against RDS
     // Tolerance of plus minus a minute maybe?
     // const currentSong value coming from RDS
     // Will need to replace "currentSong = title" with actual value
-    const currentSong = title;
-    const check = song === currentSong ? true : false;
-    console.log('check: ', check);
+    const currentSong = tileService.getSong();
+    const check = title === currentSong.song ? true : false;
     setCorrectSong(check);
   };
 
   const saveTile = () => {
+    // Record if song correct in db
+    console.log('about to update Tile.js: ', {
+      id,
+      chosenArtist,
+      correctArtist,
+      correctSong,
+      submitted: true,
+    });
+    tileService.update(id, {
+      id,
+      chosenArtist,
+      correctArtist,
+      correctSong,
+      submitted: true,
+    });
     // Save tile to database
     console.log('saveTile');
   };
@@ -133,7 +149,7 @@ export default function Tile(props) {
   });
 
   const displayChosenArtist = () => {
-    if (artistValue === '') {
+    if (chosenArtist === '') {
       return;
     } else if (correctArtist) {
       return (
@@ -144,7 +160,7 @@ export default function Tile(props) {
             alignItems: 'center',
           }}
         >
-          {artistValue}
+          {chosenArtist}
           <Box
             sx={{
               position: 'absolute',
@@ -169,7 +185,7 @@ export default function Tile(props) {
             alignItems: 'center',
           }}
         >
-          {artistValue}
+          {chosenArtist}
           <Box
             sx={{
               position: 'absolute',

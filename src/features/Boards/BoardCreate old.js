@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   ButtonGroup,
-  CircularProgress,
   Container,
   Grid,
   useTheme,
@@ -11,7 +10,11 @@ import {
 
 import Tile from '../Tiles/Tile';
 import { tileService } from '../Tiles/tile.service';
+import { boardService } from './board.service';
 
+// Check if new board must be created
+// If not, retrieve board and tiles from db
+// If yes, create new board with stipulated number of tiles
 // Retrieve song title and artist from radio db/api
 
 // Mocked data
@@ -274,11 +277,13 @@ const fakeArtistsDb = [
   },
 ];
 
-export default function Board(props) {
-  const { boardId, compId, create } = props || {};
+export default function BoardCreate(props) {
+  console.log('Board props: ', props);
+  const { compId } = props;
   const [status, setStatus] = useState('idle');
-  const [tiles, setTiles] = useState([]);
+  const [boardId, setBoardId] = useState(null);
   const [chosenTheme, setChosenTheme] = useState('Babyblue');
+  const [tiles, setTiles] = useState(null);
 
   // Setting the theme for the board
   const theme = useTheme();
@@ -312,83 +317,159 @@ export default function Board(props) {
     );
   });
 
-  const fetchTiles = useCallback(async (boardId) => {
+  // Functions to actually create the new board
+  const createBoard = useCallback(async () => {
     setStatus('fetching');
-    console.log('fetching with boardId: ', boardId);
-    const records = await tileService.getTiles(boardId);
-    console.log('records: ', records);
+    const id = await boardService.create(compId);
 
     setStatus('succeeded');
-    setTiles(records);
+    setBoardId(id);
+    // Fetch randon song title and artist per numTiles
+    setSongs(selectRandomSongs(numTiles));
   }, []);
 
   useEffect(() => {
     if (status === 'idle') {
-      fetchTiles(boardId);
-      // tileService.getAll();
+      createBoard(compId);
     }
-  }, [boardId, fetchTiles, status]);
+  }, [compId, createBoard, status]);
 
-  const renderTiles = () => {
-    return tiles.map((tile, id) => {
-      // Working out the colours
-      const picker = id % tileBgColour.length;
-      //console.log(song);
-      const { title, actualArtist, artists } = tile;
-      return (
-        <Grid className="tile grid" key={id} item xs={12 / 5}>
-          <Tile
-            key={id}
-            id={id}
-            title={title}
-            actualArtist={actualArtist}
-            artists={artists}
-            // setBox={setBox}
-            tileBgColour={tileBgColour[picker]}
-            tileBgColourHover={tileBgColourHover[picker]}
-            tileBorderColour={tileBorderColour[picker]}
-            tileTextColour={tileTextColour[picker]}
-            tileBorderRadius={tileBorderRadius}
-          />
-        </Grid>
-      );
+  const { setBox } = props;
+  // Need to record which songs have been chosen already
+  const [songs, setSongs] = useState([]);
+
+  // useEffect(() => {
+  //   const createBoard = async () => {
+  //     // Save a new board to get the boardId
+  //     console.log('BoardCreate create: ', compId);
+  //     const id = await boardService.create(compId);
+  //     setBoardId(id);
+
+  //   };
+
+  const selectRandomSongs = (numTiles) => {
+    let tiles = [];
+    let songIds = [];
+    for (let tile = 0; songIds.length < numTiles; tile++) {
+      const songId = getRandomId(songsDb.length);
+      const found = songIds.includes(songId);
+
+      if (!found) {
+        // Fetch numArtists fake artists, making sure they're not the same as the artist provided
+        const { artist } = findArrayElementById(songsDb, songId);
+        //console.log('actual artist: ', artist);
+        //setArtists(fetchFakeArtists(artist));
+        let artists = fetchFakeArtists(artist);
+        artists.push(artist);
+        //console.log('artists: ', artists);
+        artists = artists.sort(() => Math.random() - 0.5);
+        //console.log('artists shuffled: ', artists);
+
+        // Insert song object, songId into arrays
+        songIds.push(songId);
+        const { title } = findArrayElementById(songsDb, songId);
+        //console.log('title: ', title, artist);
+
+        // Save tile to database
+        tileService.create({ title, artists, boardId });
+
+        tiles.push({
+          title,
+          actualArtist: artist,
+          artists,
+        });
+        // console.log('title, artists, boardId: ', title, artists, boardId);
+      }
+    }
+    console.log('tiles: ', tiles);
+    return tiles;
+  };
+
+  const getRandomId = (max) => {
+    return Math.floor(Math.random() * max);
+  };
+
+  const findArrayElementById = (array, id) => {
+    return array.find((element) => {
+      return element.id === id;
     });
   };
 
-  let content;
+  const fetchFakeArtists = (actualArtist) => {
+    //console.log('fetchFakeArtists');
+    let artistList = [];
+    let artistIds = [];
+    for (let artistLoop = 0; artistIds.length < numArtists; artistLoop++) {
+      const artistId = getRandomId(fakeArtistsDb.length);
+      //console.log('artistId: ', artistId);
+      //console.log('artistList: ', artistList);
 
-  if (status === 'fetching') {
-    // console.log('status: ', status);
-    content = (
-      <div>
-        <CircularProgress color="inherit" />
-      </div>
+      // Check to make sure the artist hasn't already been chosen for this tile - small chance but definitely non-zero
+      const found = artistIds.includes(artistId);
+      //console.log('found: ', found);
+
+      if (!found) {
+        // Now check to make sure the artist isn't the same as the actual artist - again, small chance but definitely non-zero
+        const { artist } = findArrayElementById(fakeArtistsDb, artistId);
+        //console.log('artist: ', artist);
+        if (artist !== actualArtist) {
+          //console.log('no match');
+
+          // Insert artist object, artistId into arrays
+          //artistList.push(findArrayElementById(fakeArtistsDb, artistId));
+          artistList.push(artist);
+          artistIds.push(artistId);
+          //console.log('artistList: ', artistList);
+        }
+      }
+    }
+    return artistList;
+  };
+
+  const saveBoard = () => {
+    console.log('saveBoard');
+  };
+
+  createBoard();
+  saveBoard();
+  // }, [boardId, compId]);
+
+  const renderTiles = songs.map((song, id) => {
+    // Working out the colours
+    const picker = id % tileBgColour.length;
+    //console.log(song);
+    const { title, actualArtist, artists } = song;
+    return (
+      <Grid className="tile grid" key={id} item xs={12 / 5}>
+        <Tile
+          key={id}
+          id={id}
+          title={title}
+          actualArtist={actualArtist}
+          artists={artists}
+          setBox={setBox}
+          tileBgColour={tileBgColour[picker]}
+          tileBgColourHover={tileBgColourHover[picker]}
+          tileBorderColour={tileBorderColour[picker]}
+          tileTextColour={tileTextColour[picker]}
+          tileBorderRadius={tileBorderRadius}
+        />
+      </Grid>
     );
-  } else if (status === 'error') {
-    // console.log('status: ', status);
-    content = 'Error';
-  } else if (status === 'succeeded' && tiles.length > 0) {
-    // console.log('status: ', status);
-    content = renderTiles();
-  } else {
-    // console.log('status: ', status);
-    content = <div>No tiles found</div>;
-  }
+  });
 
   return (
     <Container>
-      {
-        <ButtonGroup variant="outlined" aria-label="Theming button group">
-          {renderThemeButtons}
-        </ButtonGroup>
-      }
+      <ButtonGroup variant="outlined" aria-label="Theming button group">
+        {renderThemeButtons}
+      </ButtonGroup>
       <Box
         className="board"
         aria-label="board"
         sx={{
           backgroundColor: boardBgColour,
           borderColor: boardBorderColour,
-          borderRadius: 5,
+          // borderRadius: 5,
           my: 2,
           p: 2,
         }}
@@ -402,7 +483,7 @@ export default function Board(props) {
           alignItems="center"
         >
           {/*console.log(theme.palette)*/}
-          {content}
+          {renderTiles}
         </Grid>
       </Box>
     </Container>

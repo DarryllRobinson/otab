@@ -1,20 +1,56 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import { userService } from './features/users/user.service';
+import Layout, { layoutLoader } from './components/generic/Layout';
+import ErrorPage from './components/navigation/ErrorPage';
+import Home from './components/generic/Home';
+import SignIn, { loginAction } from './features/users/SignIn';
+import LoginErrorPage from './features/users/LoginErrorPage';
+import Boards, { boardLoader } from './features/Boards/Boards';
+import Competitions, {
+  competitionsLoader,
+} from './features/Competitions/Competitions';
+import {
+  Competition,
+  competitionBoardLoader,
+} from './features/Competitions/Competition';
 
-import App from './App';
+const router = createBrowserRouter([
+  {
+    path: '',
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    loader: layoutLoader,
+    children: [
+      {
+        path: '/',
+        element: <Home />,
+      },
+      {
+        path: '/signin',
+        element: <SignIn />,
+        errorElement: <LoginErrorPage />,
+        action: loginAction,
+      },
+      { path: '/boards', element: <Boards />, loader: boardLoader },
+      {
+        id: 'competitions',
+        path: '/competitions/*',
+        element: <Competitions />,
+        loader: competitionsLoader,
+        children: [
+          {
+            path: 'competitons/competition',
+            element: <Competition />,
+            loader: competitionBoardLoader,
+          },
+        ],
+      },
+    ],
+  },
+]);
 
-// attempt silent token refresh before startup
-userService.refreshToken().finally(startApp);
-
-//startApp();
-
-function startApp() {
-  ReactDOM.createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
-}
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <RouterProvider router={router} />
+);
