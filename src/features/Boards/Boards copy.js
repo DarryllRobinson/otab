@@ -7,28 +7,26 @@ export async function boardLoader() {
   // const user = userService.userValue;
   // Hardcoding for now
   const user = 1;
-  console.log('Board user: ', user);
-  const boards = await boardService.getAllByUserId({ userId: user });
-  console.log('Boards boards:', boards);
+  console.log('user: ', user);
+  const boards = await boardService.getAllByUserId({ userId: user.id });
   return { boards };
 }
 
 export default function Boards() {
   const { boards } = useLoaderData();
-  let content = 'Board loading';
-  content = boards?.map((board) => (
-    <Box key={board?.id}>
+  let content = boards.map((board) => (
+    <Box key={board.id}>
       <Button
-        key={board?.id}
+        key={board.id}
         component={RouterLink}
         to="/play"
         state={{
-          boardId: board?.id,
-          compId: board?.competitionId,
+          boardId: board.id,
+          compId: board.competitionId,
           create: false,
         }}
       >
-        Competition ID: {board?.competitionId}
+        Competition ID: {board.competitionId}
       </Button>
     </Box>
   ));

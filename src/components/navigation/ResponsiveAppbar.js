@@ -307,10 +307,10 @@ function ResponsiveAppBar(props) {
 
   const signInUp = (
     <ButtonGroup variant="contained" aria-label="Basic button group">
-      <Button component={RouterLink} to="/user/signin">
+      <Button component={RouterLink} to="/signin">
         Sign In
       </Button>
-      <Button component={RouterLink} to="/user/signup">
+      <Button component={RouterLink} to="/signup">
         Sign Up
       </Button>
     </ButtonGroup>

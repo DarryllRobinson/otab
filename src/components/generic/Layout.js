@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, Route, Routes } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router-dom';
 import { Box, Container, CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Copyright from './Copyright';
 import AlertComp from './Alert';
 import NavbarLayout from '../navigation/NavbarLayout';
+import { userService } from '../../features/users/user.service';
 
 // Define theme settings
 const light = {
@@ -404,7 +405,17 @@ const dark = {
   },
 };
 
+// Need to check if the user is logged in with a silent check to the db
+export async function layoutLoader() {
+  const user = await userService.refreshToken();
+  console.log('layoutLoader user: ', user ? user : 'Nothing');
+  return { user };
+}
+
 export default function Layout() {
+  // Access user from layoutLoader in route provider
+  const { user } = useLoaderData;
+  console.log('Layout user: ', user ? user : 'Nothing');
   // Theme state set up
   // Light theme is default theme
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -435,46 +446,44 @@ export default function Layout() {
   // const theme = useTheme();
 
   return (
-    <Container fixed>
-      <ThemeProvider
-        theme={isDarkTheme ? createTheme(dark) : createTheme(light)}
+    // <Container fixed>
+    <ThemeProvider theme={isDarkTheme ? createTheme(dark) : createTheme(light)}>
+      <CssBaseline />
+      <Box
+        aria-label="box-outline"
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          p: '8px',
+          minHeight: '1650px',
+          backgroundColor: (theme) =>
+            theme.palette.mode === 'light'
+              ? theme.palette.grey[200]
+              : theme.palette.grey[800],
+        }}
       >
-        <CssBaseline />
+        <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
+        <AlertComp />
+        <Outlet />
+
         <Box
-          aria-label="box-outline"
+          component="footer"
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            p: '8px',
-            minHeight: '1650px',
+            py: 1,
+            px: 2,
+            mt: 'auto',
             backgroundColor: (theme) =>
               theme.palette.mode === 'light'
-                ? theme.palette.grey[200]
-                : theme.palette.grey[800],
+                ? theme.palette.grey[300]
+                : theme.palette.grey[900],
           }}
         >
-          <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
-          <AlertComp />
-          <Outlet />
-
-          <Box
-            component="footer"
-            sx={{
-              py: 1,
-              px: 2,
-              mt: 'auto',
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                  ? theme.palette.grey[300]
-                  : theme.palette.grey[900],
-            }}
-          >
-            <Container maxWidth="sm">
-              <Copyright sx={{ pt: 2 }} />
-            </Container>
-          </Box>
+          <Container maxWidth="sm">
+            <Copyright sx={{ pt: 2 }} />
+          </Container>
         </Box>
-      </ThemeProvider>
-    </Container>
+      </Box>
+    </ThemeProvider>
+    // </Container>
   );
 }

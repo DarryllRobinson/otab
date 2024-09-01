@@ -1,42 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Link as RouterLink,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import { Button, Typography } from '@mui/material';
 
 import { boardService } from '../Boards/board.service';
 import { userService } from '../users/user.service';
 
+export async function competitionBoardLoader({ params }) {
+  const board = await boardService.getBoardByCompUserId(params);
+  return { board };
+}
+
 function Competition() {
-  let navigate = useNavigate();
-  let { state } = useLocation();
-  const { id, name } = state || {};
-  console.log('competition: ', state);
-
-  // Check if there is an id or userId, if not, navigate to CompetitionList
-  if (name === undefined) navigate('../');
-
-  const userId = userService.userValue.id;
-  console.log({ userId });
-
-  // Create params for board by comp id search
-  const params = { compId: id, userId };
-
-  const [status, setStatus] = useState('idle');
-  // Fetch boards to see if user has already has a board for the competition
-  const [boards, setBoards] = useState([]);
-
-  const fetchBoards = useCallback(async () => {
-    setStatus('fetching');
-    const records = await boardService.getBoardByCompUserId(params);
-
-    setStatus('succeeded');
-    setBoards(records);
-  }, []);
-
-  useEffect(() => {
-    if (status === 'idle') {
-      fetchBoards();
-    }
-  }, [fetchBoards, status]);
+  const { board } = useLoaderData();
+  const { id, name } = board;
 
   const renderNew = () => {
     console.log('renderNew');
@@ -68,29 +49,13 @@ function Competition() {
     );
   };
 
-  let content;
-
-  if (status === 'fetching') {
-    content = <div>Fetching</div>;
-  } else if (status === 'error') {
-    content = 'Error';
-  } else if (status === 'succeeded' && boards.length > 0) {
-    content = renderReturn();
-  } else if (status === 'succeeded' && boards.length > 0) {
-    content = renderNew();
-  } else {
-    content = (
-      <div>Competition not found. Please return to the competition list</div>
-    );
-  }
-
   return (
     <div>
-      {console.log('boards: ', boards)}
+      {/* {console.log('boards: ', boards)} */}
       <Button component={RouterLink} to="/competitions">
         Return to CompetitionList
       </Button>
-      {content}
+      {renderNew()}
     </div>
   );
 }
