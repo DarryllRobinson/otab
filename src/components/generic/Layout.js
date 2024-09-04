@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Box, Container, CssBaseline } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Copyright from './Copyright';
 import AlertComp from './Alert';
 import NavbarLayout from '../navigation/NavbarLayout';
-import { userService } from '../../features/users/user.service';
+import { userService } from '../../features/Users/user.service';
 
 // Define theme settings
 const light = {
@@ -406,16 +406,22 @@ const dark = {
 };
 
 // Need to check if the user is logged in with a silent check to the db
-export async function layoutLoader() {
-  const user = await userService.refreshToken();
-  console.log('layoutLoader user: ', user ? user : 'Nothing');
-  return { user };
+export async function refreshUserLoader() {
+  const response = (await userService.refreshToken())
+    ? await userService.refreshToken()
+    : null;
+  console.log('refreshUserAction response', response);
+  return response;
 }
 
+// Need to check if the user is logged in with a silent check to the db
+// export async function layoutLoader() {
+//   const user = await userService.refreshToken();
+//   console.log('layoutLoader user: ', user ? user : 'Nothing');
+//   return { user };
+// }
+
 export default function Layout() {
-  // Access user from layoutLoader in route provider
-  const { user } = useLoaderData;
-  console.log('Layout user: ', user ? user : 'Nothing');
   // Theme state set up
   // Light theme is default theme
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -443,12 +449,13 @@ export default function Layout() {
     // console.log('change the theme');
     setIsDarkTheme(!isDarkTheme);
   };
-  // const theme = useTheme();
 
   return (
-    // <Container fixed>
     <ThemeProvider theme={isDarkTheme ? createTheme(dark) : createTheme(light)}>
       <CssBaseline />
+
+      <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
+      <AlertComp />
       <Box
         aria-label="box-outline"
         sx={{
@@ -462,8 +469,6 @@ export default function Layout() {
               : theme.palette.grey[800],
         }}
       >
-        <NavbarLayout checked={isDarkTheme} onChange={changeTheme} />
-        <AlertComp />
         <Outlet />
 
         <Box
@@ -484,6 +489,5 @@ export default function Layout() {
         </Box>
       </Box>
     </ThemeProvider>
-    // </Container>
   );
 }

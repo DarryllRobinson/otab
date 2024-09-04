@@ -1,5 +1,5 @@
 import config from '../_config/config';
-import { userService } from '../features/users/user.service';
+import { userService } from '../features/Users/user.service';
 
 export const fetchWrapper = {
   get,

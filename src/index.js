@@ -2,48 +2,40 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import Layout, { layoutLoader } from './components/generic/Layout';
+import Layout, { refreshUserLoader } from './components/generic/Layout';
 import ErrorPage from './components/navigation/ErrorPage';
 import Home from './components/generic/Home';
-import SignIn, { loginAction } from './features/users/SignIn';
-import LoginErrorPage from './features/users/LoginErrorPage';
-import Boards, { boardLoader } from './features/Boards/Boards';
-import Competitions, {
-  competitionsLoader,
-} from './features/Competitions/Competitions';
-import {
-  Competition,
-  competitionBoardLoader,
-} from './features/Competitions/Competition';
+import SignIn, { loginAction } from './features/Users/SignIn';
+import Boards, { boardsLoader } from './features/Boards/Boards';
+import Board, { boardLoader } from './features/Boards/Board';
+// import Play from './features/Play/Play';
 
 const router = createBrowserRouter([
   {
     path: '',
     element: <Layout />,
+    loader: refreshUserLoader,
     errorElement: <ErrorPage />,
-    loader: layoutLoader,
     children: [
       {
-        path: '/',
-        element: <Home />,
-      },
-      {
-        path: '/signin',
-        element: <SignIn />,
-        errorElement: <LoginErrorPage />,
-        action: loginAction,
-      },
-      { path: '/boards', element: <Boards />, loader: boardLoader },
-      {
-        id: 'competitions',
-        path: '/competitions/*',
-        element: <Competitions />,
-        loader: competitionsLoader,
+        errorElement: <ErrorPage />,
         children: [
           {
-            path: 'competitons/competition',
-            element: <Competition />,
-            loader: competitionBoardLoader,
+            index: true,
+            element: <Home />,
+          },
+          { path: '/signin', element: <SignIn />, action: loginAction },
+          {
+            path: 'boards',
+            element: <Boards />,
+            loader: boardsLoader,
+            children: [
+              {
+                path: 'board/:boardId',
+                element: <Board />,
+                loader: boardLoader,
+              },
+            ],
           },
         ],
       },

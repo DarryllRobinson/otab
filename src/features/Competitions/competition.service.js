@@ -9,5 +9,6 @@ function getAll() {
 }
 
 function getById(id) {
+  console.log('getById: ', id);
   return fetchWrapper.get(`${baseUrl}/${id}`);
 }

@@ -19,12 +19,12 @@ import {
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 
 import MaterialUISwitch from './MaterialUISwitch';
-import { userService } from '../../features/users/user.service';
+import { userService } from '../../features/Users/user.service';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
-const pagesLoggedIn = ['How it works', 'My boards', "Songs I've missed"];
+// const pagesLoggedIn = ['How it works', 'My boards', "Songs I've missed"];
 const pagesLoggedOut = ['How it works'];
-const settings = ['Profile', 'Logout'];
+// const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
@@ -54,7 +54,7 @@ function ResponsiveAppBar(props) {
     userService.logout();
     handleCloseUserMenu();
     // console.log('logged out, trying to navigate...');
-    navigate('/user/signin');
+    navigate('/signin');
   };
 
   const logoWithIcon = (

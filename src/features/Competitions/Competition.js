@@ -16,19 +16,17 @@ export async function competitionBoardLoader({ params }) {
 }
 
 function Competition() {
-  const { board } = useLoaderData();
-  const { id, name } = board;
+  // const { board } = useLoaderData();
+  // const { id, name } = board;
 
   const renderNew = () => {
     console.log('renderNew');
     return (
       <div>
-        <div>Competition name: {name}</div>
+        <div>Competition name: </div>
         <div>Rules to follow</div>
         <Typography variant="h5" component="div">
-          <RouterLink to="../../play" state={{ boardId: id }}>
-            Click to join!
-          </RouterLink>
+          <RouterLink to="../../play">Click to join!</RouterLink>
         </Typography>
       </div>
     );
@@ -38,12 +36,10 @@ function Competition() {
     console.log('renderReturn');
     return (
       <div>
-        <div>Competition name: {name}</div>
+        <div>Competition name: </div>
         <div>Rules to follow</div>
         <Typography variant="h5" component="div">
-          <RouterLink to="../../play" state={{ boardId: id }}>
-            Open your board
-          </RouterLink>
+          <RouterLink to="../../play">Open your board</RouterLink>
         </Typography>
       </div>
     );

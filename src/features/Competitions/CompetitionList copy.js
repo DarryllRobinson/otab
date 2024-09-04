@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Link as RouterLink,
-  useNavigation,
-  useRouteLoaderData,
-} from 'react-router-dom';
+import { Link as RouterLink, useRouteLoaderData } from 'react-router-dom';
 
 import { competitionService } from './competition.service';
 import {
@@ -22,7 +18,6 @@ import CompetitionDetails from './CompetitionDetails';
 
 export default function CompetitionList() {
   const { competitions } = useRouteLoaderData('competitions');
-  const navigation = useNavigation();
   const [id, setId] = useState(null);
   const [name, setName] = useState(null);
   const [numTiles, setNumTiles] = useState(0);
@@ -74,17 +69,20 @@ export default function CompetitionList() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        bgcolor: 'green',
       }}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={3}>
+        <Grid item>
           Choose an exciting competition to join!
           <Box>{renderCompetitions()}</Box>
         </Grid>
-        <Grid item xs={12} sm={9}>
-          <Box className={navigation.state === 'loading' ? 'loading' : ''}>
-            <CompetitionDetails />
-          </Box>
+        <Grid item>
+          {id && (
+            <Box>
+              <CompetitionDetails id={id} name={name} numTiles={numTiles} />
+            </Box>
+          )}
         </Grid>
       </Grid>
     </Box>

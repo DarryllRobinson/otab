@@ -16,6 +16,7 @@ function getAll() {
 }
 
 function getTiles(id) {
+  // console.log('getTiles: ', id);
   return fetchWrapper.get(`${baseUrl}/${id}`);
 }
 

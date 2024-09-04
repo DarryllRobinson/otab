@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -274,10 +275,18 @@ const fakeArtistsDb = [
   },
 ];
 
-export default function Board(props) {
-  const { boardId, compId, create } = props || {};
-  const [status, setStatus] = useState('idle');
-  const [tiles, setTiles] = useState([]);
+export async function boardLoader({ params }) {
+  // console.log('boardLoader params: ', params);
+  const tiles = await tileService.getTiles(params.boardId);
+  if (!tiles) {
+    throw new Response('', { status: 404, statusText: 'Not Found' });
+  }
+  // console.log('returning tiles: ', tiles);
+  return { tiles };
+}
+
+export default function Board() {
+  const { tiles } = useLoaderData();
   const [chosenTheme, setChosenTheme] = useState('Babyblue');
 
   // Setting the theme for the board
@@ -312,24 +321,8 @@ export default function Board(props) {
     );
   });
 
-  const fetchTiles = useCallback(async (boardId) => {
-    setStatus('fetching');
-    console.log('fetching with boardId: ', boardId);
-    const records = await tileService.getTiles(boardId);
-    console.log('records: ', records);
-
-    setStatus('succeeded');
-    setTiles(records);
-  }, []);
-
-  useEffect(() => {
-    if (status === 'idle') {
-      fetchTiles(boardId);
-      // tileService.getAll();
-    }
-  }, [boardId, fetchTiles, status]);
-
   const renderTiles = () => {
+    // console.log('renderTiles', tiles);
     return tiles.map((tile, id) => {
       // Working out the colours
       const picker = id % tileBgColour.length;
@@ -354,26 +347,6 @@ export default function Board(props) {
       );
     });
   };
-
-  let content;
-
-  if (status === 'fetching') {
-    // console.log('status: ', status);
-    content = (
-      <div>
-        <CircularProgress color="inherit" />
-      </div>
-    );
-  } else if (status === 'error') {
-    // console.log('status: ', status);
-    content = 'Error';
-  } else if (status === 'succeeded' && tiles.length > 0) {
-    // console.log('status: ', status);
-    content = renderTiles();
-  } else {
-    // console.log('status: ', status);
-    content = <div>No tiles found</div>;
-  }
 
   return (
     <Container>
@@ -401,8 +374,7 @@ export default function Board(props) {
           justifyContent="center"
           alignItems="center"
         >
-          {/*console.log(theme.palette)*/}
-          {content}
+          {renderTiles()}
         </Grid>
       </Box>
     </Container>
