@@ -8,6 +8,7 @@ import {
 import { Button, Typography } from '@mui/material';
 
 import { boardService } from '../Boards/board.service';
+// import { boardService } from '../Boards/board.service';
 import { userService } from '../users/user.service';
 
 export async function competitionBoardLoader({ params }) {
