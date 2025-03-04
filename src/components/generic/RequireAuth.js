@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { userService } from '../../features/users/user.service';
+import { userService } from '../../features/Users/user.service';
 
 function RequireAuth({ children }) {
   //let location = useLocation;

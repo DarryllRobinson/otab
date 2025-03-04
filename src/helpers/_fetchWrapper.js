@@ -1,5 +1,5 @@
 import AppSettings from './appSettings';
-import { userService } from '../features/users';
+import { userService } from '../features/Users';
 
 export const fetchWrapper = {
   get,

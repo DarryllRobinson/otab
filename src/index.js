@@ -5,8 +5,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout, { layoutLoader } from './components/generic/Layout';
 import ErrorPage from './components/navigation/ErrorPage';
 import Home from './components/generic/Home';
-import SignIn, { loginAction } from './features/users/SignIn';
-import LoginErrorPage from './features/users/LoginErrorPage';
+import SignIn, { loginAction } from './features/Users/SignIn';
+import LoginErrorPage from './features/Users/LoginErrorPage';
 import Boards, { boardLoader } from 'Boards';
 // import Boards, { boardLoader } from './features/Boards/Boards';
 import Competitions, {

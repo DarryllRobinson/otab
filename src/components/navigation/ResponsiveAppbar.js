@@ -19,7 +19,7 @@ import {
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 
 import MaterialUISwitch from './MaterialUISwitch';
-import { userService } from '../../features/users/user.service';
+import { userService } from '../../features/Users/user.service';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 const pagesLoggedIn = ['How it works', 'My boards', "Songs I've missed"];

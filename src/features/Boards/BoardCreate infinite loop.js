@@ -9,7 +9,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { boardService } from './board.service';
-import { userService } from '../users/user.service';
+import { userService } from '../Users/user.service';
 import { tileService } from '../Tiles/tile.service';
 import { songService } from '../Song/song.service';
 import Tile from '../Tiles/Tile';

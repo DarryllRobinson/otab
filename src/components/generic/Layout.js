@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from './Copyright';
 import AlertComp from './Alert';
 import NavbarLayout from '../navigation/NavbarLayout';
-import { userService } from '../../features/users/user.service';
+import { userService } from '../../features/Users/user.service';
 
 // Define theme settings
 const light = {
