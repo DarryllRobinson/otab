@@ -7,8 +7,8 @@ import ErrorPage from './components/navigation/ErrorPage';
 import Home from './components/generic/Home';
 import SignIn, { loginAction } from './features/Users/SignIn';
 import LoginErrorPage from './features/Users/LoginErrorPage';
-import Boards, { boardLoader } from 'Boards';
-// import Boards, { boardLoader } from './features/Boards/Boards';
+// import Boards, { boardLoader } from 'Boards';
+import Boards, { boardLoader } from './features/Boards/Boards';
 import Competitions, {
   competitionsLoader,
 } from './features/Competitions/Competitions';
