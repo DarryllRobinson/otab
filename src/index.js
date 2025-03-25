@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import Layout, { layoutLoader } from './components/generic/Layout';
 import ErrorPage from './components/navigation/ErrorPage';
-import Home from './components/generic/Home';
+import LandingPage from './components/generic/LandingPage';
 import SignIn, { loginAction } from './features/Users/SignIn';
 import LoginErrorPage from './features/Users/LoginErrorPage';
 // import Boards, { boardLoader } from 'Boards';
@@ -26,7 +26,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Home />,
+        element: <LandingPage />,
       },
       {
         path: '/signin',
