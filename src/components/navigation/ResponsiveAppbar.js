@@ -54,7 +54,7 @@ function ResponsiveAppBar(props) {
     userService.logout();
     handleCloseUserMenu();
     // console.log('logged out, trying to navigate...');
-    navigate('/user/signin');
+    navigate('/signin');
   };
 
   const logoWithIcon = (
