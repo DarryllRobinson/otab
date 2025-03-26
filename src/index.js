@@ -7,6 +7,7 @@ import ErrorPage from './components/navigation/ErrorPage';
 import LandingPage from './components/generic/LandingPage';
 import SignIn, { loginAction } from 'features/Users/SignIn';
 import LoginErrorPage from 'features/Users/LoginErrorPage';
+import Dashboard from 'features/Users/Dashboard';
 
 
 const router = createBrowserRouter([
@@ -25,7 +26,8 @@ const router = createBrowserRouter([
         element: <SignIn />,
         errorElement: <LoginErrorPage />,
         action: loginAction
-      }
+      },
+      {path: '/dashboard', element: <Dashboard />},
     ],
   },
 ]);
