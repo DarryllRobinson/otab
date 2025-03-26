@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { Box, Button, Typography, Grid, Card, CardContent } from '@mui/material';
+import { Box, Button, Typography, Grid, Card, CardContent, useTheme } from '@mui/material';
 import Copyright from './Copyright';
 
 export default function LandingPage() {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -13,11 +15,8 @@ export default function LandingPage() {
         alignItems: 'center',
         textAlign: 'center',
         padding: 4,
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'light'
-            ? theme.palette.grey[200]
-            : theme.palette.grey[800], // Match layout background
-        color: 'white',
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
       }}
     >
       {/* Hero Section */}

@@ -7,6 +7,7 @@ import {
   CardContent,
   Grid,
   Typography,
+  useTheme,
 } from '@mui/material';
 
 import CompetitionDetails from './CompetitionDetails';
@@ -14,6 +15,7 @@ import CompetitionDetails from './CompetitionDetails';
 export default function CompetitionList() {
   const { competitions } = useRouteLoaderData('competitions');
   const [selectedCompetition, setSelectedCompetition] = useState(null);
+  const theme = useTheme();
 
   const handleClick = (competition) => {
     setSelectedCompetition(competition);
@@ -27,10 +29,9 @@ export default function CompetitionList() {
         <Grid item xs={12} sm={6} md={4} key={id}>
           <Card
             sx={{
-              backgroundColor: (theme) =>
-                theme.palette.mode === 'light'
-                  ? theme.palette.grey[100]
-                  : theme.palette.grey[700],
+              backgroundColor: theme.palette.mode === 'light'
+                ? theme.palette.grey[100]
+                : theme.palette.grey[700],
               boxShadow: 3,
               '&:hover': { boxShadow: 6 },
             }}
