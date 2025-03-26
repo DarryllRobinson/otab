@@ -25,8 +25,7 @@ const pagesLoggedIn = [
   { label: 'My boards', action: (navigate) => navigate('/boards') },
   { label: "Songs I've missed", action: () => alert('Under development') },
 ];
-const pagesLoggedOut = [{ label: 'How it works', action: () => {} }];
-const settings = ['Profile', 'Logout'];
+const pagesLoggedOut = [{ label: 'How it works', action: () => alert('Under development') }];
 
 function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
@@ -34,6 +33,11 @@ function ResponsiveAppBar(props) {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const user = userService.userValue;
   const navigate = useNavigate();
+
+  const profileMenu = [
+    { label: 'Dashboard', action: (navigate) => navigate('/dashboard') }, 
+    // { label: 'Logout', action: () => onclick={handleLogout} } // Can't get this to work
+  ];  
 
   // Handlers
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
@@ -53,6 +57,14 @@ function ResponsiveAppBar(props) {
         <Typography textAlign="center">{page.label}</Typography>
       </MenuItem>
     ));
+
+    // Render Profile Items
+    const renderProfileItems = (pages) =>
+      pages.map((page, index) => (
+        <MenuItem key={index} onClick={() => page.action(navigate)}>
+          <Typography textAlign="center">{page.label}</Typography>
+        </MenuItem>
+      ));
 
   // Components
   const logoWithIcon = (
@@ -174,9 +186,7 @@ function ResponsiveAppBar(props) {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem key={0}>
-          <Typography textAlign="center">Profile</Typography>
-        </MenuItem>
+        {renderProfileItems(profileMenu)}
         <MenuItem key={1} onClick={handleLogout}>
           <Typography textAlign="center">Logout</Typography>
         </MenuItem>
