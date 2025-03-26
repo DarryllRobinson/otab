@@ -3,8 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import { Box, Typography, useTheme } from '@mui/material';
 
 import CompetitionList from './CompetitionList';
-// import { Competition } from '../../../../dump/features/Competitions/Competition';
+// import { Competition } from './Competition';
 import { competitionService } from './competition.service';
+import CompetitionDetails from './CompetitionDetails';
 
 export async function competitionsLoader() {
   const competitions = await competitionService.getAll();
@@ -30,7 +31,7 @@ export default function Competitions() {
       </Typography>
       <Routes>
         <Route path="/" element={<CompetitionList />} />
-        {/* <Route path="/:id" element={<Competition />} /> */}
+        <Route path="/:id" element={<CompetitionDetails />} />
       </Routes>
     </Box>
   );

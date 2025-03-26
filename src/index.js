@@ -9,6 +9,8 @@ import SignIn, { loginAction } from 'features/Users/SignIn';
 import LoginErrorPage from 'features/Users/LoginErrorPage';
 import Dashboard from 'features/Users/Dashboard';
 import Competitions, { competitionsLoader } from 'features/Competitions/Competitions';
+// import { Competition, competitionLoader } from 'features/Competitions';
+import CompetitionDetails from 'features/Competitions/CompetitionDetails';
 
 
 const router = createBrowserRouter([
@@ -33,7 +35,13 @@ const router = createBrowserRouter([
         id: 'competitions',
         path: '/competitions/*',
         element: <Competitions />,
-        loader: competitionsLoader
+        loader: competitionsLoader,
+        children: [
+          {
+            path: 'competitions/:id',
+            element: <CompetitionDetails />,
+          }
+        ]
       }
     ],
   },

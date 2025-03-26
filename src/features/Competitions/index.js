@@ -1,4 +1,4 @@
-// export * from '../../../../dump/features/Competitions/Competition';
+export * from './Competition';
 export * from './competition.service';
 export * from './CompetitionDetails';
 export * from './CompetitionList';

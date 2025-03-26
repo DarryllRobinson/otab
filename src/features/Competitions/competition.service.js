@@ -9,5 +9,6 @@ function getAll() {
 }
 
 function getById(id) {
+  console.log('fetching competition by id: ', id);
   return fetchWrapper.get(`${baseUrl}/${id}`);
 }
