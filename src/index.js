@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout, { layoutLoader } from './components/generic/Layout';
 import ErrorPage from './components/navigation/ErrorPage';
 import LandingPage from './components/generic/LandingPage';
+import SignIn, { loginAction } from 'features/Users/SignIn';
+import LoginErrorPage from 'features/Users/LoginErrorPage';
 
 
 const router = createBrowserRouter([
@@ -18,6 +20,12 @@ const router = createBrowserRouter([
         path: '/',
         element: <LandingPage />,
       },
+      {
+        path: '/signin',
+        element: <SignIn />,
+        errorElement: <LoginErrorPage />,
+        action: loginAction
+      }
     ],
   },
 ]);
