@@ -12,14 +12,14 @@ import { userService } from '../../features/Users/user.service';
 // Need to check if the user is logged in with a silent check to the db
 export async function layoutLoader() {
   const user = await userService.refreshToken();
-  console.log('layoutLoader user: ', user ? user : 'Nothing');
+  // console.log('layoutLoader user: ', user ? user : 'Nothing');
   return { user };
 }
 
 export default function Layout() {
   // Access user from layoutLoader in route provider
-  const { user } = useLoaderData(); // Fix incorrect usage
-  console.log('Layout user: ', user ? user : 'Nothing');
+  // const { user } = useLoaderData(); // Fix incorrect usage
+  // console.log('Layout user: ', user ? user : 'Nothing');
   // Theme state set up
   // Light theme is default theme
   const [isDarkTheme, setIsDarkTheme] = useState(false);

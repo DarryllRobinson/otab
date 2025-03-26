@@ -50,7 +50,7 @@ function logout() {
 function refreshToken() {
   try {
     return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
-      console.log('user: ', user);
+      // console.log('user: ', user);
 
       if (user.email) {
         // publish user to subscribers and start timer to refresh token
