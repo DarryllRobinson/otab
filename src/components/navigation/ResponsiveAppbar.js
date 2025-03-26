@@ -9,54 +9,52 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  //Slide,
   Toolbar,
   Tooltip,
   Typography,
-  //useScrollTrigger
 } from '@mui/material';
-
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
-
 import MaterialUISwitch from './MaterialUISwitch';
 import { userService } from '../../features/Users/user.service';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
-const pagesLoggedIn = ['How it works', 'My boards', "Songs I've missed"];
-const pagesLoggedOut = ['How it works'];
+// Constants
+const pagesLoggedIn = [
+  { label: 'How it works', action: () => alert('Under development') },
+  { label: 'Competitions', action: (navigate) => navigate('/competitions') },
+  { label: 'My boards', action: (navigate) => navigate('/boards') },
+  { label: "Songs I've missed", action: () => alert('Under development') },
+];
+const pagesLoggedOut = [{ label: 'How it works', action: () => {} }];
 const settings = ['Profile', 'Logout'];
 
 function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  // To tell is user is logged in
-  const user = userService.userValue;
+  const user = true; //userService.userValue;
   const navigate = useNavigate();
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
+  // Handlers
+  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
+  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+  const handleCloseNavMenu = () => setAnchorElNav(null);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
   const handleLogout = () => {
-    console.log('logout triggered');
     userService.logout();
     handleCloseUserMenu();
-    // console.log('logged out, trying to navigate...');
     navigate('/signin');
   };
 
+  // Render Menu Items
+  const renderMenuItems = (pages) =>
+    pages.map((page, index) => (
+      <MenuItem key={index} onClick={() => page.action(navigate)}>
+        <Typography textAlign="center">{page.label}</Typography>
+      </MenuItem>
+    ));
+
+  // Components
   const logoWithIcon = (
     <>
       <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -87,7 +85,7 @@ function ResponsiveAppBar(props) {
         variant="h5"
         noWrap
         component="a"
-        href=""
+        href="/"
         sx={{
           mr: 2,
           display: { xs: 'flex', md: 'none' },
@@ -104,11 +102,11 @@ function ResponsiveAppBar(props) {
     </>
   );
 
-  const loggedOutMenuResponsive = (
+  const responsiveMenu = (
     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
       <IconButton
         size="large"
-        aria-label="account of current user"
+        aria-label="navigation menu"
         aria-controls="menu-appbar"
         aria-haspopup="true"
         onClick={handleOpenNavMenu}
@@ -134,131 +132,20 @@ function ResponsiveAppBar(props) {
           display: { xs: 'block', md: 'none' },
         }}
       >
-        {pagesLoggedOut.map((page) => (
-          <MenuItem key={page} onClick={handleCloseNavMenu}>
-            <Typography textAlign="center">{page}</Typography>
-          </MenuItem>
-        ))}
+        {renderMenuItems(user ? pagesLoggedIn : pagesLoggedOut)}
       </Menu>
     </Box>
   );
 
-  const loggedInMenuResponsive = (
-    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-      <IconButton
-        size="large"
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        onClick={handleOpenNavMenu}
-        color="inherit"
-      >
-        <MenuIcon />
-      </IconButton>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorElNav}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        open={Boolean(anchorElNav)}
-        onClose={handleCloseNavMenu}
-        sx={{
-          display: { xs: 'block', md: 'none' },
-        }}
-      >
-        <MenuItem
-          key={0}
-          onClick={() => {
-            alert('Under development');
-          }}
-        >
-          <Typography textAlign="center">How it works</Typography>
-        </MenuItem>
-        <MenuItem
-          key={1}
-          onClick={() => {
-            navigate('/competitions');
-          }}
-        >
-          <Typography textAlign="center">Competitions</Typography>
-        </MenuItem>
-        <MenuItem
-          key={2}
-          onClick={() => {
-            navigate('/boards');
-          }}
-        >
-          <Typography textAlign="center">My boards</Typography>
-        </MenuItem>
-        <MenuItem
-          key={3}
-          onClick={() => {
-            alert('Under development');
-          }}
-        >
-          <Typography textAlign="center">Songs I've missed</Typography>
-        </MenuItem>
-      </Menu>
-    </Box>
-  );
-
-  const loggedInMenu = (
+  const desktopMenu = (
     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-      <Button
-        key={0}
-        onClick={() => {
-          alert('Under development');
-        }}
-        sx={{ my: 2, color: 'white', display: 'block' }}
-      >
-        How it works
-      </Button>
-      <Button
-        key={1}
-        onClick={() => {
-          navigate('/competitions');
-        }}
-        sx={{ my: 2, color: 'white', display: 'block' }}
-      >
-        Competitions
-      </Button>
-      <Button
-        key={2}
-        onClick={() => {
-          navigate('/boards');
-        }}
-        sx={{ my: 2, color: 'white', display: 'block' }}
-      >
-        My boards
-      </Button>
-      <Button
-        key={3}
-        onClick={() => {
-          alert('Under development');
-        }}
-        sx={{ my: 2, color: 'white', display: 'block' }}
-      >
-        Songs I've missed
-      </Button>
-    </Box>
-  );
-
-  const loggedOutMenu = (
-    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-      {pagesLoggedOut.map((page) => (
+      {(user ? pagesLoggedIn : pagesLoggedOut).map((page, index) => (
         <Button
-          key={page}
-          onClick={handleCloseNavMenu}
+          key={index}
+          onClick={() => page.action(navigate)}
           sx={{ my: 2, color: 'white', display: 'block' }}
         >
-          {page}
+          {page.label}
         </Button>
       ))}
     </Box>
@@ -268,7 +155,7 @@ function ResponsiveAppBar(props) {
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+          <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
         </IconButton>
       </Tooltip>
       <Menu
@@ -287,7 +174,7 @@ function ResponsiveAppBar(props) {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem key={0} onClick={null}>
+        <MenuItem key={0}>
           <Typography textAlign="center">Profile</Typography>
         </MenuItem>
         <MenuItem key={1} onClick={handleLogout}>
@@ -306,7 +193,7 @@ function ResponsiveAppBar(props) {
   );
 
   const signInUp = (
-    <ButtonGroup variant="contained" aria-label="Basic button group">
+    <ButtonGroup variant="contained" aria-label="Sign in/up button group">
       <Button component={RouterLink} to="/signin">
         Sign In
       </Button>
@@ -322,11 +209,9 @@ function ResponsiveAppBar(props) {
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             {logoWithIcon}
-
-            {user ? loggedInMenuResponsive : loggedOutMenuResponsive}
+            {responsiveMenu}
             {logoWithIconResponsive}
-            {user ? loggedInMenu : loggedOutMenu}
-
+            {desktopMenu}
             {user ? profileDropdown : signInUp}
           </Toolbar>
         </Container>
@@ -335,4 +220,5 @@ function ResponsiveAppBar(props) {
     </>
   );
 }
+
 export default ResponsiveAppBar;
