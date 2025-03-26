@@ -32,7 +32,7 @@ function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const user = true; //userService.userValue;
+  const user = userService.userValue;
   const navigate = useNavigate();
 
   // Handlers
