@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Typography, Button, Grid, Paper } from '@mui/material';
+import { Box, Typography, Button, Grid, Paper, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
+  const theme = useTheme(); // Access the theme
   const navigate = useNavigate();
 
   return (
@@ -14,7 +15,7 @@ function Dashboard() {
         justifyContent: 'center',
         height: '100vh',
         padding: 2,
-        backgroundColor: 'background.default',
+        backgroundColor: theme.palette.background.default,
       }}
     >
       <Typography variant="h4" gutterBottom>
@@ -63,6 +64,7 @@ function Dashboard() {
           width: '100%',
           maxWidth: 600,
           textAlign: 'center',
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Typography variant="h6" gutterBottom>

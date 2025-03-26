@@ -8,6 +8,7 @@ import LandingPage from './components/generic/LandingPage';
 import SignIn, { loginAction } from 'features/Users/SignIn';
 import LoginErrorPage from 'features/Users/LoginErrorPage';
 import Dashboard from 'features/Users/Dashboard';
+import Competitions, { competitionsLoader } from 'features/Competitions/Competitions';
 
 
 const router = createBrowserRouter([
@@ -28,6 +29,12 @@ const router = createBrowserRouter([
         action: loginAction
       },
       {path: '/dashboard', element: <Dashboard />},
+      {
+        id: 'competitions',
+        path: '/competitions/*',
+        element: <Competitions />,
+        loader: competitionsLoader
+      }
     ],
   },
 ]);

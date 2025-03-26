@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   AppBar,
   Avatar,
@@ -27,20 +26,46 @@ const pagesLoggedIn = [
   { label: "Songs I've missed", action: () => alert('Under development') },
 ];
 const pagesLoggedOut = [{ label: 'How it works', action: () => {} }];
+const settings = ['Profile', 'Logout'];
 
-function Logo({ responsive }) {
-  return (
+function ResponsiveAppBar(props) {
+  const { checked, onChange } = props;
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const user = userService.userValue;
+  const navigate = useNavigate();
+
+  // Handlers
+  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
+  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+  const handleCloseNavMenu = () => setAnchorElNav(null);
+  const handleCloseUserMenu = () => setAnchorElUser(null);
+  const handleLogout = () => {
+    userService.logout();
+    handleCloseUserMenu();
+    navigate('/signin');
+  };
+
+  // Render Menu Items
+  const renderMenuItems = (pages) =>
+    pages.map((page, index) => (
+      <MenuItem key={index} onClick={() => page.action(navigate)}>
+        <Typography textAlign="center">{page.label}</Typography>
+      </MenuItem>
+    ));
+
+  // Components
+  const logoWithIcon = (
     <>
-      <AdbIcon sx={{ display: { xs: responsive ? 'flex' : 'none', md: responsive ? 'none' : 'flex' }, mr: 1 }} />
+      <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
       <Typography
-        variant={responsive ? 'h5' : 'h6'}
+        variant="h6"
         noWrap
         component="a"
         href="/"
         sx={{
           mr: 2,
-          display: { xs: responsive ? 'flex' : 'none', md: responsive ? 'none' : 'flex' },
-          flexGrow: responsive ? 1 : 0,
+          display: { xs: 'none', md: 'flex' },
           fontFamily: 'monospace',
           fontWeight: 700,
           letterSpacing: '.3rem',
@@ -52,10 +77,32 @@ function Logo({ responsive }) {
       </Typography>
     </>
   );
-}
 
-function ResponsiveMenu({ user, pages, anchorElNav, handleOpenNavMenu, handleCloseNavMenu, navigate }) {
-  return (
+  const logoWithIconResponsive = (
+    <>
+      <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+      <Typography
+        variant="h5"
+        noWrap
+        component="a"
+        href="/"
+        sx={{
+          mr: 2,
+          display: { xs: 'flex', md: 'none' },
+          flexGrow: 1,
+          fontFamily: 'monospace',
+          fontWeight: 700,
+          letterSpacing: '.3rem',
+          color: 'inherit',
+          textDecoration: 'none',
+        }}
+      >
+        LOGO
+      </Typography>
+    </>
+  );
+
+  const responsiveMenu = (
     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
       <IconButton
         size="large"
@@ -85,20 +132,14 @@ function ResponsiveMenu({ user, pages, anchorElNav, handleOpenNavMenu, handleClo
           display: { xs: 'block', md: 'none' },
         }}
       >
-        {pages.map((page, index) => (
-          <MenuItem key={index} onClick={() => page.action(navigate)}>
-            <Typography textAlign="center">{page.label}</Typography>
-          </MenuItem>
-        ))}
+        {renderMenuItems(user ? pagesLoggedIn : pagesLoggedOut)}
       </Menu>
     </Box>
   );
-}
 
-function DesktopMenu({ user, pages, navigate }) {
-  return (
+  const desktopMenu = (
     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-      {pages.map((page, index) => (
+      {(user ? pagesLoggedIn : pagesLoggedOut).map((page, index) => (
         <Button
           key={index}
           onClick={() => page.action(navigate)}
@@ -109,14 +150,12 @@ function DesktopMenu({ user, pages, navigate }) {
       ))}
     </Box>
   );
-}
 
-function ProfileDropdown({ user, checked, onChange, handleOpenUserMenu, handleCloseUserMenu, handleLogout, anchorElUser }) {
-  return (
+  const profileDropdown = (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt={user?.name || 'User Avatar'} src={user?.avatar || '/static/images/avatar/2.jpg'} />
+          <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
         </IconButton>
       </Tooltip>
       <Menu
@@ -152,60 +191,28 @@ function ProfileDropdown({ user, checked, onChange, handleOpenUserMenu, handleCl
       </Menu>
     </Box>
   );
-}
 
-function ResponsiveAppBar({ checked = false, onChange = () => {} }) {
-  const [anchorElNav, setAnchorElNav] = useState(null);
-  const [anchorElUser, setAnchorElUser] = useState(null);
-  const user = userService?.userValue;
-  const navigate = useNavigate();
-
-  const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
-  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
-  const handleCloseNavMenu = () => setAnchorElNav(null);
-  const handleCloseUserMenu = () => setAnchorElUser(null);
-  const handleLogout = () => {
-    userService?.logout();
-    handleCloseUserMenu();
-    navigate('/signin');
-  };
+  const signInUp = (
+    <ButtonGroup variant="contained" aria-label="Sign in/up button group">
+      <Button component={RouterLink} to="/signin">
+        Sign In
+      </Button>
+      <Button component={RouterLink} to="/signup">
+        Sign Up
+      </Button>
+    </ButtonGroup>
+  );
 
   return (
     <>
       <AppBar position="fixed">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Logo responsive={false} />
-            <ResponsiveMenu
-              user={user}
-              pages={user ? pagesLoggedIn : pagesLoggedOut}
-              anchorElNav={anchorElNav}
-              handleOpenNavMenu={handleOpenNavMenu}
-              handleCloseNavMenu={handleCloseNavMenu}
-              navigate={navigate}
-            />
-            <Logo responsive={true} />
-            <DesktopMenu user={user} pages={user ? pagesLoggedIn : pagesLoggedOut} navigate={navigate} />
-            {user ? (
-              <ProfileDropdown
-                user={user}
-                checked={checked}
-                onChange={onChange}
-                handleOpenUserMenu={handleOpenUserMenu}
-                handleCloseUserMenu={handleCloseUserMenu}
-                handleLogout={handleLogout}
-                anchorElUser={anchorElUser}
-              />
-            ) : (
-              <ButtonGroup variant="contained" aria-label="Sign in/up button group">
-                <Button component={RouterLink} to="/signin">
-                  Sign In
-                </Button>
-                <Button component={RouterLink} to="/signup">
-                  Sign Up
-                </Button>
-              </ButtonGroup>
-            )}
+            {logoWithIcon}
+            {responsiveMenu}
+            {logoWithIconResponsive}
+            {desktopMenu}
+            {user ? profileDropdown : signInUp}
           </Toolbar>
         </Container>
       </AppBar>
@@ -213,10 +220,5 @@ function ResponsiveAppBar({ checked = false, onChange = () => {} }) {
     </>
   );
 }
-
-ResponsiveAppBar.propTypes = {
-  checked: PropTypes.bool,
-  onChange: PropTypes.func,
-};
 
 export default ResponsiveAppBar;

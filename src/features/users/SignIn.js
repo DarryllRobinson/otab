@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, redirect } from 'react-router-dom';
-import { Box, Typography, Button, TextField } from '@mui/material';
+import { Box, Typography, Button, TextField, useTheme } from '@mui/material';
 import { userService } from './user.service';
 
 export async function loginAction({ request }) {
@@ -11,6 +11,8 @@ export async function loginAction({ request }) {
 }
 
 export default function SignIn() {
+  const theme = useTheme(); // Access the theme
+
   return (
     <Box
       sx={{
@@ -20,7 +22,7 @@ export default function SignIn() {
         justifyContent: 'center',
         height: '100vh',
         padding: 2,
-        backgroundColor: 'background.default',
+        backgroundColor: theme.palette.background.default,
       }}
     >
       <Typography variant="h4" gutterBottom>
