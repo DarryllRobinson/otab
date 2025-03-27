@@ -46,7 +46,11 @@ const router = createBrowserRouter([
       }
     ],
   },
-]);
+],{
+  future: {
+    v7_relativeSplatPath: true,
+  }
+});
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RouterProvider router={router} />
