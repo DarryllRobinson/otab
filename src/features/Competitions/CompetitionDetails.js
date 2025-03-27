@@ -1,8 +1,8 @@
 import { Box, Button, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLoaderData } from 'react-router-dom';
 import { competitionService } from './competition.service';
 
-export async function competitionLoader(id) {
+export async function competitionDetailsLoader(id) {
   console.log('competitionLoader id:', id);
   const competition = await competitionService.getById(id);
   return { competition };
@@ -10,6 +10,8 @@ export async function competitionLoader(id) {
 
 export default function CompetitionDetails(props) {
   console.log('CompetitionDetails props:', props);
+  const { competition } = useLoaderData();
+  console.log('CompetitionDetails competition:', competition);
   const { id, name, numTiles } = props;
 
   return (

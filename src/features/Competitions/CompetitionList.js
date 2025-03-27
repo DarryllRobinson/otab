@@ -37,20 +37,16 @@ export default function CompetitionList() {
             }}
           >
             <CardActionArea
-              onClick={() => handleClick({ id, name, numTiles })}
+              component={RouterLink} // Use RouterLink directly
+              to={`/competitions/${id}`} // Navigate to the competition details page
+              state={{ id, name, numTiles }}
               sx={{ padding: 2 }}
             >
-              <RouterLink
-                to="/competitions/competition"
-                state={{ id, name, numTiles }}
-                style={{ textDecoration: 'none', color: 'inherit' }}
-              >
-                <CardContent>
-                  <Typography variant="h6" align="center">
-                    {name}
-                  </Typography>
-                </CardContent>
-              </RouterLink>
+              <CardContent>
+                <Typography variant="h6" align="center">
+                  {name}
+                </Typography>
+              </CardContent>
             </CardActionArea>
           </Card>
         </Grid>

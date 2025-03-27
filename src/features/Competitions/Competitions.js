@@ -3,13 +3,17 @@ import { Route, Routes } from 'react-router-dom';
 import { Box, Typography, useTheme } from '@mui/material';
 
 import CompetitionList from './CompetitionList';
-// import { Competition } from './Competition';
-import { competitionService } from './competition.service';
 import CompetitionDetails from './CompetitionDetails';
+import { competitionService } from './competition.service';
 
 export async function competitionsLoader() {
   const competitions = await competitionService.getAll();
   return { competitions };
+}
+
+export async function competitionDetailsLoader({ params }) {
+  const competition = await competitionService.getById(params.id);
+  return { competition };
 }
 
 export default function Competitions() {
@@ -31,7 +35,11 @@ export default function Competitions() {
       </Typography>
       <Routes>
         <Route path="/" element={<CompetitionList />} />
-        <Route path="/:id" element={<CompetitionDetails />} />
+        <Route
+          path="/:id"
+          element={<CompetitionDetails />}
+          loader={competitionDetailsLoader}
+        />
       </Routes>
     </Box>
   );
