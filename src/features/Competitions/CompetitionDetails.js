@@ -1,5 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
-import { Link as RouterLink, useLoaderData } from "react-router";
+import { Box, Button, ButtonGroup, Grid, Typography } from "@mui/material";
+import { Link as RouterLink, useLoaderData, useNavigate } from "react-router";
 import { competitionService } from "./competition.service";
 
 export async function competitionDetailsLoader({ params }) {
@@ -11,6 +11,7 @@ export async function competitionDetailsLoader({ params }) {
 export default function CompetitionDetails() {
   const { competition } = useLoaderData();
   const { id, name, numTiles } = competition;
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -31,17 +32,38 @@ export default function CompetitionDetails() {
       <Typography variant="body1" gutterBottom>
         Number of Tiles: {numTiles}
       </Typography>
-      <Button
-        key={id}
-        component={RouterLink}
-        to="/play"
-        state={{ compId: id, create: true, numTiles }}
-        variant="contained"
-        color="primary"
-        sx={{ marginTop: 2 }}
-      >
-        Enter the Competition!
-      </Button>
+      <Grid container spacing={2} sx={{ marginTop: 2, maxWidth: 600 }}>
+        <Grid item xs={12} sm={6}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={() => alert("Enter the competition")}
+          >
+            Enter the Competition
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            variant="contained"
+            color="secondary"
+            fullWidth
+            onClick={() => navigate("/competitions")}
+          >
+            Back to the Competitions
+          </Button>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="outlined"
+            color="primary"
+            fullWidth
+            onClick={() => navigate("/profile")}
+          >
+            View Profile
+          </Button>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
