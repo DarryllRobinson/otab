@@ -8,14 +8,12 @@ import LandingPage from "./components/generic/LandingPage";
 import SignIn, { loginAction } from "features/Users/SignIn";
 import LoginErrorPage from "features/Users/LoginErrorPage";
 import Dashboard from "features/Users/Dashboard";
-import Competitions, {
-  competitionsLoader,
-} from "features/Competitions/Competitions";
-// import { Competition, competitionLoader } from 'features/Competitions';
+import Competitions from "features/Competitions/Competitions";
 import CompetitionDetails, {
   competitionDetailsLoader,
 } from "features/Competitions/CompetitionDetails";
 import CompetitionList from "features/Competitions/CompetitionList";
+import { competitionsLoader } from "features/Competitions/CompetitionList";
 
 const router = createBrowserRouter(
   [
@@ -38,9 +36,13 @@ const router = createBrowserRouter(
         { path: "/dashboard", element: <Dashboard /> },
         {
           path: "/competitions",
-          element: <CompetitionList />,
-          loader: competitionsLoader,
+          element: <Competitions />,
           children: [
+            {
+              index: true,
+              element: <CompetitionList />,
+              loader: competitionsLoader,
+            },
             {
               path: ":id",
               element: <CompetitionDetails />,

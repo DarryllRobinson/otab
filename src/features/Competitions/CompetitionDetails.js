@@ -9,11 +9,10 @@ export async function competitionDetailsLoader({ params }) {
   return { competition };
 }
 
-export default function CompetitionDetails(props) {
-  console.log("CompetitionDetails props:", props);
+export default function CompetitionDetails() {
   const { competition } = useLoaderData();
   console.log("CompetitionDetails competition:", competition);
-  const { id, name, numTiles } = props;
+  const { id, name, numTiles } = competition;
 
   return (
     <Box
