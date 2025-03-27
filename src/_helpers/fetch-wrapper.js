@@ -1,5 +1,5 @@
-import config from '../_config/config';
-import { userService } from '../features/Users/user.service';
+import config from "../_config/config";
+import { userService } from "../features/Users/user.service";
 
 export const fetchWrapper = {
   get,
@@ -8,40 +8,44 @@ export const fetchWrapper = {
   delete: _delete,
 };
 
-function get(url) {
+async function get(url) {
   const requestOptions = {
-    method: 'GET',
+    method: "GET",
     headers: authHeader(url),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  const response = await fetch(url, requestOptions);
+  return handleResponse(response);
 }
 
-function post(url, body) {
+async function post(url, body) {
   const requestOptions = {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeader(url) },
-    credentials: 'include',
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeader(url) },
+    credentials: "include",
     body: JSON.stringify(body),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  const response = await fetch(url, requestOptions);
+  return handleResponse(response);
 }
 
-function put(url, body) {
+async function put(url, body) {
   const requestOptions = {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...authHeader(url) },
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...authHeader(url) },
     body: JSON.stringify(body),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  const response = await fetch(url, requestOptions);
+  return handleResponse(response);
 }
 
 // prefixed with underscored because delete is a reserved word in javascript
-function _delete(url) {
+async function _delete(url) {
   const requestOptions = {
-    method: 'DELETE',
+    method: "DELETE",
     headers: authHeader(url),
   };
-  return fetch(url, requestOptions).then(handleResponse);
+  const response = await fetch(url, requestOptions);
+  return handleResponse(response);
 }
 
 // helper functions

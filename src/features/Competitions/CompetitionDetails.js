@@ -2,9 +2,10 @@ import { Box, Button, Typography } from "@mui/material";
 import { Link as RouterLink, useLoaderData } from "react-router";
 import { competitionService } from "./competition.service";
 
-export async function competitionDetailsLoader(id) {
-  console.log("competitionLoader id:", id);
+export async function competitionDetailsLoader({ params }) {
+  const { id } = params;
   const competition = await competitionService.getById(id);
+  console.log("competitionDetailsLoader competition:", competition);
   return { competition };
 }
 

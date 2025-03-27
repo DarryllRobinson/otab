@@ -40,6 +40,13 @@ const router = createBrowserRouter(
           path: "/competitions",
           element: <CompetitionList />,
           loader: competitionsLoader,
+          children: [
+            {
+              path: ":id",
+              element: <CompetitionDetails />,
+              loader: competitionDetailsLoader,
+            },
+          ],
         },
       ],
     },
