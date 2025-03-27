@@ -5,7 +5,6 @@ import { competitionService } from "./competition.service";
 export async function competitionDetailsLoader({ params }) {
   const { id } = params;
   const competition = await competitionService.getById(id);
-  console.log("competitionDetailsLoader competition:", competition);
   return { competition };
 }
 
