@@ -1,17 +1,17 @@
-import { Box, Button, Typography } from '@mui/material';
-import { Link as RouterLink, useLoaderData } from 'react-router';
-import { competitionService } from './competition.service';
+import { Box, Button, Typography } from "@mui/material";
+import { Link as RouterLink, useLoaderData } from "react-router";
+import { competitionService } from "./competition.service";
 
 export async function competitionDetailsLoader(id) {
-  console.log('competitionLoader id:', id);
+  console.log("competitionLoader id:", id);
   const competition = await competitionService.getById(id);
   return { competition };
 }
 
 export default function CompetitionDetails(props) {
-  console.log('CompetitionDetails props:', props);
+  console.log("CompetitionDetails props:", props);
   const { competition } = useLoaderData();
-  console.log('CompetitionDetails competition:', competition);
+  console.log("CompetitionDetails competition:", competition);
   const { id, name, numTiles } = props;
 
   return (
@@ -19,12 +19,12 @@ export default function CompetitionDetails(props) {
       sx={{
         padding: 4,
         backgroundColor: (theme) =>
-          theme.palette.mode === 'light'
+          theme.palette.mode === "light"
             ? theme.palette.grey[100]
             : theme.palette.grey[700],
         borderRadius: 2,
         boxShadow: 3,
-        textAlign: 'center',
+        textAlign: "center",
       }}
     >
       <Typography variant="h6" gutterBottom>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useRouteLoaderData } from 'react-router';
+import React, { useState } from "react";
+import { Link as RouterLink, useLoaderData } from "react-router";
 import {
   Box,
   Card,
@@ -8,18 +8,17 @@ import {
   Grid,
   Typography,
   useTheme,
-} from '@mui/material';
+} from "@mui/material";
+import { competitionService } from "./competition.service";
 
-import CompetitionDetails from './CompetitionDetails';
+export async function competitionsLoader() {
+  const competitions = await competitionService.getAll();
+  return { competitions };
+}
 
 export default function CompetitionList() {
-  const { competitions } = useRouteLoaderData('competitions');
-  const [selectedCompetition, setSelectedCompetition] = useState(null);
+  const { competitions } = useLoaderData();
   const theme = useTheme();
-
-  const handleClick = (competition) => {
-    setSelectedCompetition(competition);
-  };
 
   const renderCompetitions = () => {
     return competitions?.map((competition) => {
@@ -29,11 +28,12 @@ export default function CompetitionList() {
         <Grid item xs={12} sm={6} md={4} key={id}>
           <Card
             sx={{
-              backgroundColor: theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[700],
+              backgroundColor:
+                theme.palette.mode === "light"
+                  ? theme.palette.grey[100]
+                  : theme.palette.grey[700],
               boxShadow: 3,
-              '&:hover': { boxShadow: 6 },
+              "&:hover": { boxShadow: 6 },
             }}
           >
             <CardActionArea
@@ -58,9 +58,9 @@ export default function CompetitionList() {
     <Box
       sx={{
         marginTop: 4,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       <Typography variant="h5" gutterBottom>
@@ -69,11 +69,6 @@ export default function CompetitionList() {
       <Grid container spacing={4} justifyContent="center">
         {renderCompetitions()}
       </Grid>
-      {selectedCompetition && (
-        <Box sx={{ marginTop: 4, width: '100%' }}>
-          <CompetitionDetails {...selectedCompetition} />
-        </Box>
-      )}
     </Box>
   );
 }

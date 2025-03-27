@@ -15,6 +15,7 @@ import Competitions, {
 import CompetitionDetails, {
   competitionDetailsLoader,
 } from "features/Competitions/CompetitionDetails";
+import CompetitionList from "features/Competitions/CompetitionList";
 
 const router = createBrowserRouter(
   [
@@ -25,7 +26,7 @@ const router = createBrowserRouter(
       loader: layoutLoader,
       children: [
         {
-          path: "/",
+          index: true,
           element: <LandingPage />,
         },
         {
@@ -36,17 +37,9 @@ const router = createBrowserRouter(
         },
         { path: "/dashboard", element: <Dashboard /> },
         {
-          id: "competitions",
           path: "/competitions",
+          element: <CompetitionList />,
           loader: competitionsLoader,
-          children: [
-            { path: "*", element: <Competitions /> },
-            {
-              path: "competitions/:id",
-              element: <CompetitionDetails />,
-              loader: competitionDetailsLoader,
-            },
-          ],
         },
       ],
     },
