@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { Link as RouterLink, useLoaderData } from 'react-router-dom';
+import { Link as RouterLink, useLoaderData } from 'react-router';
 import { competitionService } from './competition.service';
 
 export async function competitionDetailsLoader(id) {

@@ -1,57 +1,66 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router";
 
-import Layout, { layoutLoader } from './components/generic/Layout';
-import ErrorPage from './components/navigation/ErrorPage';
-import LandingPage from './components/generic/LandingPage';
-import SignIn, { loginAction } from 'features/Users/SignIn';
-import LoginErrorPage from 'features/Users/LoginErrorPage';
-import Dashboard from 'features/Users/Dashboard';
-import Competitions, { competitionsLoader } from 'features/Competitions/Competitions';
+import Layout, { layoutLoader } from "./components/generic/Layout";
+import ErrorPage from "./components/navigation/ErrorPage";
+import LandingPage from "./components/generic/LandingPage";
+import SignIn, { loginAction } from "features/Users/SignIn";
+import LoginErrorPage from "features/Users/LoginErrorPage";
+import Dashboard from "features/Users/Dashboard";
+import Competitions, {
+  competitionsLoader,
+} from "features/Competitions/Competitions";
 // import { Competition, competitionLoader } from 'features/Competitions';
-import CompetitionDetails, { competitionDetailsLoader } from 'features/Competitions/CompetitionDetails';
+import CompetitionDetails, {
+  competitionDetailsLoader,
+} from "features/Competitions/CompetitionDetails";
 
-
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "",
+      element: <Layout />,
+      errorElement: <ErrorPage />,
+      loader: layoutLoader,
+      children: [
+        {
+          path: "/",
+          element: <LandingPage />,
+        },
+        {
+          path: "/signin",
+          element: <SignIn />,
+          errorElement: <LoginErrorPage />,
+          action: loginAction,
+        },
+        { path: "/dashboard", element: <Dashboard /> },
+        {
+          id: "competitions",
+          path: "/competitions",
+          loader: competitionsLoader,
+          children: [
+            { path: "*", element: <Competitions /> },
+            {
+              path: "competitions/:id",
+              element: <CompetitionDetails />,
+              loader: competitionDetailsLoader,
+            },
+          ],
+        },
+      ],
+    },
+  ],
   {
-    path: '',
-    element: <Layout />,
-    errorElement: <ErrorPage />,
-    loader: layoutLoader,
-    children: [
-      {
-        path: '/',
-        element: <LandingPage />,
-      },
-      {
-        path: '/signin',
-        element: <SignIn />,
-        errorElement: <LoginErrorPage />,
-        action: loginAction
-      },
-      {path: '/dashboard', element: <Dashboard />},
-      {
-        id: 'competitions',
-        path: '/competitions/*',
-        element: <Competitions />,
-        loader: competitionsLoader,
-        // children: [
-        //   {
-        //     path: 'competitions/:id',
-        //     element: <CompetitionDetails />,
-        //     loader: competitionDetailsLoader
-        //   }
-        // ]
-      }
-    ],
-  },
-],{
-  future: {
-    v7_relativeSplatPath: true,
+    future: {
+      v7_relativeSplatPath: true,
+      v7_startTransition: true,
+      v7_normalizeFormMethod: true,
+      v7_skipActionErrorRevalidation: true,
+    },
   }
-});
+);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <RouterProvider router={router} />
 );

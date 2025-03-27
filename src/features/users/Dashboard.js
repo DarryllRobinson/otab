@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Button, Grid, Paper, useTheme } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 function Dashboard() {
   const theme = useTheme(); // Access the theme

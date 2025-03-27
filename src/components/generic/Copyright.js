@@ -1,4 +1,4 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 import { Link, Typography } from '@mui/material';
 
 function Copyright(props) {

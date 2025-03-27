@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Outlet, useLoaderData } from 'react-router-dom';
+import { Outlet, useLoaderData } from 'react-router';
 import { Box, Container, CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 

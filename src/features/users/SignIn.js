@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, redirect } from 'react-router-dom';
+import { Form, redirect } from 'react-router';
 import { Box, Typography, Button, TextField, useTheme } from '@mui/material';
 import { userService } from './user.service';
 

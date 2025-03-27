@@ -1,4 +1,4 @@
-import { Link as RouterLink, useRouteError } from 'react-router-dom';
+import { Link as RouterLink, useRouteError } from 'react-router';
 import { Box, Link, Typography, Button } from '@mui/material';
 
 export default function ErrorPage() {

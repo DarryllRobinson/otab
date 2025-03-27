@@ -16,7 +16,7 @@ import {
 import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
 import MaterialUISwitch from './MaterialUISwitch';
 import { userService } from '../../features/Users/user.service';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router';
 
 // Constants
 const pagesLoggedIn = [
