@@ -11,7 +11,6 @@ export async function competitionDetailsLoader({ params }) {
 
 export default function CompetitionDetails() {
   const { competition } = useLoaderData();
-  console.log("CompetitionDetails competition:", competition);
   const { id, name, numTiles } = competition;
 
   return (
