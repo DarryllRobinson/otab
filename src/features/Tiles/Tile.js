@@ -22,8 +22,6 @@ import { alpha } from "@mui/material/styles";
 
 import { tileService } from "./tile.service";
 
-//import useTimer from '../hooks/useTimer';
-
 import "./Tile.css";
 
 export default function Tile(props) {
@@ -36,10 +34,9 @@ export default function Tile(props) {
     tileBgColourHover,
     tileBorderColour,
     tileTextColour,
-    tileBorderRadius /*, setBox*/,
+    tileBorderRadius,
   } = props;
 
-  // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
   const [submitted, setSubmitted] = useState(
     props.submitted === 1 ? true : false
@@ -47,21 +44,18 @@ export default function Tile(props) {
   const [chosenArtist, setChosenArtist] = useState(
     submitted ? props.chosenArtist : ""
   );
-  // const [songValue, setSongValue] = useState('');
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("Who's singing?");
   const [correctArtist, setCorrectArtist] = useState(props.correctArtist);
   const [correctSong, setCorrectSong] = useState(false);
-  const [readyToSave, setReadyToSave] = useState(false);
-
+  const [checksComplete, setChecksComplete] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  // Font size setter based on length of title
   const size = title.length > 10 ? 12 : 16;
 
-  const handleClick = () => {
-    setFlipped(!flipped);
-  };
+  const handleClick = useCallback(() => {
+    setFlipped((prev) => !prev);
+  }, []);
 
   const handleChange = (event) => {
     setChosenArtist(event.target.value);
@@ -72,9 +66,6 @@ export default function Tile(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Check if spot prize
-
-    // Check if artist is selected - done
     if (chosenArtist === "") {
       setHelperText("Please choose an artist");
       setError(true);
@@ -82,13 +73,10 @@ export default function Tile(props) {
       setHelperText("Lock it in!");
       setError(false);
       setSubmitted(true);
-      // Check if artist is correct
       checkArtist(chosenArtist);
-      // Check if song is playing
       checkSong(title);
-      setReadyToSave(true);
+      setChecksComplete(true);
 
-      // Start timer to prevent people from over-submitting
       setDisabled(true);
       setTimeout(() => {
         setDisabled(false);
@@ -97,29 +85,17 @@ export default function Tile(props) {
   };
 
   const checkArtist = (chosenArtist) => {
-    const check = chosenArtist === actualArtist ? true : false;
-    console.log("checkArtist check: ", check);
+    const check = chosenArtist === actualArtist;
     setCorrectArtist(check);
   };
 
   const checkSong = (title) => {
-    // Will need to check against RDS
-    // Tolerance of plus minus a minute maybe?
-    // const currentSong value coming from RDS
-    // Will need to replace "currentSong = title" with actual value
     const currentSong = tileService.getSong();
-    const check = title === currentSong.song ? true : false;
+    const check = title === currentSong.song;
     setCorrectSong(check);
   };
 
   const saveTile = useCallback(() => {
-    console.log("about to update Tile.js: ", {
-      id,
-      chosenArtist,
-      correctArtist,
-      correctSong,
-      submitted: true,
-    });
     tileService.update(id, {
       id,
       chosenArtist,
@@ -130,99 +106,71 @@ export default function Tile(props) {
   }, [id, chosenArtist, correctArtist, correctSong]);
 
   useEffect(() => {
-    if (readyToSave) {
+    if (checksComplete) {
       saveTile();
       handleClick(); // Flip the tile back
-      setReadyToSave(false); // Reset readyToSave after saving
+      setChecksComplete(false); // Reset after saving
     }
-  }, [readyToSave, saveTile]);
+  }, [checksComplete, saveTile, handleClick]);
 
   const useStyles = makeStyles({ radioLabel: { fontSize: size } });
   const classes = useStyles();
 
-  const renderArtists = artists.map((artist, id) => {
-    //console.log(artist);
-    return (
-      <Typography key={id} sx={{ fontSize: size }}>
-        <FormControlLabel
-          value={artist}
-          control={<Radio size="small" />}
-          disabled={submitted}
-          label={artist}
-          onChange={handleChange}
-          size="small"
-          classes={{ label: classes.radioLabel }}
-        />
-      </Typography>
-    );
-  });
+  const renderArtists = artists.map((artist, index) => (
+    <Typography key={index} sx={{ fontSize: size }}>
+      <FormControlLabel
+        value={artist}
+        control={<Radio size="small" />}
+        disabled={submitted}
+        label={artist}
+        onChange={handleChange}
+        size="small"
+        classes={{ label: classes.radioLabel }}
+      />
+    </Typography>
+  ));
 
   const displayChosenArtist = () => {
-    console.log("displayChosenArtist: ", chosenArtist);
-    console.log("actualArtist: ", actualArtist);
-    console.log("correctArtist: ", correctArtist);
-    if (chosenArtist === "") {
-      return;
-    } else if (correctArtist) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {chosenArtist}
-          <Box
-            sx={{
-              position: "absolute",
-              zIndex: "tooltip",
-            }}
-          >
-            <CheckCircleOutlineSharp
-              style={{ color: alpha("#34eb4c", 0.2) }}
-              sx={{
-                fontSize: 150,
-              }}
-            />
-          </Box>
-        </Box>
-      );
-    } else {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {chosenArtist}
-          <Box
-            sx={{
-              position: "absolute",
-              zIndex: "tooltip",
-            }}
-          >
-            <DangerousOutlined
-              style={{ color: alpha("#eb4334", 0.2) }}
-              sx={{
-                fontSize: 150,
-              }}
-            />
-          </Box>
-        </Box>
-      );
-    }
-  };
+    if (!chosenArtist) return null;
 
-  const displayBackTitle = () => {
+    const icon = correctArtist ? (
+      <CheckCircleOutlineSharp
+        style={{ color: alpha("#34eb4c", 0.2) }}
+        sx={{ fontSize: 150 }}
+      />
+    ) : (
+      <DangerousOutlined
+        style={{ color: alpha("#eb4334", 0.2) }}
+        sx={{ fontSize: 150 }}
+      />
+    );
+
     return (
-      <FormLabel id="tile-song-title" sx={{ fontSize: size }}>
-        {title}
-      </FormLabel>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {chosenArtist}
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: "tooltip",
+          }}
+        >
+          {icon}
+        </Box>
+      </Box>
     );
   };
+
+  const displayBackTitle = () => (
+    <FormLabel id="tile-song-title" sx={{ fontSize: size }}>
+      {title}
+    </FormLabel>
+  );
 
   return (
     <Box className={`flip-container ${flipped ? "flipped" : ""}`}>
