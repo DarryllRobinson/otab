@@ -9,8 +9,8 @@ import {
   useTheme,
 } from "@mui/material";
 
-import Tile from "../../../../dump/features/Tiles/Tile";
-import { tileService } from "../../../../dump/features/Tiles/tile.service";
+import Tile from "../Tiles/Tile";
+import { tileService } from "../Tiles/tile.service";
 
 // Retrieve song title and artist from radio db/api
 

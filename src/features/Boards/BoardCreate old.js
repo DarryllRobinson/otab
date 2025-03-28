@@ -8,8 +8,8 @@ import {
   useTheme,
 } from "@mui/material";
 
-import Tile from "../../../../dump/features/Tiles/Tile";
-import { tileService } from "../../../../dump/features/Tiles/tile.service";
+import Tile from "../Tiles/Tile";
+import { tileService } from "../Tiles/tile.service";
 import { boardService } from "./board.service";
 
 // Check if new board must be created

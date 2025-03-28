@@ -10,9 +10,9 @@ import {
 } from "@mui/material";
 import { boardService } from "./board.service";
 import { userService } from "../Users/user.service";
-import { tileService } from "../../../../dump/features/Tiles/tile.service";
-import { songService } from "../../../../dump/features/Song/song.service";
-import Tile from "../../../../dump/features/Tiles/Tile";
+import { tileService } from "../Tiles/tile.service";
+import { songService } from "../Song/song.service";
+import Tile from "../Tiles/Tile";
 
 // Mocked data
 const numTiles = 25;
