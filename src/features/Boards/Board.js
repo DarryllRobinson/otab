@@ -327,7 +327,15 @@ export default function Board(props) {
   const renderTiles = () => {
     return tiles.map((tile, key) => {
       const picker = key % tileBgColour.length;
-      const { id, title, actualArtist, artists } = tile;
+      const {
+        id,
+        actualArtist,
+        title,
+        correctArtist,
+        artists,
+        submitted,
+        chosenArtist,
+      } = tile;
       return (
         <Grid className="tile grid" key={key} item xs={12 / 5}>
           <Tile
@@ -335,7 +343,10 @@ export default function Board(props) {
             id={id}
             title={title}
             actualArtist={actualArtist}
+            correctArtist={correctArtist}
+            chosenArtist={chosenArtist}
             artists={artists}
+            submitted={submitted}
             tileBgColour={tileBgColour[picker]}
             tileBgColourHover={tileBgColourHover[picker]}
             tileBorderColour={tileBorderColour[picker]}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -12,19 +12,19 @@ import {
   Radio,
   RadioGroup,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
   CheckCircleOutlineSharp,
   DangerousOutlined,
-} from '@mui/icons-material';
-import { makeStyles } from '@mui/styles';
-import { alpha } from '@mui/material/styles';
+} from "@mui/icons-material";
+import { makeStyles } from "@mui/styles";
+import { alpha } from "@mui/material/styles";
 
-import { tileService } from './tile.service';
+import { tileService } from "./tile.service";
 
 //import useTimer from '../hooks/useTimer';
 
-import './Tile.css';
+import "./Tile.css";
 
 export default function Tile(props) {
   const {
@@ -41,13 +41,18 @@ export default function Tile(props) {
 
   // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
-  const [chosenArtist, setChosenArtist] = useState('');
+  const [submitted, setSubmitted] = useState(
+    props.submitted === 1 ? true : false
+  );
+  const [chosenArtist, setChosenArtist] = useState(
+    submitted ? props.chosenArtist : ""
+  );
   // const [songValue, setSongValue] = useState('');
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("Who's singing?");
-  const [submitted, setSubmitted] = useState(false);
-  const [correctArtist, setCorrectArtist] = useState(false);
+  const [correctArtist, setCorrectArtist] = useState(props.correctArtist);
   const [correctSong, setCorrectSong] = useState(false);
+  const [readyToSave, setReadyToSave] = useState(false);
 
   const [disabled, setDisabled] = useState(false);
 
@@ -60,7 +65,7 @@ export default function Tile(props) {
 
   const handleChange = (event) => {
     setChosenArtist(event.target.value);
-    setHelperText('Lock it in!');
+    setHelperText("Lock it in!");
     setError(false);
   };
 
@@ -70,20 +75,18 @@ export default function Tile(props) {
     // Check if spot prize
 
     // Check if artist is selected - done
-    if (chosenArtist === '') {
-      setHelperText('Please choose an artist');
+    if (chosenArtist === "") {
+      setHelperText("Please choose an artist");
       setError(true);
     } else {
-      setHelperText('Lock it in!');
+      setHelperText("Lock it in!");
       setError(false);
       setSubmitted(true);
       // Check if artist is correct
       checkArtist(chosenArtist);
       // Check if song is playing
       checkSong(title);
-      saveTile();
-      handleClick();
-      //setBox(true);
+      setReadyToSave(true);
 
       // Start timer to prevent people from over-submitting
       setDisabled(true);
@@ -95,6 +98,7 @@ export default function Tile(props) {
 
   const checkArtist = (chosenArtist) => {
     const check = chosenArtist === actualArtist ? true : false;
+    console.log("checkArtist check: ", check);
     setCorrectArtist(check);
   };
 
@@ -108,9 +112,8 @@ export default function Tile(props) {
     setCorrectSong(check);
   };
 
-  const saveTile = () => {
-    // Record if song correct in db
-    console.log('about to update Tile.js: ', {
+  const saveTile = useCallback(() => {
+    console.log("about to update Tile.js: ", {
       id,
       chosenArtist,
       correctArtist,
@@ -124,9 +127,15 @@ export default function Tile(props) {
       correctSong,
       submitted: true,
     });
-    // Save tile to database
-    console.log('saveTile');
-  };
+  }, [id, chosenArtist, correctArtist, correctSong]);
+
+  useEffect(() => {
+    if (readyToSave) {
+      saveTile();
+      handleClick(); // Flip the tile back
+      setReadyToSave(false); // Reset readyToSave after saving
+    }
+  }, [readyToSave, saveTile]);
 
   const useStyles = makeStyles({ radioLabel: { fontSize: size } });
   const classes = useStyles();
@@ -149,26 +158,29 @@ export default function Tile(props) {
   });
 
   const displayChosenArtist = () => {
-    if (chosenArtist === '') {
+    console.log("displayChosenArtist: ", chosenArtist);
+    console.log("actualArtist: ", actualArtist);
+    console.log("correctArtist: ", correctArtist);
+    if (chosenArtist === "") {
       return;
     } else if (correctArtist) {
       return (
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           {chosenArtist}
           <Box
             sx={{
-              position: 'absolute',
-              zIndex: 'tooltip',
+              position: "absolute",
+              zIndex: "tooltip",
             }}
           >
             <CheckCircleOutlineSharp
-              style={{ color: alpha('#34eb4c', 0.2) }}
+              style={{ color: alpha("#34eb4c", 0.2) }}
               sx={{
                 fontSize: 150,
               }}
@@ -180,20 +192,20 @@ export default function Tile(props) {
       return (
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           {chosenArtist}
           <Box
             sx={{
-              position: 'absolute',
-              zIndex: 'tooltip',
+              position: "absolute",
+              zIndex: "tooltip",
             }}
           >
             <DangerousOutlined
-              style={{ color: alpha('#eb4334', 0.2) }}
+              style={{ color: alpha("#eb4334", 0.2) }}
               sx={{
                 fontSize: 150,
               }}
@@ -213,21 +225,21 @@ export default function Tile(props) {
   };
 
   return (
-    <Box className={`flip-container ${flipped ? 'flipped' : ''}`}>
+    <Box className={`flip-container ${flipped ? "flipped" : ""}`}>
       <form onSubmit={handleSubmit}>
         <div className="flipper">
           <div className="front" onClick={handleClick}>
             <Card
               sx={{
-                '&:hover': {
+                "&:hover": {
                   backgroundColor: tileBgColourHover,
                   boxShadow: 10,
                 },
                 backgroundColor: tileBgColour,
                 color: tileTextColour,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 border: 1,
                 borderColor: tileBorderColour,
                 borderRadius: tileBorderRadius,
