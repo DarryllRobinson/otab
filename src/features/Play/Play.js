@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Box, Grid } from '@mui/material';
+import React, { useState } from "react";
+import { Box, Grid } from "@mui/material";
 
-import Board from '../Boards/Board';
-import BoardCreate from '../Boards/BoardCreate';
+import Board from "../Boards/Board";
+import BoardCreate from "../Boards/BoardCreate";
 // import Side from './Side';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router";
 // import { userService } from '../users/user.service';
 
 export default function Play() {
   let { state } = useLocation();
-  console.log('Play state: ', state);
+  console.log("Play state: ", state);
 
   const { boardId, compId, create, numTiles } = state || {};
   const [box, setBox] = useState(false);
