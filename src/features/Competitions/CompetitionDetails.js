@@ -1,5 +1,5 @@
-import { Box, Button, ButtonGroup, Grid, Typography } from "@mui/material";
-import { Link as RouterLink, useLoaderData, useNavigate } from "react-router";
+import { Box, Button, Grid, Typography } from "@mui/material";
+import { useLoaderData, useNavigate } from "react-router";
 import { competitionService } from "./competition.service";
 
 export async function competitionDetailsLoader({ params }) {
@@ -32,7 +32,11 @@ export default function CompetitionDetails() {
       <Typography variant="body1" gutterBottom>
         Number of Tiles: {numTiles}
       </Typography>
-      <Grid container spacing={2} sx={{ marginTop: 2, maxWidth: 600 }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ marginTop: 2, maxWidth: 600, marginX: "auto" }}
+      >
         <Grid item xs={12} sm={6}>
           <Button
             variant="contained"
@@ -54,14 +58,7 @@ export default function CompetitionDetails() {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            onClick={() => navigate("/profile")}
-          >
-            View Profile
-          </Button>
+          <Box sx={{ mt: 2 }}>Competition details will come here</Box>
         </Grid>
       </Grid>
     </Box>
