@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
   Box,
   Button,
@@ -54,10 +54,11 @@ export default function Tile(props) {
 
   const size = title.length > 10 ? 12 : 16;
 
-  const handleClick = useCallback(
-    debounce(() => {
-      setFlipped((prev) => !prev);
-    }, 300),
+  const handleClick = useMemo(
+    () =>
+      debounce(() => {
+        setFlipped((prev) => !prev);
+      }, 300),
     []
   );
 
