@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Typography,
   useTheme,
 } from "@mui/material";
 
@@ -275,7 +276,7 @@ const fakeArtistsDb = [
 ];
 
 export default function Board(props) {
-  const { boardId, compId, create } = props || {};
+  const { boardId } = props || {};
   const [status, setStatus] = useState("idle");
   const [tiles, setTiles] = useState([]);
   const [chosenTheme, setChosenTheme] = useState("Babyblue");
@@ -297,9 +298,7 @@ export default function Board(props) {
 
   // Display part of the theme buttons
   const renderThemeButtons = themes.map((theme, id) => {
-    // console.log('theme: ', theme);
     const { theming } = theme;
-
     return (
       <Button
         key={id}
@@ -314,10 +313,7 @@ export default function Board(props) {
 
   const fetchTiles = useCallback(async (boardId) => {
     setStatus("fetching");
-    console.log("fetching with boardId: ", boardId);
     const records = await tileService.getTiles(boardId);
-    console.log("records: ", records);
-
     setStatus("succeeded");
     setTiles(records);
   }, []);
@@ -325,15 +321,12 @@ export default function Board(props) {
   useEffect(() => {
     if (status === "idle") {
       fetchTiles(boardId);
-      // tileService.getAll();
     }
   }, [boardId, fetchTiles, status]);
 
   const renderTiles = () => {
     return tiles.map((tile, id) => {
-      // Working out the colours
       const picker = id % tileBgColour.length;
-      //console.log(song);
       const { title, actualArtist, artists } = tile;
       return (
         <Grid className="tile grid" key={id} item xs={12 / 5}>
@@ -343,7 +336,6 @@ export default function Board(props) {
             title={title}
             actualArtist={actualArtist}
             artists={artists}
-            // setBox={setBox}
             tileBgColour={tileBgColour[picker]}
             tileBgColourHover={tileBgColourHover[picker]}
             tileBorderColour={tileBorderColour[picker]}
@@ -356,32 +348,39 @@ export default function Board(props) {
   };
 
   let content;
-
   if (status === "fetching") {
-    // console.log('status: ', status);
     content = (
-      <div>
+      <Box sx={{ textAlign: "center", mt: 4 }}>
         <CircularProgress color="inherit" />
-      </div>
+      </Box>
     );
   } else if (status === "error") {
-    // console.log('status: ', status);
-    content = "Error";
+    content = (
+      <Typography
+        variant="body1"
+        color="error"
+        sx={{ textAlign: "center", mt: 4 }}
+      >
+        Error loading tiles.
+      </Typography>
+    );
   } else if (status === "succeeded" && tiles.length > 0) {
-    // console.log('status: ', status);
     content = renderTiles();
   } else {
-    // console.log('status: ', status);
-    content = <div>No tiles found</div>;
+    content = (
+      <Typography variant="body1" sx={{ textAlign: "center", mt: 4 }}>
+        No tiles found.
+      </Typography>
+    );
   }
 
   return (
     <Container>
-      {
+      <Box sx={{ textAlign: "center", mb: 2 }}>
         <ButtonGroup variant="outlined" aria-label="Theming button group">
           {renderThemeButtons}
         </ButtonGroup>
-      }
+      </Box>
       <Box
         className="board"
         aria-label="board"
@@ -401,7 +400,6 @@ export default function Board(props) {
           justifyContent="center"
           alignItems="center"
         >
-          {/*console.log(theme.palette)*/}
           {content}
         </Grid>
       </Box>

@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Fade from '@mui/material/Fade';
-import Stack from '@mui/material/Stack';
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import Fade from "@mui/material/Fade";
+import Stack from "@mui/material/Stack";
 
-import { alertService } from '../../_services';
-import { Box } from '@mui/material';
+import { alertService } from "../../_services";
+import { Box } from "@mui/material";
 
 export default function AlertComp({ id, fade }) {
   const location = useLocation();
@@ -16,7 +16,7 @@ export default function AlertComp({ id, fade }) {
   useEffect(() => {
     // Subscribe to new alert notifications
     const subscription = alertService.onAlert(id).subscribe((alert) => {
-      console.log('I was summoned for alert: ', alert);
+      console.log("I was summoned for alert: ", alert);
       // Clear alerts when an empty alert is received
       if (!alert.message) {
         setAlerts((alerts) => {
@@ -38,8 +38,8 @@ export default function AlertComp({ id, fade }) {
     // Clear alerts on location change
     const historyUnlisten = () => {
       // Don't clear if pathname has trailing slash because this will be auto redirected
-      console.log('I am unlistening...');
-      if (location.pathname.endsWith('/')) return;
+      // console.log('I am unlistening...');
+      if (location.pathname.endsWith("/")) return;
       alertService.clear(id);
     };
 
