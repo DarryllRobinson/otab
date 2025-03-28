@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   AppBar,
   Avatar,
@@ -12,20 +12,22 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@mui/material';
-import { Adb as AdbIcon, Menu as MenuIcon } from '@mui/icons-material';
-import MaterialUISwitch from './MaterialUISwitch';
-import { userService } from '../../features/Users/user.service';
-import { Link as RouterLink, useNavigate } from 'react-router';
+} from "@mui/material";
+import { Adb as AdbIcon, Menu as MenuIcon } from "@mui/icons-material";
+import MaterialUISwitch from "./MaterialUISwitch";
+import { userService } from "../../features/Users/user.service";
+import { Link as RouterLink, useNavigate } from "react-router";
 
 // Constants
 const pagesLoggedIn = [
-  { label: 'How it works', action: () => alert('Under development') },
-  { label: 'Competitions', action: (navigate) => navigate('/competitions') },
-  { label: 'My boards', action: (navigate) => navigate('/boards') },
-  { label: "Songs I've missed", action: () => alert('Under development') },
+  { label: "How it works", action: () => alert("Under development") },
+  { label: "Competitions", action: (navigate) => navigate("/competitions") },
+  { label: "My boards", action: (navigate) => navigate("/boards") },
+  { label: "Songs I've missed", action: () => alert("Under development") },
 ];
-const pagesLoggedOut = [{ label: 'How it works', action: () => alert('Under development') }];
+const pagesLoggedOut = [
+  { label: "How it works", action: () => alert("Under development") },
+];
 
 function ResponsiveAppBar(props) {
   const { checked, onChange } = props;
@@ -35,9 +37,9 @@ function ResponsiveAppBar(props) {
   const navigate = useNavigate();
 
   const profileMenu = [
-    { label: 'Dashboard', action: (navigate) => navigate('/dashboard') }, 
+    { label: "Dashboard", action: (navigate) => navigate("/dashboard") },
     // { label: 'Logout', action: () => onclick={handleLogout} } // Can't get this to work
-  ];  
+  ];
 
   // Handlers
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
@@ -47,7 +49,7 @@ function ResponsiveAppBar(props) {
   const handleLogout = () => {
     userService.logout();
     handleCloseUserMenu();
-    navigate('/signin');
+    navigate("/signin");
   };
 
   // Render Menu Items
@@ -58,18 +60,18 @@ function ResponsiveAppBar(props) {
       </MenuItem>
     ));
 
-    // Render Profile Items
-    const renderProfileItems = (pages) =>
-      pages.map((page, index) => (
-        <MenuItem key={index} onClick={() => page.action(navigate)}>
-          <Typography textAlign="center">{page.label}</Typography>
-        </MenuItem>
-      ));
+  // Render Profile Items
+  const renderProfileItems = (pages) =>
+    pages.map((page, index) => (
+      <MenuItem key={index} onClick={() => page.action(navigate)}>
+        <Typography textAlign="center">{page.label}</Typography>
+      </MenuItem>
+    ));
 
   // Components
   const logoWithIcon = (
     <>
-      <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+      <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
       <Typography
         variant="h6"
         noWrap
@@ -77,12 +79,12 @@ function ResponsiveAppBar(props) {
         href="/"
         sx={{
           mr: 2,
-          display: { xs: 'none', md: 'flex' },
-          fontFamily: 'monospace',
+          display: { xs: "none", md: "flex" },
+          fontFamily: "monospace",
           fontWeight: 700,
-          letterSpacing: '.3rem',
-          color: 'inherit',
-          textDecoration: 'none',
+          letterSpacing: ".3rem",
+          color: "inherit",
+          textDecoration: "none",
         }}
       >
         LOGO
@@ -92,7 +94,7 @@ function ResponsiveAppBar(props) {
 
   const logoWithIconResponsive = (
     <>
-      <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+      <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
       <Typography
         variant="h5"
         noWrap
@@ -100,13 +102,13 @@ function ResponsiveAppBar(props) {
         href="/"
         sx={{
           mr: 2,
-          display: { xs: 'flex', md: 'none' },
+          display: { xs: "flex", md: "none" },
           flexGrow: 1,
-          fontFamily: 'monospace',
+          fontFamily: "monospace",
           fontWeight: 700,
-          letterSpacing: '.3rem',
-          color: 'inherit',
-          textDecoration: 'none',
+          letterSpacing: ".3rem",
+          color: "inherit",
+          textDecoration: "none",
         }}
       >
         LOGO
@@ -115,7 +117,7 @@ function ResponsiveAppBar(props) {
   );
 
   const responsiveMenu = (
-    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+    <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
       <IconButton
         size="large"
         aria-label="navigation menu"
@@ -130,18 +132,18 @@ function ResponsiveAppBar(props) {
         id="menu-appbar"
         anchorEl={anchorElNav}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
+          vertical: "top",
+          horizontal: "left",
         }}
         open={Boolean(anchorElNav)}
         onClose={handleCloseNavMenu}
         sx={{
-          display: { xs: 'block', md: 'none' },
+          display: { xs: "block", md: "none" },
         }}
       >
         {renderMenuItems(user ? pagesLoggedIn : pagesLoggedOut)}
@@ -150,12 +152,12 @@ function ResponsiveAppBar(props) {
   );
 
   const desktopMenu = (
-    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
       {(user ? pagesLoggedIn : pagesLoggedOut).map((page, index) => (
         <Button
           key={index}
           onClick={() => page.action(navigate)}
-          sx={{ my: 2, color: 'white', display: 'block' }}
+          sx={{ my: 2, color: "white", display: "block" }}
         >
           {page.label}
         </Button>
@@ -171,17 +173,17 @@ function ResponsiveAppBar(props) {
         </IconButton>
       </Tooltip>
       <Menu
-        sx={{ mt: '45px' }}
+        sx={{ mt: "45px" }}
         id="menu-appbar"
         anchorEl={anchorElUser}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
@@ -195,7 +197,7 @@ function ResponsiveAppBar(props) {
             aria-label="dark-switch"
             checked={checked}
             onChange={onChange}
-            sx={{ display: 'flex' }}
+            sx={{ display: "flex" }}
           />
         </MenuItem>
       </Menu>

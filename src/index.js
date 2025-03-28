@@ -14,6 +14,7 @@ import CompetitionDetails, {
 } from "features/Competitions/CompetitionDetails";
 import CompetitionList from "features/Competitions/CompetitionList";
 import { competitionsLoader } from "features/Competitions/CompetitionList";
+import Boards, { boardsLoader } from "features/Boards/Boards";
 
 const router = createBrowserRouter(
   [
@@ -49,6 +50,11 @@ const router = createBrowserRouter(
               loader: competitionDetailsLoader,
             },
           ],
+        },
+        {
+          path: "/boards",
+          element: <Boards />,
+          loader: boardsLoader,
         },
       ],
     },

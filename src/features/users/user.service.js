@@ -1,7 +1,7 @@
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from "rxjs";
 
-import config from '../../_config/config';
-import { fetchWrapper } from '../../_helpers';
+import config from "../../_config/config";
+import { fetchWrapper } from "../../_helpers";
 
 const userSubject = new BehaviorSubject(null);
 const baseUrl = `${config.apiUrl}/users`;
@@ -28,9 +28,8 @@ export const userService = {
 
 function login(params) {
   return fetchWrapper.post(`${baseUrl}/authenticate`, params).then((user) => {
-    console.log('login user: ', user);
-    if (typeof user !== 'object' || user === null) {
-      throw 'Email or password is incorrect';
+    if (typeof user !== "object" || user === null) {
+      throw "Email or password is incorrect";
     }
     // publish user to subscribers and start timer to refresh token
     userSubject.next(user);
@@ -65,7 +64,7 @@ function refreshToken() {
       }
     });
   } catch (error) {
-    console.log('user.service error: ', error);
+    console.log("user.service error: ", error);
   }
 }
 
@@ -134,7 +133,7 @@ let refreshTokenTimeout;
 
 function startRefreshTokenTimer() {
   // parse json object from base64 encoded jwt token
-  const jwtToken = JSON.parse(atob(userSubject.value.jwtToken.split('.')[1]));
+  const jwtToken = JSON.parse(atob(userSubject.value.jwtToken.split(".")[1]));
 
   // set a timeout to refresh the token a minute before it expires
   const expires = new Date(jwtToken.exp * 1000);
