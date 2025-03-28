@@ -325,13 +325,13 @@ export default function Board(props) {
   }, [boardId, fetchTiles, status]);
 
   const renderTiles = () => {
-    return tiles.map((tile, id) => {
-      const picker = id % tileBgColour.length;
-      const { title, actualArtist, artists } = tile;
+    return tiles.map((tile, key) => {
+      const picker = key % tileBgColour.length;
+      const { id, title, actualArtist, artists } = tile;
       return (
-        <Grid className="tile grid" key={id} item xs={12 / 5}>
+        <Grid className="tile grid" key={key} item xs={12 / 5}>
           <Tile
-            key={id}
+            key={key}
             id={id}
             title={title}
             actualArtist={actualArtist}
