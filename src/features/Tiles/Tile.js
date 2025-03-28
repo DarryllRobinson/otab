@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { alpha } from "@mui/material/styles";
+import { debounce } from "lodash";
 
 import { tileService } from "./tile.service";
 
@@ -53,9 +54,12 @@ export default function Tile(props) {
 
   const size = title.length > 10 ? 12 : 16;
 
-  const handleClick = useCallback(() => {
-    setFlipped((prev) => !prev);
-  }, []);
+  const handleClick = useCallback(
+    debounce(() => {
+      setFlipped((prev) => !prev);
+    }, 300),
+    []
+  );
 
   const handleChange = (event) => {
     setChosenArtist(event.target.value);
@@ -66,22 +70,21 @@ export default function Tile(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (chosenArtist === "") {
+    if (!chosenArtist) {
       setHelperText("Please choose an artist");
       setError(true);
-    } else {
-      setHelperText("Lock it in!");
-      setError(false);
-      setSubmitted(true);
-      checkArtist(chosenArtist);
-      checkSong(title);
-      setChecksComplete(true);
-
-      setDisabled(true);
-      setTimeout(() => {
-        setDisabled(false);
-      }, 3000);
+      return;
     }
+
+    setHelperText("Lock it in!");
+    setError(false);
+    setSubmitted(true);
+    checkArtist(chosenArtist);
+    checkSong(title);
+    setChecksComplete(true);
+
+    setDisabled(true);
+    setTimeout(() => setDisabled(false), 3000);
   };
 
   const checkArtist = (chosenArtist) => {
@@ -116,19 +119,29 @@ export default function Tile(props) {
   const useStyles = makeStyles({ radioLabel: { fontSize: size } });
   const classes = useStyles();
 
-  const renderArtists = artists.map((artist, index) => (
-    <Typography key={index} sx={{ fontSize: size }}>
-      <FormControlLabel
-        value={artist}
-        control={<Radio size="small" />}
-        disabled={submitted}
-        label={artist}
-        onChange={handleChange}
-        size="small"
-        classes={{ label: classes.radioLabel }}
-      />
-    </Typography>
-  ));
+  const ArtistOptions = ({
+    artists,
+    handleChange,
+    submitted,
+    size,
+    classes,
+  }) => (
+    <>
+      {artists.map((artist, index) => (
+        <Typography key={index} sx={{ fontSize: size }}>
+          <FormControlLabel
+            value={artist}
+            control={<Radio size="small" />}
+            disabled={submitted}
+            label={artist}
+            onChange={handleChange}
+            size="small"
+            classes={{ label: classes.radioLabel }}
+          />
+        </Typography>
+      ))}
+    </>
+  );
 
   const displayChosenArtist = () => {
     if (!chosenArtist) return null;
@@ -221,7 +234,13 @@ export default function Tile(props) {
                     aria-labelledby="artists-radio-group-label"
                     name="radio-buttons-group"
                   >
-                    {renderArtists}
+                    <ArtistOptions
+                      artists={artists}
+                      handleChange={handleChange}
+                      submitted={submitted}
+                      size={size}
+                      classes={classes}
+                    />
                   </RadioGroup>
                   {!submitted && <FormHelperText>{helperText}</FormHelperText>}
                 </FormControl>
