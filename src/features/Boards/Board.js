@@ -108,7 +108,7 @@ export default function Board(props) {
           {tiles.length > 0 ? (
             renderTiles()
           ) : (
-            <Typography variant="body1" sx={{ textAlign: "center", mt: 4 }}>
+            <Typography variant="body1" sx={{ textAlign: "center" }}>
               No tiles found.
             </Typography>
           )}

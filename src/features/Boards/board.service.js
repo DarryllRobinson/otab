@@ -1,5 +1,5 @@
-import config from '../../_config/config';
-import { fetchWrapper } from '../../_helpers';
+import config from "../../_config/config";
+import { fetchWrapper } from "../../_helpers";
 const baseUrl = `${config.apiUrl}/boards`;
 
 export const boardService = {
@@ -7,16 +7,16 @@ export const boardService = {
   getById,
   getAllByUserId,
   getBoardByCompUserId,
-  create,
+  createBoard,
 };
 
 function getAll() {
-  console.log('fetching all boards');
+  console.log("fetching all boards");
   return fetchWrapper.get(baseUrl);
 }
 
 function getById(params) {
-  console.log('fetching board by id: ', params);
+  console.log("fetching board by id: ", params);
   return fetchWrapper.get(baseUrl, params);
 }
 
@@ -27,16 +27,16 @@ function getAllByUserId(params) {
 }
 
 function getBoardByCompUserId(params) {
-  console.log('getBoardByCompUserId: ', params);
+  console.log("getBoardByCompUserId: ", params);
   return fetchWrapper
     .post(`${baseUrl}/competition/user/`, params)
     .then((board) => {
-      console.log('found board: ', board);
+      console.log("found board: ", board);
       return board;
     });
 }
 
-function create(params) {
-  console.log('create: ', params);
+function createBoard(params) {
+  console.log("create: ", params);
   return fetchWrapper.post(baseUrl, params);
 }

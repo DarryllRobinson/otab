@@ -42,7 +42,11 @@ export default function CompetitionDetails() {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={() => alert("Enter the competition")}
+            onClick={() =>
+              navigate("/play", {
+                state: { compId: id, create: true, numTiles },
+              })
+            }
           >
             Enter the Competition
           </Button>
