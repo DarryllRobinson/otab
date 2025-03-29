@@ -36,7 +36,6 @@ export default function Play() {
           }
         );
       } else {
-        console.log("Loading board with state: ", state);
         LoadBoard(boardId).then((loadedTiles) => {
           setTiles(loadedTiles);
         });
