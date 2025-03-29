@@ -1,47 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
-import { useLocation } from "react-router";
 import Board from "../Boards/Board";
 import LoadBoard from "./LoadBoard";
 import CreateBoard from "./CreateBoard";
-import { songsDb, fakeArtistsDb } from "./mockData"; // Import mocked data
+import { boardService } from "../Boards/board.service"; // Import boardService
+import { userService } from "features/Users/user.service";
+import { useLoaderData, useLocation } from "react-router";
+
+export async function playLoader() {
+  const user = await userService.refreshToken();
+  const boards = await boardService.getAllByUserId({ userId: user.id });
+  return { boards };
+}
 
 export default function Play() {
-  const location = useLocation();
+  let { state } = useLocation();
+  console.log("state: ", state);
+  const { boards } = useLoaderData();
   const theme = useTheme();
   const [tiles, setTiles] = useState([]);
-  const [state, setState] = useState(() => {
-    // Retrieve state from localStorage if it exists
-    const savedState = localStorage.getItem("playState");
-    return savedState ? JSON.parse(savedState) : location.state;
-  });
+  const [loading, setLoading] = useState(true); // Track loading state
+  const hasCreatedBoard = useRef(false); // Track if CreateBoard has already been called
 
   useEffect(() => {
-    // Save the state to localStorage whenever it changes
-    if (state) {
-      localStorage.setItem("playState", JSON.stringify(state));
-    }
-  }, [state]);
+    // Check if user already has a board for the competition compId from state
+    const existingBoard = boards?.find(
+      (board) => board?.competitionId === state?.compId
+    );
+    console.log("existingBoard: ", existingBoard);
 
-  useEffect(() => {
-    if (state) {
-      const { boardId, compId, create, numTiles } = state;
-
-      if (create) {
-        console.log("Creating board with state: ", state);
-        CreateBoard(compId, numTiles, songsDb, fakeArtistsDb).then(
-          ({ boardId, songs }) => {
-            setTiles(songs);
-            setState((prevState) => ({ ...prevState, boardId })); // Update state with new boardId
-          }
-        );
-      } else {
-        LoadBoard(boardId).then((loadedTiles) => {
-          setTiles(loadedTiles);
-        });
+    // If no board exists, create a new one
+    if (!existingBoard && !hasCreatedBoard.current) {
+      console.log("Creating a new board");
+      async function makeBoard() {
+        const createdBoard = await CreateBoard(state);
+        console.log("createdBoard: ", createdBoard);
+        setTiles(createdBoard.tiles);
+        setLoading(false);
       }
+
+      makeBoard();
+    } else if (existingBoard) {
+      console.log("Loading existing board");
+      async function loadBoard() {
+        const loadedTiles = await LoadBoard(existingBoard.id); // LoadBoard returns an array
+        console.log("loadedTiles: ", loadedTiles);
+        setTiles(loadedTiles); // Directly set the tiles array
+        setLoading(false);
+      }
+
+      loadBoard();
     }
-  }, [state]);
+  }, [state, boards]);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h6">Loading...</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -57,9 +82,7 @@ export default function Play() {
         gutterBottom
         sx={{ marginBottom: 4 }}
       >
-        {state?.create
-          ? "Welcome to your new board"
-          : "Welcome back to your board"}
+        Header can go here
       </Typography>
       <Grid container justifyContent="center">
         <Grid item xs={12}>

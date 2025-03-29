@@ -102,12 +102,13 @@ export default function Tile(props) {
   const saveTile = useCallback(() => {
     tileService.update(id, {
       id,
+      actualArtist,
       chosenArtist,
       correctArtist,
       correctSong,
       submitted: true,
     });
-  }, [id, chosenArtist, correctArtist, correctSong]);
+  }, [id, actualArtist, chosenArtist, correctArtist, correctSong]);
 
   useEffect(() => {
     if (checksComplete) {

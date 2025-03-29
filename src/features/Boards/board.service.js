@@ -21,8 +21,6 @@ function getById(params) {
 }
 
 function getAllByUserId(params) {
-  // console.log('getAllByUserId params:', params);
-  // console.log('getAllByUserId url:', `${baseUrl}/user/`);
   return fetchWrapper.post(`${baseUrl}/user/`, params);
 }
 

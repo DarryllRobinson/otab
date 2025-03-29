@@ -1,5 +1,5 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { useLoaderData, useNavigate } from "react-router";
+import { Link as RouterLink, useLoaderData } from "react-router";
 import { competitionService } from "./competition.service";
 
 export async function competitionDetailsLoader({ params }) {
@@ -10,8 +10,7 @@ export async function competitionDetailsLoader({ params }) {
 
 export default function CompetitionDetails() {
   const { competition } = useLoaderData();
-  const { id, name, numTiles } = competition;
-  const navigate = useNavigate();
+  const { id, name, numTiles, numArtists } = competition;
 
   return (
     <Box
@@ -42,11 +41,13 @@ export default function CompetitionDetails() {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={() =>
-              navigate("/play", {
-                state: { compId: id, create: true, numTiles },
-              })
-            }
+            component={RouterLink}
+            to="/play"
+            state={{
+              compId: id,
+              numTiles,
+              numArtists,
+            }}
           >
             Enter the Competition
           </Button>
@@ -56,7 +57,8 @@ export default function CompetitionDetails() {
             variant="contained"
             color="secondary"
             fullWidth
-            onClick={() => navigate("/competitions")}
+            component={RouterLink}
+            to="/competitions"
           >
             Back to the Competitions
           </Button>

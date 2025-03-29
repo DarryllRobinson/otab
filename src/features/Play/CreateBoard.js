@@ -1,16 +1,15 @@
 import { tileService } from "../Tiles/tile.service";
 import { boardService } from "features/Boards/board.service";
 import { userService } from "features/Users/user.service";
+import { songsDb, fakeArtistsDb } from "./mockData"; // Import mocked data
 
-export default async function CreateBoard(
-  compId,
-  numTiles,
-  songsDb,
-  fakeArtistsDb
-) {
+export default async function CreateBoard(state) {
+  console.log("Creating board with state: ", state);
+  const { numTiles, numArtists, compId } = state;
   try {
     // Fetch the current user
     const user = await userService.refreshToken();
+    console.log("Going to create a board with: ", compId, user);
 
     // Create a new board in the database
     const board = await boardService.createBoard({
@@ -21,21 +20,29 @@ export default async function CreateBoard(
     console.log("Created board with ID: ", board.id);
 
     // Generate tiles for the board
-    const tiles = generateTiles(numTiles, songsDb, fakeArtistsDb, board.id);
+    const tiles = await generateTiles(
+      numTiles,
+      songsDb,
+      fakeArtistsDb,
+      board.id,
+      numArtists
+    );
 
-    // Save tiles to the database
-    for (const tile of tiles) {
-      await tileService.create(tile);
-    }
-
-    return { boardId: board.id, songs: tiles };
+    console.log("Tiles created: ", tiles);
+    return { boardId: board.id, tiles };
   } catch (error) {
     console.error("Error creating board: ", error);
-    return { boardId: null, songs: [] };
+    return { boardId: null, tiles: [] };
   }
 }
 
-function generateTiles(numTiles, songsDb, fakeArtistsDb, boardId) {
+async function generateTiles(
+  numTiles,
+  songsDb,
+  fakeArtistsDb,
+  boardId,
+  numArtists
+) {
   const tiles = [];
   const songIds = new Set();
 
@@ -45,14 +52,26 @@ function generateTiles(numTiles, songsDb, fakeArtistsDb, boardId) {
       songIds.add(songId);
 
       const { title, artist: actualArtist } = songsDb[songId];
-      const fakeArtists = fetchFakeArtists(actualArtist, fakeArtistsDb);
+      const fakeArtists = fetchFakeArtists(
+        actualArtist,
+        fakeArtistsDb,
+        numArtists
+      );
       const artists = shuffleArray([...fakeArtists, actualArtist]);
 
-      tiles.push({
+      // Save tile to the database and get the unique ID
+      const tile = {
         title,
         actualArtist,
         artists,
         boardId,
+      };
+      const createdTile = await tileService.create(tile);
+
+      // Add the unique ID to the tile object
+      tiles.push({
+        ...tile,
+        id: createdTile.id,
       });
     }
   }
@@ -64,11 +83,11 @@ function getRandomId(max) {
   return Math.floor(Math.random() * max);
 }
 
-function fetchFakeArtists(actualArtist, fakeArtistsDb) {
+function fetchFakeArtists(actualArtist, fakeArtistsDb, numArtists) {
   const fakeArtists = [];
   const usedIds = new Set();
 
-  while (fakeArtists.length < 2) {
+  while (fakeArtists.length < numArtists) {
     const fakeArtistId = getRandomId(fakeArtistsDb.length);
     if (!usedIds.has(fakeArtistId)) {
       const { artist } = fakeArtistsDb[fakeArtistId];

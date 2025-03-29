@@ -15,7 +15,7 @@ import CompetitionDetails, {
 import CompetitionList from "features/Competitions/CompetitionList";
 import { competitionsLoader } from "features/Competitions/CompetitionList";
 import Boards, { boardsLoader } from "features/Boards/Boards";
-import Play from "features/Play/Play";
+import Play, { playLoader } from "features/Play/Play";
 import Board from "features/Boards/Board";
 
 const router = createBrowserRouter(
@@ -62,6 +62,7 @@ const router = createBrowserRouter(
         {
           path: "/play",
           element: <Play />,
+          loader: playLoader,
         },
       ],
     },

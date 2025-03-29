@@ -46,7 +46,6 @@ export default function Boards() {
               state={{
                 boardId: board?.id,
                 compId: board?.competitionId,
-                create: false,
               }}
             >
               Competition ID: {board?.competitionId}

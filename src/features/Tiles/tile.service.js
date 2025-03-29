@@ -1,17 +1,17 @@
-import config from '../../_config/config';
-import { fetchWrapper } from '../../_helpers';
+import config from "../../_config/config";
+import { fetchWrapper } from "../../_helpers";
 const baseUrl = `${config.apiUrl}/tiles`;
 
 export const tileService = { getSong, getTiles, create, update, getAll };
 
 function getSong() {
-  console.log('getting getSong');
-  return { song: '16th song', artist: '16th Actual Artist' };
+  console.log("getting getSong");
+  return { song: "16th song", artist: "16th Actual Artist" };
   //   return fetchWrapper.get(`${baseUrl}/get-song`);
 }
 
 function getAll() {
-  console.log('getting it all');
+  console.log("getting it all");
   return fetchWrapper.get(baseUrl);
 }
 
