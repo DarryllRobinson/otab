@@ -1,11 +1,6 @@
-import { useState } from "react";
 import { tileService } from "../Tiles/tile.service";
 import { boardService } from "features/Boards/board.service";
 import { userService } from "features/Users/user.service";
-import { songsDb, fakeArtistsDb } from "./mockData"; // Import mocked data
-
-// Mocked data
-const numArtists = 2;
 
 export default async function CreateBoard(
   compId,
@@ -13,74 +8,80 @@ export default async function CreateBoard(
   songsDb,
   fakeArtistsDb
 ) {
-  const [status, setStatus] = useState("fetching");
-  const [boardId, setBoardId] = useState(null);
-  const [songs, setSongs] = useState([]);
+  try {
+    // Fetch the current user
+    const user = await userService.refreshToken();
 
-  const user = await userService.refreshToken();
-  const id = await boardService.createBoard({
-    competitionId: compId,
-    userId: user.id,
-  });
-  console.log("id: ", id);
-  setStatus("succeeded");
-  setBoardId(id);
-  setSongs(selectRandomSongs(numTiles, songsDb, fakeArtistsDb, boardId));
+    // Create a new board in the database
+    const board = await boardService.createBoard({
+      competitionId: compId,
+      userId: user.id,
+    });
 
-  return { boardId, songs };
+    console.log("Created board with ID: ", board.id);
 
-  function selectRandomSongs(numTiles, songsDb, fakeArtistsDb, boardId) {
-    let tiles = [];
-    let songIds = [];
-    for (let tile = 0; songIds.length < numTiles; tile++) {
-      const songId = getRandomId(songsDb.length);
-      const found = songIds.includes(songId);
+    // Generate tiles for the board
+    const tiles = generateTiles(numTiles, songsDb, fakeArtistsDb, board.id);
 
-      if (!found) {
-        const { artist } = findArrayElementById(songsDb, songId);
-        let artists = fetchFakeArtists(artist, fakeArtistsDb);
-        artists.push(artist);
-        artists = artists.sort(() => Math.random() - 0.5);
+    // Save tiles to the database
+    for (const tile of tiles) {
+      await tileService.create(tile);
+    }
 
-        songIds.push(songId);
-        const { title } = findArrayElementById(songsDb, songId);
+    return { boardId: board.id, songs: tiles };
+  } catch (error) {
+    console.error("Error creating board: ", error);
+    return { boardId: null, songs: [] };
+  }
+}
 
-        tileService.create({ title, artists, boardId });
+function generateTiles(numTiles, songsDb, fakeArtistsDb, boardId) {
+  const tiles = [];
+  const songIds = new Set();
 
-        tiles.push({
-          title,
-          actualArtist: artist,
-          artists,
-        });
+  while (songIds.size < numTiles) {
+    const songId = getRandomId(songsDb.length);
+    if (!songIds.has(songId)) {
+      songIds.add(songId);
+
+      const { title, artist: actualArtist } = songsDb[songId];
+      const fakeArtists = fetchFakeArtists(actualArtist, fakeArtistsDb);
+      const artists = shuffleArray([...fakeArtists, actualArtist]);
+
+      tiles.push({
+        title,
+        actualArtist,
+        artists,
+        boardId,
+      });
+    }
+  }
+
+  return tiles;
+}
+
+function getRandomId(max) {
+  return Math.floor(Math.random() * max);
+}
+
+function fetchFakeArtists(actualArtist, fakeArtistsDb) {
+  const fakeArtists = [];
+  const usedIds = new Set();
+
+  while (fakeArtists.length < 2) {
+    const fakeArtistId = getRandomId(fakeArtistsDb.length);
+    if (!usedIds.has(fakeArtistId)) {
+      const { artist } = fakeArtistsDb[fakeArtistId];
+      if (artist !== actualArtist) {
+        fakeArtists.push(artist);
+        usedIds.add(fakeArtistId);
       }
     }
-    console.log("tiles: ", tiles);
-    return tiles;
   }
 
-  function getRandomId(max) {
-    return Math.floor(Math.random() * max);
-  }
+  return fakeArtists;
+}
 
-  function findArrayElementById(array, id) {
-    return array.find((element) => element.id === id);
-  }
-
-  function fetchFakeArtists(actualArtist, fakeArtistsDb) {
-    let artistList = [];
-    let artistIds = [];
-    for (let artistLoop = 0; artistIds.length < numArtists; artistLoop++) {
-      const artistId = getRandomId(fakeArtistsDb.length);
-      const found = artistIds.includes(artistId);
-
-      if (!found) {
-        const { artist } = findArrayElementById(fakeArtistsDb, artistId);
-        if (artist !== actualArtist) {
-          artistList.push(artist);
-          artistIds.push(artistId);
-        }
-      }
-    }
-    return artistList;
-  }
+function shuffleArray(array) {
+  return array.sort(() => Math.random() - 0.5);
 }
