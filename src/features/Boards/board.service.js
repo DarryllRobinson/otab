@@ -11,12 +11,10 @@ export const boardService = {
 };
 
 function getAll() {
-  console.log("fetching all boards");
   return fetchWrapper.get(baseUrl);
 }
 
 function getById(params) {
-  console.log("fetching board by id: ", params);
   return fetchWrapper.get(baseUrl, params);
 }
 
@@ -25,16 +23,13 @@ function getAllByUserId(params) {
 }
 
 function getBoardByCompUserId(params) {
-  console.log("getBoardByCompUserId: ", params);
   return fetchWrapper
     .post(`${baseUrl}/competition/user/`, params)
     .then((board) => {
-      console.log("found board: ", board);
       return board;
     });
 }
 
 function createBoard(params) {
-  console.log("create: ", params);
   return fetchWrapper.post(baseUrl, params);
 }
