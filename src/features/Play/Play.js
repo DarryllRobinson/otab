@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import Board from "../Boards/Board";
 import LoadBoard from "./LoadBoard";
@@ -6,6 +6,8 @@ import CreateBoard from "./CreateBoard";
 import { boardService } from "../Boards/board.service"; // Import boardService
 import { userService } from "features/Users/user.service";
 import { useLoaderData, useLocation } from "react-router";
+import LoadingState from "../common/LoadingState"; // Import reusable component
+import EmptyState from "../common/EmptyState"; // Import reusable component
 
 export async function playLoader() {
   const user = await userService.refreshToken();
@@ -21,58 +23,36 @@ export default function Play() {
   const [loading, setLoading] = useState(true); // Track loading state
   const hasCreatedBoard = useRef(false); // Track if CreateBoard has already been called
 
-  useEffect(() => {
-    async function handleBoard() {
-      try {
-        const existingBoard = boards?.find(
-          (board) => board?.competitionId === state?.compId
-        );
+  const handleBoard = useCallback(async () => {
+    try {
+      const existingBoard = boards?.find(
+        (board) => board?.competitionId === state?.compId
+      );
 
-        if (!existingBoard && !hasCreatedBoard.current) {
-          const createdBoard = await CreateBoard(state);
-          setTiles(createdBoard.tiles);
-        } else if (existingBoard) {
-          const loadedTiles = await LoadBoard(existingBoard.id);
-          setTiles(loadedTiles);
-        }
-      } catch (error) {
-        console.error("Error handling board:", error);
-      } finally {
-        setLoading(false);
+      if (!existingBoard && !hasCreatedBoard.current) {
+        const createdBoard = await CreateBoard(state);
+        setTiles(createdBoard.tiles);
+      } else if (existingBoard) {
+        const loadedTiles = await LoadBoard(existingBoard.id);
+        setTiles(loadedTiles);
       }
+    } catch (error) {
+      console.error("Error handling board:", error);
+    } finally {
+      setLoading(false);
     }
+  }, [boards, state]);
 
+  useEffect(() => {
     handleBoard();
-  }, [state, boards]);
+  }, [handleBoard]);
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h6">Loading...</Typography>
-      </Box>
-    );
+    return <LoadingState />;
   }
 
   if (!boards || boards.length === 0) {
-    return (
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Typography variant="h6">No boards available.</Typography>
-      </Box>
-    );
+    return <EmptyState message="No boards available." />;
   }
 
   return (

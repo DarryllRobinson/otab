@@ -1,16 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 export default function useTimer(seconds) {
   const [count, setCount] = useState(seconds);
+  const [completed, setCompleted] = useState(false);
 
-  if (count === 0) {
-    //setCompleted(true);
-    return true;
-  }
-
-  setTimeout(() => {
-    if (count > 0) {
-      setCount(count - 1);
+  useEffect(() => {
+    if (count === 0) {
+      setCompleted(true);
+      return;
     }
-  }, 1000);
+
+    const interval = setInterval(() => {
+      setCount((prevCount) => Math.max(prevCount - 1, 0));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [count]);
+
+  return { count, completed };
 }

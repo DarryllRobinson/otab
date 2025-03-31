@@ -19,14 +19,45 @@ import {
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { alpha } from "@mui/material/styles";
-import { debounce } from "lodash";
+import { createDebouncedFunction } from "../common/utils";
 
 import { tileService } from "./tile.service";
 
 import "./Tile.css";
 
-// Move debounce outside the component
-const debouncedFlip = debounce((setFlipped) => {
+const useStyles = makeStyles((theme) => ({
+  flipContainer: {
+    "&.flipped": {
+      transform: "rotateY(180deg)",
+    },
+  },
+  card: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 250,
+    width: 200,
+    border: 1,
+    borderRadius: (props) => props.tileBorderRadius,
+    "&:hover": {
+      backgroundColor: (props) => props.tileBgColourHover,
+      boxShadow: 10,
+    },
+  },
+  frontCard: {
+    backgroundColor: (props) => props.tileBgColour,
+    color: (props) => props.tileTextColour,
+    borderColor: (props) => props.tileBorderColour,
+  },
+  backCard: {
+    borderColor: (props) => props.tileBorderColour,
+  },
+  radioLabel: {
+    fontSize: (props) => (props.title.length > 10 ? 12 : 16),
+  },
+}));
+
+const debouncedFlip = createDebouncedFunction((setFlipped) => {
   setFlipped((prev) => !prev);
 }, 300);
 
@@ -43,6 +74,8 @@ export default React.memo(function Tile(props) {
     tileBorderRadius,
   } = props;
 
+  const classes = useStyles(props);
+
   const [flipped, setFlipped] = useState(false);
   const [submitted, setSubmitted] = useState(
     props.submitted === 1 ? true : false
@@ -57,9 +90,14 @@ export default React.memo(function Tile(props) {
   const [checksComplete, setChecksComplete] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const size = title.length > 10 ? 12 : 16;
-
   const handleClick = useCallback(() => debouncedFlip(setFlipped), []);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleClick();
+    }
+  };
 
   const handleChange = (event) => {
     setChosenArtist(event.target.value);
@@ -72,6 +110,12 @@ export default React.memo(function Tile(props) {
 
     if (!chosenArtist) {
       setHelperText("Please choose an artist");
+      setError(true);
+      return;
+    }
+
+    if (typeof chosenArtist !== "string" || chosenArtist.trim() === "") {
+      setHelperText("Invalid artist selection");
       setError(true);
       return;
     }
@@ -117,24 +161,19 @@ export default React.memo(function Tile(props) {
     }
   }, [checksComplete, saveTile, handleClick]);
 
-  const useStyles = makeStyles({ radioLabel: { fontSize: size } });
-  const classes = useStyles();
-
   const ArtistOptions = useMemo(() => {
     return artists.map((artist, index) => (
-      <Typography key={index} sx={{ fontSize: size }}>
+      <Typography key={index} sx={{ fontSize: classes.radioLabel.fontSize }}>
         <FormControlLabel
           value={artist}
           control={<Radio size="small" />}
           disabled={submitted}
           label={artist}
           onChange={handleChange}
-          size="small"
-          classes={{ label: classes.radioLabel }}
         />
       </Typography>
     ));
-  }, [artists, submitted, size, classes]);
+  }, [artists, submitted, classes.radioLabel.fontSize]);
 
   const displayChosenArtist = () => {
     if (!chosenArtist) return null;
@@ -173,34 +212,27 @@ export default React.memo(function Tile(props) {
   };
 
   const displayBackTitle = () => (
-    <FormLabel id="tile-song-title" sx={{ fontSize: size }}>
+    <FormLabel
+      id="tile-song-title"
+      sx={{ fontSize: classes.radioLabel.fontSize }}
+    >
       {title}
     </FormLabel>
   );
 
   return (
-    <Box className={`flip-container ${flipped ? "flipped" : ""}`}>
+    <Box
+      className={`flip-container ${flipped ? "flipped" : ""} ${classes.flipContainer}`}
+      role="button"
+      tabIndex={0}
+      aria-pressed={flipped}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
       <form onSubmit={handleSubmit}>
         <div className="flipper">
-          <div className="front" onClick={handleClick}>
-            <Card
-              sx={{
-                "&:hover": {
-                  backgroundColor: tileBgColourHover,
-                  boxShadow: 10,
-                },
-                backgroundColor: tileBgColour,
-                color: tileTextColour,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                border: 1,
-                borderColor: tileBorderColour,
-                borderRadius: tileBorderRadius,
-                height: 250,
-                width: 200,
-              }}
-            >
+          <div className="front">
+            <Card className={`${classes.card} ${classes.frontCard}`}>
               <CardContent>
                 <Typography align="center" variant="h4" gutterBottom>
                   {title}
@@ -212,14 +244,7 @@ export default React.memo(function Tile(props) {
             </Card>
           </div>
           <div className="back">
-            <Card
-              sx={{
-                border: 1,
-                borderRadius: tileBorderRadius,
-                height: 250,
-                width: 200,
-              }}
-            >
+            <Card className={`${classes.card} ${classes.backCard}`}>
               <CardContent>
                 <FormControl error={error}>
                   {displayBackTitle()}
@@ -233,10 +258,19 @@ export default React.memo(function Tile(props) {
                 </FormControl>
               </CardContent>
               <CardActions>
-                <Button disabled={submitted} type="submit" variant="contained">
+                <Button
+                  disabled={submitted}
+                  type="submit"
+                  variant="contained"
+                  aria-label="Submit your answer"
+                >
                   Submit
                 </Button>
-                <Button variant="outlined" onClick={handleClick}>
+                <Button
+                  variant="outlined"
+                  onClick={handleClick}
+                  aria-label="Cancel and flip back"
+                >
                   Cancel
                 </Button>
               </CardActions>

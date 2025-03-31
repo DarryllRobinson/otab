@@ -8,43 +8,33 @@ export const fetchWrapper = {
   delete: _delete,
 };
 
-async function get(url) {
+async function request(url, method, body = null) {
+  const headers = { "Content-Type": "application/json", ...authHeader(url) };
   const requestOptions = {
-    method: "GET",
-    headers: authHeader(url),
+    method,
+    headers,
+    credentials: "include",
+    ...(body && { body: JSON.stringify(body) }),
   };
+
   const response = await fetch(url, requestOptions);
   return handleResponse(response);
+}
+
+async function get(url) {
+  return request(url, "GET");
 }
 
 async function post(url, body) {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...authHeader(url) },
-    credentials: "include",
-    body: JSON.stringify(body),
-  };
-  const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return request(url, "POST", body);
 }
 
 async function put(url, body) {
-  const requestOptions = {
-    method: "PUT",
-    headers: { "Content-Type": "application/json", ...authHeader(url) },
-    body: JSON.stringify(body),
-  };
-  const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return request(url, "PUT", body);
 }
 
 async function _delete(url) {
-  const requestOptions = {
-    method: "DELETE",
-    headers: authHeader(url),
-  };
-  const response = await fetch(url, requestOptions);
-  return handleResponse(response);
+  return request(url, "DELETE");
 }
 
 // Helper functions
@@ -58,17 +48,25 @@ function authHeader(url) {
 }
 
 function handleResponse(response) {
-  return response.text().then((text) => {
-    const data = text && JSON.parse(text);
+  return response
+    .text()
+    .then((text) => {
+      const data = text && JSON.parse(text);
 
-    if (!response.ok) {
-      if ([401, 403].includes(response.status) && userService.userValue) {
-        userService.logout();
+      if (!response.ok) {
+        if ([401, 403].includes(response.status) && userService.userValue) {
+          userService.logout();
+        }
+
+        const error = (data && data.message) || response.statusText;
+        console.error(`API Error: ${response.status}`);
+        return Promise.reject(new Error(error));
       }
-      const error = (data && data.message) || response.statusText;
-      return Promise.reject(error);
-    }
 
-    return data;
-  });
+      return data;
+    })
+    .catch((error) => {
+      console.error("An error occurred while processing the API response.");
+      throw error;
+    });
 }

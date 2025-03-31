@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
-  Button,
   ButtonGroup,
   Container,
   Grid,
@@ -10,13 +9,12 @@ import {
 } from "@mui/material";
 
 import Tile from "../Tiles/Tile";
+import ThemeButtons from "../common/ThemeButtons"; // Import reusable component
 
 export default function Board(props) {
   const { tiles } = props || {};
-  // console.log("tiles: ", tiles);
   const [chosenTheme, setChosenTheme] = useState("Babyblue");
 
-  // Setting the theme for the board
   const theme = useTheme();
   const { themes } = theme.palette;
   const boardTheme = themes.find((x) => x.theming === chosenTheme);
@@ -31,22 +29,7 @@ export default function Board(props) {
     tileSpacing,
   } = boardTheme;
 
-  // Display part of the theme buttons
-  const renderThemeButtons = themes.map((theme, id) => {
-    const { theming } = theme;
-    return (
-      <Button
-        key={id}
-        onClick={() => {
-          setChosenTheme(theming);
-        }}
-      >
-        {theming}
-      </Button>
-    );
-  });
-
-  const renderTiles = () => {
+  const renderTiles = useMemo(() => {
     return tiles.map((tile, key) => {
       const picker = key % tileBgColour.length;
       const {
@@ -59,9 +42,15 @@ export default function Board(props) {
         chosenArtist,
       } = tile;
       return (
-        <Grid className="tile grid" key={key} item xs={12 / 5}>
+        <Grid
+          className="tile grid"
+          key={key}
+          item
+          xs={12 / 5}
+          role="listitem"
+          aria-label={`Tile ${key + 1}`}
+        >
           <Tile
-            key={key}
             id={id}
             title={title}
             actualArtist={actualArtist}
@@ -78,18 +67,28 @@ export default function Board(props) {
         </Grid>
       );
     });
-  };
+  }, [
+    tiles,
+    tileBgColour,
+    tileBgColourHover,
+    tileBorderColour,
+    tileTextColour,
+    tileBorderRadius,
+  ]);
 
   return (
     <Container>
       <Box sx={{ textAlign: "center", mb: 2 }}>
-        <ButtonGroup variant="outlined" aria-label="Theming button group">
-          {renderThemeButtons}
-        </ButtonGroup>
+        <ThemeButtons
+          themes={themes}
+          chosenTheme={chosenTheme}
+          setChosenTheme={setChosenTheme}
+        />
       </Box>
       <Box
         className="board"
-        aria-label="board"
+        aria-label="Game board"
+        role="list"
         sx={{
           backgroundColor: boardBgColour,
           borderColor: boardBorderColour,
@@ -107,9 +106,14 @@ export default function Board(props) {
           alignItems="center"
         >
           {tiles.length > 0 ? (
-            renderTiles()
+            renderTiles
           ) : (
-            <Typography variant="body1" sx={{ textAlign: "center" }}>
+            <Typography
+              variant="body1"
+              sx={{ textAlign: "center" }}
+              role="alert"
+              aria-live="polite"
+            >
               No tiles found.
             </Typography>
           )}
