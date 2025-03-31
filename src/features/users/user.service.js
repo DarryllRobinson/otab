@@ -31,7 +31,6 @@ function login(params) {
     if (typeof user !== "object" || user === null) {
       throw "Email or password is incorrect";
     }
-    // publish user to subscribers and start timer to refresh token
     userSubject.next(user);
     startRefreshTokenTimer();
     return user;
@@ -39,33 +38,19 @@ function login(params) {
 }
 
 function logout() {
-  // console.log('logout userSubject.value: ', userSubject.value);
-  // revoke token, stop refresh timer, publish null to user subscribers and redirect to login page
   fetchWrapper.post(`${baseUrl}/revoke-token`, userSubject.value);
   stopRefreshTokenTimer();
   userSubject.next(null);
 }
 
 function refreshToken() {
-  try {
-    return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
-      // console.log('user: ', user);
-
-      if (user.email) {
-        // publish user to subscribers and start timer to refresh token
-        userSubject.next(user);
-        // try {
-        startRefreshTokenTimer();
-        // } catch (error) {
-        //   alertService.caller(error, null, 'Error', 'Problem');
-        // }
-
-        return user;
-      }
-    });
-  } catch (error) {
-    console.log("user.service error: ", error);
-  }
+  return fetchWrapper.post(`${baseUrl}/refresh-token`, {}).then((user) => {
+    if (user.email) {
+      userSubject.next(user);
+      startRefreshTokenTimer();
+      return user;
+    }
+  });
 }
 
 function register(params) {
@@ -106,9 +91,7 @@ function create(params) {
 
 function update(id, params) {
   return fetchWrapper.put(`${baseUrl}/${id}`, params).then((user) => {
-    // update stored user if the logged in user updated their own record
     if (user.id === userSubject.value.id) {
-      // publish updated user to subscribers
       user = { ...userSubject.value, ...user };
       userSubject.next(user);
     }
@@ -116,10 +99,8 @@ function update(id, params) {
   });
 }
 
-// prefixed with underscore because 'delete' is a reserved word in javascript
 function _delete(id) {
   return fetchWrapper.delete(`${baseUrl}/${id}`).then((x) => {
-    // auto logout if the logged in user deleted their own record
     if (id === userSubject.value.id) {
       logout();
     }
@@ -127,15 +108,11 @@ function _delete(id) {
   });
 }
 
-// helper functions
-
+// Helper functions
 let refreshTokenTimeout;
 
 function startRefreshTokenTimer() {
-  // parse json object from base64 encoded jwt token
   const jwtToken = JSON.parse(atob(userSubject.value.jwtToken.split(".")[1]));
-
-  // set a timeout to refresh the token a minute before it expires
   const expires = new Date(jwtToken.exp * 1000);
   const timeout = expires.getTime() - Date.now() - 60 * 1000;
   refreshTokenTimeout = setTimeout(refreshToken, timeout);
