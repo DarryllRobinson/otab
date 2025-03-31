@@ -58,7 +58,6 @@ const router = createBrowserRouter(
           element: <Boards />,
           loader: boardsLoader,
         },
-        // { path: "/board", element: <Board /> },
         {
           path: "/play",
           element: <Play />,
