@@ -13,7 +13,7 @@ import Tile from "../Tiles/Tile";
 
 export default function Board(props) {
   const { tiles } = props || {};
-  console.log("tiles: ", tiles);
+  // console.log("tiles: ", tiles);
   const [chosenTheme, setChosenTheme] = useState("Babyblue");
 
   // Setting the theme for the board

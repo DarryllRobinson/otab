@@ -15,7 +15,7 @@ export async function playLoader() {
 
 export default function Play() {
   let { state } = useLocation();
-  console.log("state: ", state);
+  // console.log("state: ", state);
   const { boards } = useLoaderData();
   const theme = useTheme();
   const [tiles, setTiles] = useState([]);
@@ -27,24 +27,24 @@ export default function Play() {
     const existingBoard = boards?.find(
       (board) => board?.competitionId === state?.compId
     );
-    console.log("existingBoard: ", existingBoard);
+    // console.log("existingBoard: ", existingBoard);
 
     // If no board exists, create a new one
     if (!existingBoard && !hasCreatedBoard.current) {
-      console.log("Creating a new board");
+      // console.log("Creating a new board");
       async function makeBoard() {
         const createdBoard = await CreateBoard(state);
-        console.log("createdBoard: ", createdBoard);
+        // console.log("createdBoard: ", createdBoard);
         setTiles(createdBoard.tiles);
         setLoading(false);
       }
 
       makeBoard();
     } else if (existingBoard) {
-      console.log("Loading existing board");
+      // console.log("Loading existing board");
       async function loadBoard() {
         const loadedTiles = await LoadBoard(existingBoard.id); // LoadBoard returns an array
-        console.log("loadedTiles: ", loadedTiles);
+        // console.log("loadedTiles: ", loadedTiles);
         setTiles(loadedTiles); // Directly set the tiles array
         setLoading(false);
       }

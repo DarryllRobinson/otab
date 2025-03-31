@@ -4,12 +4,12 @@ import { userService } from "features/Users/user.service";
 import { songsDb, fakeArtistsDb } from "./mockData"; // Import mocked data
 
 export default async function CreateBoard(state) {
-  console.log("Creating board with state: ", state);
+  //   console.log("Creating board with state: ", state);
   const { numTiles, numArtists, compId } = state;
   try {
     // Fetch the current user
     const user = await userService.refreshToken();
-    console.log("Going to create a board with: ", compId, user);
+    // console.log("Going to create a board with: ", compId, user);
 
     // Create a new board in the database
     const board = await boardService.createBoard({
@@ -17,7 +17,7 @@ export default async function CreateBoard(state) {
       userId: user.id,
     });
 
-    console.log("Created board with ID: ", board.id);
+    // console.log("Created board with ID: ", board.id);
 
     // Generate tiles for the board
     const tiles = await generateTiles(
@@ -28,7 +28,7 @@ export default async function CreateBoard(state) {
       numArtists
     );
 
-    console.log("Tiles created: ", tiles);
+    // console.log("Tiles created: ", tiles);
     return { boardId: board.id, tiles };
   } catch (error) {
     console.error("Error creating board: ", error);
@@ -66,9 +66,9 @@ async function generateTiles(
         artists,
         boardId,
       };
-      console.log("Tile to create: ", tile);
+      //   console.log("Tile to create: ", tile);
       const createdTile = await tileService.create(tile);
-      console.log("Created tile: ", createdTile);
+      //   console.log("Created tile: ", createdTile);
 
       // Add the unique ID to the tile object
       tiles.push({
