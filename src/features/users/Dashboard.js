@@ -1,19 +1,19 @@
-import React from 'react';
-import { Box, Typography, Button, Grid, Paper, useTheme } from '@mui/material';
-import { useNavigate } from 'react-router';
+import React from "react";
+import { Box, Typography, Button, Grid, Paper, useTheme } from "@mui/material";
+import { useNavigate } from "react-router";
 
-function Dashboard() {
+function Dashboard(props) {
   const theme = useTheme(); // Access the theme
   const navigate = useNavigate();
 
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
         padding: 2,
         backgroundColor: theme.palette.background.default,
       }}
@@ -22,7 +22,8 @@ function Dashboard() {
         Welcome to Your Dashboard
       </Typography>
       <Typography variant="body1" gutterBottom>
-        Here you can manage your boards, view competitions, and explore more features.
+        Here you can manage your boards, view competitions, and explore more
+        features.
       </Typography>
       <Grid container spacing={2} sx={{ marginTop: 2, maxWidth: 600 }}>
         <Grid item xs={12} sm={6}>
@@ -30,7 +31,8 @@ function Dashboard() {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={() => navigate('/boards')}
+            onClick={() => navigate("/boards")}
+            aria-label="Navigate to My Boards"
           >
             My Boards
           </Button>
@@ -40,7 +42,8 @@ function Dashboard() {
             variant="contained"
             color="secondary"
             fullWidth
-            onClick={() => navigate('/competitions')}
+            onClick={() => navigate("/competitions")}
+            aria-label="Navigate to Competitions"
           >
             Competitions
           </Button>
@@ -50,7 +53,8 @@ function Dashboard() {
             variant="outlined"
             color="primary"
             fullWidth
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate("/profile")}
+            aria-label="View Profile"
           >
             View Profile
           </Button>
@@ -61,9 +65,9 @@ function Dashboard() {
         sx={{
           marginTop: 4,
           padding: 2,
-          width: '100%',
+          width: "100%",
           maxWidth: 600,
-          textAlign: 'center',
+          textAlign: "center",
           backgroundColor: theme.palette.background.paper,
         }}
       >
@@ -71,13 +75,13 @@ function Dashboard() {
           Quick Stats
         </Typography>
         <Typography variant="body2">
-          Boards Created: 5
+          Boards Created: {props.boardsCreated || 0}
         </Typography>
         <Typography variant="body2">
-          Competitions Participated: 3
+          Competitions Participated: {props.competitionsParticipated || 0}
         </Typography>
         <Typography variant="body2">
-          Songs Missed: 12
+          Songs Missed: {props.songsMissed || 0}
         </Typography>
       </Paper>
     </Box>

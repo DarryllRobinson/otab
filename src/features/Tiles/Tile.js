@@ -25,6 +25,11 @@ import { tileService } from "./tile.service";
 
 import "./Tile.css";
 
+// Move debounce outside the component
+const debouncedFlip = debounce((setFlipped) => {
+  setFlipped((prev) => !prev);
+}, 300);
+
 export default function Tile(props) {
   const {
     id,
@@ -54,13 +59,7 @@ export default function Tile(props) {
 
   const size = title.length > 10 ? 12 : 16;
 
-  const handleClick = useMemo(
-    () =>
-      debounce(() => {
-        setFlipped((prev) => !prev);
-      }, 300),
-    []
-  );
+  const handleClick = useCallback(() => debouncedFlip(setFlipped), []);
 
   const handleChange = (event) => {
     setChosenArtist(event.target.value);
@@ -121,29 +120,21 @@ export default function Tile(props) {
   const useStyles = makeStyles({ radioLabel: { fontSize: size } });
   const classes = useStyles();
 
-  const ArtistOptions = ({
-    artists,
-    handleChange,
-    submitted,
-    size,
-    classes,
-  }) => (
-    <>
-      {artists.map((artist, index) => (
-        <Typography key={index} sx={{ fontSize: size }}>
-          <FormControlLabel
-            value={artist}
-            control={<Radio size="small" />}
-            disabled={submitted}
-            label={artist}
-            onChange={handleChange}
-            size="small"
-            classes={{ label: classes.radioLabel }}
-          />
-        </Typography>
-      ))}
-    </>
-  );
+  const ArtistOptions = useMemo(() => {
+    return artists.map((artist, index) => (
+      <Typography key={index} sx={{ fontSize: size }}>
+        <FormControlLabel
+          value={artist}
+          control={<Radio size="small" />}
+          disabled={submitted}
+          label={artist}
+          onChange={handleChange}
+          size="small"
+          classes={{ label: classes.radioLabel }}
+        />
+      </Typography>
+    ));
+  }, [artists, submitted, size, classes]);
 
   const displayChosenArtist = () => {
     if (!chosenArtist) return null;
@@ -236,13 +227,7 @@ export default function Tile(props) {
                     aria-labelledby="artists-radio-group-label"
                     name="radio-buttons-group"
                   >
-                    <ArtistOptions
-                      artists={artists}
-                      handleChange={handleChange}
-                      submitted={submitted}
-                      size={size}
-                      classes={classes}
-                    />
+                    {ArtistOptions}
                   </RadioGroup>
                   {!submitted && <FormHelperText>{helperText}</FormHelperText>}
                 </FormControl>

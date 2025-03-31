@@ -15,7 +15,6 @@ export async function playLoader() {
 
 export default function Play() {
   let { state } = useLocation();
-  // console.log("state: ", state);
   const { boards } = useLoaderData();
   const theme = useTheme();
   const [tiles, setTiles] = useState([]);
@@ -23,34 +22,27 @@ export default function Play() {
   const hasCreatedBoard = useRef(false); // Track if CreateBoard has already been called
 
   useEffect(() => {
-    // Check if user already has a board for the competition compId from state
-    const existingBoard = boards?.find(
-      (board) => board?.competitionId === state?.compId
-    );
-    // console.log("existingBoard: ", existingBoard);
+    async function handleBoard() {
+      try {
+        const existingBoard = boards?.find(
+          (board) => board?.competitionId === state?.compId
+        );
 
-    // If no board exists, create a new one
-    if (!existingBoard && !hasCreatedBoard.current) {
-      // console.log("Creating a new board");
-      async function makeBoard() {
-        const createdBoard = await CreateBoard(state);
-        // console.log("createdBoard: ", createdBoard);
-        setTiles(createdBoard.tiles);
+        if (!existingBoard && !hasCreatedBoard.current) {
+          const createdBoard = await CreateBoard(state);
+          setTiles(createdBoard.tiles);
+        } else if (existingBoard) {
+          const loadedTiles = await LoadBoard(existingBoard.id);
+          setTiles(loadedTiles);
+        }
+      } catch (error) {
+        console.error("Error handling board:", error);
+      } finally {
         setLoading(false);
       }
-
-      makeBoard();
-    } else if (existingBoard) {
-      // console.log("Loading existing board");
-      async function loadBoard() {
-        const loadedTiles = await LoadBoard(existingBoard.id); // LoadBoard returns an array
-        // console.log("loadedTiles: ", loadedTiles);
-        setTiles(loadedTiles); // Directly set the tiles array
-        setLoading(false);
-      }
-
-      loadBoard();
     }
+
+    handleBoard();
   }, [state, boards]);
 
   if (loading) {
@@ -64,6 +56,21 @@ export default function Play() {
         }}
       >
         <Typography variant="h6">Loading...</Typography>
+      </Box>
+    );
+  }
+
+  if (!boards || boards.length === 0) {
+    return (
+      <Box
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Typography variant="h6">No boards available.</Typography>
       </Box>
     );
   }

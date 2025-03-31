@@ -20,6 +20,16 @@ export default function CompetitionList() {
   const { competitions } = useLoaderData();
   const theme = useTheme();
 
+  if (!competitions) {
+    return (
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          Loading competitions...
+        </Typography>
+      </Box>
+    );
+  }
+
   const renderCompetitions = () => {
     return competitions?.map((competition) => {
       const { id, name, numTiles } = competition;

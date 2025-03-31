@@ -1,7 +1,15 @@
-import React from 'react';
-import { Link as RouterLink } from 'react-router';
-import { Box, Button, Typography, Grid, Card, CardContent, useTheme } from '@mui/material';
-import Copyright from './Copyright';
+import React from "react";
+import { Link as RouterLink } from "react-router";
+import {
+  Box,
+  Button,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  useTheme,
+} from "@mui/material";
+import Copyright from "./Copyright";
 
 export default function LandingPage() {
   const theme = useTheme();
@@ -10,10 +18,10 @@ export default function LandingPage() {
     <Box
       sx={{
         marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        textAlign: 'center',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
         padding: 4,
         backgroundColor: theme.palette.background.default,
         color: theme.palette.text.primary,
@@ -36,13 +44,13 @@ export default function LandingPage() {
             mx: 1,
             px: 4,
             py: 2,
-            fontSize: '1.2rem',
-            boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-            transition: 'transform 0.2s, box-shadow 0.2s',
-            '&:hover': {
-              backgroundColor: '#ff5722',
-              transform: 'scale(1.05)',
-              boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.2)',
+            fontSize: "1.2rem",
+            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+            transition: "transform 0.2s, box-shadow 0.2s",
+            "&:hover": {
+              backgroundColor: "#ff5722",
+              transform: "scale(1.05)",
+              boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.2)",
             },
           }}
         >
@@ -57,10 +65,10 @@ export default function LandingPage() {
             mx: 1,
             px: 4,
             py: 2,
-            fontSize: '1.2rem',
-            borderColor: 'white',
-            color: 'white',
-            '&:hover': { borderColor: '#ff5722', color: '#ff5722' },
+            fontSize: "1.2rem",
+            borderColor: "white",
+            color: "white",
+            "&:hover": { borderColor: "#ff5722", color: "#ff5722" },
           }}
         >
           Login
@@ -74,9 +82,9 @@ export default function LandingPage() {
             mx: 1,
             px: 4,
             py: 2,
-            fontSize: '1.2rem',
-            color: 'white',
-            '&:hover': { color: '#ff5722' },
+            fontSize: "1.2rem",
+            color: "white",
+            "&:hover": { color: "#ff5722" },
           }}
         >
           Play as Guest
@@ -84,7 +92,7 @@ export default function LandingPage() {
       </Box>
 
       {/* Game Preview & Features */}
-      <Box sx={{ mt: 8, width: '100%' }}>
+      <Box sx={{ mt: 8, width: "100%" }}>
         <Typography variant="h4" gutterBottom>
           Why Play Radio Bingo?
         </Typography>
@@ -129,7 +137,7 @@ export default function LandingPage() {
       </Box>
 
       {/* Social Proof & Community */}
-      <Box sx={{ mt: 8, width: '100%' }}>
+      <Box sx={{ mt: 8, width: "100%" }}>
         <Typography variant="h4" gutterBottom>
           Join Our Community!
         </Typography>
@@ -186,17 +194,17 @@ export default function LandingPage() {
             mx: 1,
             px: 4,
             py: 2,
-            fontSize: '1.2rem',
-            backgroundColor: '#ff5722',
-            color: 'white',
-            animation: 'pulse 2s infinite',
-            '@keyframes pulse': {
-              '0%': { transform: 'scale(1)' },
-              '50%': { transform: 'scale(1.05)' },
-              '100%': { transform: 'scale(1)' },
+            fontSize: "1.2rem",
+            backgroundColor: "#ff5722",
+            color: "white",
+            animation: "pulse 2s infinite",
+            "@keyframes pulse": {
+              "0%": { transform: "scale(1)" },
+              "50%": { transform: "scale(1.05)" },
+              "100%": { transform: "scale(1)" },
             },
-            '&:hover': {
-              backgroundColor: '#e64a19',
+            "&:hover": {
+              backgroundColor: "#e64a19",
             },
           }}
         >
@@ -218,29 +226,56 @@ export default function LandingPage() {
         sx={{
           mt: 8,
           py: 4,
-          width: '100%',
-          backgroundColor: 'grey.200',
-          textAlign: 'center',
+          width: "100%",
+          backgroundColor: "grey.200",
+          textAlign: "center",
         }}
       >
         <Typography variant="body2" gutterBottom>
-          <RouterLink to="/rules">Game Rules</RouterLink> |{' '}
-          <RouterLink to="/faq">FAQ</RouterLink> |{' '}
+          <RouterLink to="/rules">Game Rules</RouterLink> |{" "}
+          <RouterLink to="/faq">FAQ</RouterLink> |{" "}
           <RouterLink to="/support">Support</RouterLink>
         </Typography>
         <Typography variant="body2" gutterBottom>
-          <RouterLink to="/privacy-policy">Privacy Policy</RouterLink> |{' '}
+          <RouterLink to="/privacy-policy">Privacy Policy</RouterLink> |{" "}
           <RouterLink to="/terms-of-service">Terms of Service</RouterLink>
         </Typography>
         <Box sx={{ mt: 2 }}>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-            <img src="/path/to/facebook-icon.png" alt="Facebook" style={{ width: 24, marginRight: 8 }} />
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/path/to/facebook-icon.png"
+              alt="Facebook"
+              style={{ width: 24, marginRight: 8 }}
+              loading="lazy"
+            />
           </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-            <img src="/path/to/twitter-icon.png" alt="Twitter" style={{ width: 24, marginRight: 8 }} />
+          <a
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/path/to/twitter-icon.png"
+              alt="Twitter"
+              style={{ width: 24, marginRight: 8 }}
+              loading="lazy"
+            />
           </a>
-          <a href="https://discord.com" target="_blank" rel="noopener noreferrer">
-            <img src="/path/to/discord-icon.png" alt="Discord" style={{ width: 24 }} />
+          <a
+            href="https://discord.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="/path/to/discord-icon.png"
+              alt="Discord"
+              style={{ width: 24 }}
+              loading="lazy"
+            />
           </a>
         </Box>
         <Copyright />
