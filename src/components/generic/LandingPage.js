@@ -17,7 +17,6 @@ export default function LandingPage() {
   return (
     <Box
       sx={{
-        marginTop: 8,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -29,10 +28,10 @@ export default function LandingPage() {
     >
       {/* Hero Section */}
       <Typography variant="h2" gutterBottom>
-        🎉 Radio Bingo 🎉
+        🎉 Welcome to OTAB 🎉
       </Typography>
       <Typography variant="h5" gutterBottom>
-        Play Bingo Anytime, Anywhere!
+        Play, Compete, and Win!
       </Typography>
       <Box sx={{ mt: 4 }}>
         <Button
@@ -48,7 +47,7 @@ export default function LandingPage() {
             boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
             transition: "transform 0.2s, box-shadow 0.2s",
             "&:hover": {
-              backgroundColor: "#ff5722",
+              backgroundColor: theme.palette.secondary.main,
               transform: "scale(1.05)",
               boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.2)",
             },
@@ -66,45 +65,32 @@ export default function LandingPage() {
             px: 4,
             py: 2,
             fontSize: "1.2rem",
-            borderColor: "white",
-            color: "white",
-            "&:hover": { borderColor: "#ff5722", color: "#ff5722" },
+            borderColor: theme.palette.text.primary,
+            color: theme.palette.text.primary,
+            "&:hover": {
+              borderColor: theme.palette.secondary.main,
+              color: theme.palette.secondary.main,
+            },
           }}
         >
           Login
         </Button>
-        <Button
-          component={RouterLink}
-          to="/guest-play"
-          variant="text"
-          color="inherit"
-          sx={{
-            mx: 1,
-            px: 4,
-            py: 2,
-            fontSize: "1.2rem",
-            color: "white",
-            "&:hover": { color: "#ff5722" },
-          }}
-        >
-          Play as Guest
-        </Button>
       </Box>
 
-      {/* Game Preview & Features */}
+      {/* Feature Highlights */}
       <Box sx={{ mt: 8, width: "100%" }}>
         <Typography variant="h4" gutterBottom>
-          Why Play Radio Bingo?
+          Why Choose OTAB?
         </Typography>
         <Grid container spacing={4} justifyContent="center">
           <Grid item xs={12} sm={6} md={4}>
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  🎮 Play for Free!
+                  🎮 Fun & Interactive
                 </Typography>
                 <Typography variant="body2">
-                  Enjoy endless fun without spending a dime.
+                  Enjoy engaging gameplay with friends and family.
                 </Typography>
               </CardContent>
             </Card>
@@ -113,10 +99,10 @@ export default function LandingPage() {
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  🏆 Win Exciting Prizes!
+                  🏆 Compete to Win
                 </Typography>
                 <Typography variant="body2">
-                  Compete with others and win amazing rewards.
+                  Join competitions and win exciting prizes.
                 </Typography>
               </CardContent>
             </Card>
@@ -125,55 +111,10 @@ export default function LandingPage() {
             <Card>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
-                  👨‍👩‍👧‍👦 Play with Friends!
+                  🌟 Custom Themes
                 </Typography>
                 <Typography variant="body2">
-                  Create custom rooms and enjoy bingo with your friends.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {/* Social Proof & Community */}
-      <Box sx={{ mt: 8, width: "100%" }}>
-        <Typography variant="h4" gutterBottom>
-          Join Our Community!
-        </Typography>
-        <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={12} sm={6} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  🌟 Live Player Count
-                </Typography>
-                <Typography variant="body2">
-                  Over 10,000 players online right now!
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  🏅 Recent Winners
-                </Typography>
-                <Typography variant="body2">
-                  See the latest winners and their prizes.
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  💬 Testimonials
-                </Typography>
-                <Typography variant="body2">
-                  "The best bingo game ever!" - Happy Player
+                  Personalize your experience with dynamic themes.
                 </Typography>
               </CardContent>
             </Card>
@@ -195,7 +136,7 @@ export default function LandingPage() {
             px: 4,
             py: 2,
             fontSize: "1.2rem",
-            backgroundColor: "#ff5722",
+            backgroundColor: theme.palette.primary.main,
             color: "white",
             animation: "pulse 2s infinite",
             "@keyframes pulse": {
@@ -204,20 +145,11 @@ export default function LandingPage() {
               "100%": { transform: "scale(1)" },
             },
             "&:hover": {
-              backgroundColor: "#e64a19",
+              backgroundColor: theme.palette.secondary.main,
             },
           }}
         >
           Play Now
-        </Button>
-        <Button
-          component={RouterLink}
-          to="/signup"
-          variant="outlined"
-          color="secondary"
-          sx={{ mx: 1 }}
-        >
-          Sign Up & Get 500 Free Coins!
         </Button>
       </Box>
 

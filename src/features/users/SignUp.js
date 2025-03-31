@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router";
 import {
   Avatar,
   Box,
@@ -13,12 +13,12 @@ import {
   TextField,
   Typography,
   useTheme, // Import useTheme
-} from '@mui/material';
-import { LockOutlined } from '@mui/icons-material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+} from "@mui/material";
+import { LockOutlined } from "@mui/icons-material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
-import { userService } from './user.service';
-import { alertService } from '../../_services';
+import { userService } from "./user.service";
+import { alertService } from "../../_services";
 
 const theme = createTheme();
 
@@ -27,11 +27,11 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    firstName: 'Darryll',
-    lastName: 'Robinson',
-    email: 'darryllrobinson@icloud.com',
-    password: 'newpassss',
-    confirmPassword: 'newpassss',
+    firstName: "Darryll",
+    lastName: "Robinson",
+    email: "darryllrobinson@icloud.com",
+    password: "newpassss",
+    confirmPassword: "newpassss",
     acceptTerms: false,
     acceptMarketing: false,
   });
@@ -67,20 +67,20 @@ export default function SignUp() {
       .register(formData)
       .then(() => {
         alertService.success(
-          'Sign up successful, please check your email for verification instructions',
+          "Sign up successful, please check your email for verification instructions",
           {
             keepAfterRouteChange: true,
           }
         );
-        navigate('/user/signin');
+        navigate("/user/signin");
       })
       .catch((error) => {
         alertService.caller(
           error,
           // { keepAfterRouteChange: true },
           null,
-          'Sign up problem',
-          'error'
+          "Sign up problem",
+          "error"
         );
       });
   };
@@ -91,24 +91,21 @@ export default function SignUp() {
       <Box
         sx={{
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           backgroundColor: theme.palette.background.default, // Use theme for background
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}> {/* Use theme */}
+        <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
+          {" "}
+          {/* Use theme */}
           <LockOutlined />
         </Avatar>
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <Box
-          component="form"
-          noValidate
-          onSubmit={handleSubmit}
-          sx={{ mt: 3 }}
-        >
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField

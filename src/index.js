@@ -16,7 +16,7 @@ import CompetitionList from "features/Competitions/CompetitionList";
 import { competitionsLoader } from "features/Competitions/CompetitionList";
 import Boards, { boardsLoader } from "features/Boards/Boards";
 import Play, { playLoader } from "features/Play/Play";
-import Board from "features/Boards/Board";
+import SignUp from "features/Users/SignUp";
 
 const router = createBrowserRouter(
   [
@@ -35,6 +35,11 @@ const router = createBrowserRouter(
           element: <SignIn />,
           errorElement: <LoginErrorPage />,
           action: loginAction,
+        },
+        {
+          path: "/signup",
+          element: <SignUp />,
+          errorElement: <LoginErrorPage />,
         },
         { path: "/dashboard", element: <Dashboard /> },
         {
