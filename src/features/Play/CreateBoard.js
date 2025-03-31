@@ -66,7 +66,9 @@ async function generateTiles(
         artists,
         boardId,
       };
+      console.log("Tile to create: ", tile);
       const createdTile = await tileService.create(tile);
+      console.log("Created tile: ", createdTile);
 
       // Add the unique ID to the tile object
       tiles.push({

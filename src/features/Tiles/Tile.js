@@ -89,6 +89,10 @@ export default function Tile(props) {
   };
 
   const checkArtist = (chosenArtist) => {
+    console.log("Chosen artist: ", chosenArtist);
+    console.log("Actual artist: ", actualArtist);
+    console.log("Correct artist: ", correctArtist);
+    console.log("Correct song: ", correctSong);
     const check = chosenArtist === actualArtist;
     setCorrectArtist(check);
   };
