@@ -22,7 +22,20 @@ async function request(url, method, body = null) {
 }
 
 async function get(url) {
-  return request(url, "GET");
+  const headers = { "Content-Type": "application/json" };
+  const user = userService.userValue;
+
+  if (user?.jwtToken) {
+    headers.Authorization = `Bearer ${user.jwtToken}`; // Add Authorization header
+  }
+
+  const requestOptions = {
+    method: "GET",
+    credentials: "include", // Ensure credentials are included
+    headers,
+  };
+
+  return fetch(url, requestOptions).then(handleResponse);
 }
 
 async function post(url, body) {

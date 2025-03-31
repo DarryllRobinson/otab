@@ -1,6 +1,9 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import Tile from "./Tile";
+import { tileService } from "./tile.service"; // Import the tileService to mock it
+
+jest.mock("./tile.service"); // Mock the tileService
 
 describe("Tile", () => {
   const mockProps = {
@@ -18,56 +21,70 @@ describe("Tile", () => {
     correctArtist: false,
   };
 
+  const mockDebounceFunction = (fn) => fn; // Mock debounce function to bypass delay
+
+  beforeEach(() => {
+    // Mock tileService.getSong to return a valid song object
+    tileService.getSong = jest.fn().mockReturnValue({ song: "Test Song" });
+  });
+
   it("should render the tile with the correct title", () => {
-    const { getByText } = render(<Tile {...mockProps} />);
-    expect(getByText("Test Song")).toBeInTheDocument();
+    render(<Tile {...mockProps} />);
+    const titleElement = screen.getByText("Test Song", { selector: "h4" }); // Use Testing Library to find the <h4> element by text
+    expect(titleElement).toBeInTheDocument();
   });
 
   it("should flip the tile when clicked", () => {
-    const { container } = render(<Tile {...mockProps} />);
-    const tile = container.querySelector(".flip-container");
+    render(<Tile {...mockProps} debounceFunction={mockDebounceFunction} />);
+    const flipContainer = screen.getByTestId("flip-container"); // Select the flip-container element using Testing Library
 
-    expect(tile).not.toHaveClass("flipped");
-    fireEvent.click(tile); // Simulate click to flip the tile
-    expect(tile).toHaveClass("flipped");
+    expect(flipContainer).not.toHaveClass("flipped");
+    fireEvent.click(flipContainer); // Simulate click to flip the tile
+    expect(flipContainer).toHaveClass("flipped");
   });
 
   it("should display an error message if no artist is selected on submit", () => {
-    const { getByText, getByRole } = render(<Tile {...mockProps} />);
-    const submitButton = getByRole("button", { name: /submit/i });
+    render(<Tile {...mockProps} />);
+    const submitButton = screen
+      .getAllByRole("button", { name: /submit/i })
+      .find((button) => button.type === "submit"); // Ensure we select the correct submit button
 
     fireEvent.click(submitButton); // Simulate form submission without selecting an artist
-    expect(getByText("Please choose an artist")).toBeInTheDocument();
+    expect(screen.getByText("Please choose an artist")).toBeInTheDocument();
   });
 
-  it("should call the saveTile function after submission", () => {
-    const saveTileMock = jest.fn();
-    const { getByRole, getByLabelText } = render(
-      <Tile {...mockProps} saveTile={saveTileMock} />
-    );
+  it("should call the tileService.update function after submission", () => {
+    const updateMock = jest.fn();
+    tileService.update = updateMock; // Mock the update function
 
-    const artistOption = getByLabelText("Artist A"); // Select an artist
+    render(<Tile {...mockProps} />);
+
+    const artistOption = screen.getByLabelText("Artist A"); // Select an artist
+    const submitButton = screen
+      .getAllByRole("button", { name: /submit/i })
+      .find((button) => button.type === "submit"); // Ensure we select the correct submit button
+
     fireEvent.click(artistOption);
-
-    const submitButton = getByRole("button", { name: /submit/i });
     fireEvent.click(submitButton); // Submit the form
 
-    expect(saveTileMock).toHaveBeenCalledWith({
+    expect(updateMock).toHaveBeenCalledWith(mockProps.id, {
       id: mockProps.id,
       actualArtist: mockProps.actualArtist,
       chosenArtist: "Artist A",
       correctArtist: true, // Assuming the chosen artist matches the actual artist
-      correctSong: false, // Assuming no song check logic here
+      correctSong: true, // The mocked song matches the title
       submitted: true,
     });
   });
 
   it("should disable the submit button after submission", () => {
-    const { getByRole, getByLabelText } = render(<Tile {...mockProps} />);
-    const artistOption = getByLabelText("Artist A");
-    fireEvent.click(artistOption);
+    render(<Tile {...mockProps} />);
+    const artistOption = screen.getByLabelText("Artist A");
+    const submitButton = screen
+      .getAllByRole("button", { name: /submit/i })
+      .find((button) => button.type === "submit"); // Ensure we select the correct submit button
 
-    const submitButton = getByRole("button", { name: /submit/i });
+    fireEvent.click(artistOption);
     fireEvent.click(submitButton);
 
     expect(submitButton).toBeDisabled(); // Ensure the button is disabled after submission

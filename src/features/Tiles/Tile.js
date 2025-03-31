@@ -57,10 +57,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const debouncedFlip = createDebouncedFunction((setFlipped) => {
-  setFlipped((prev) => !prev);
-}, 300);
-
 export default React.memo(function Tile(props) {
   const {
     id,
@@ -72,6 +68,7 @@ export default React.memo(function Tile(props) {
     tileBorderColour,
     tileTextColour,
     tileBorderRadius,
+    debounceFunction = createDebouncedFunction, // Inject debounce function as a prop
   } = props;
 
   const classes = useStyles(props);
@@ -90,7 +87,15 @@ export default React.memo(function Tile(props) {
   const [checksComplete, setChecksComplete] = useState(false);
   const [disabled, setDisabled] = useState(false);
 
-  const handleClick = useCallback(() => debouncedFlip(setFlipped), []);
+  const debouncedFlip = useMemo(
+    () => debounceFunction((setFlipped) => setFlipped((prev) => !prev), 300),
+    [debounceFunction]
+  );
+
+  const handleClick = useCallback(
+    () => debouncedFlip(setFlipped),
+    [debouncedFlip]
+  );
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter" || event.key === " ") {
@@ -226,6 +231,7 @@ export default React.memo(function Tile(props) {
       role="button"
       tabIndex={0}
       aria-pressed={flipped}
+      data-testid="flip-container" // Add this line
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >

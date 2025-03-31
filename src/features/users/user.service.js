@@ -24,6 +24,7 @@ export const userService = {
   get userValue() {
     return userSubject.value; // Get the current user value
   },
+  _userSubject: userSubject, // Expose userSubject for testing
 };
 
 // Authenticate the user and start a refresh token timer
@@ -40,9 +41,14 @@ function login(params) {
 
 // Log out the user and clear session data
 function logout() {
-  fetchWrapper.post(`${baseUrl}/revoke-token`, userSubject.value).catch(() => {
-    console.error("Logout failed. Please try again.");
-  });
+  // Revoke token only if userSubject.value is not null
+  if (userSubject.value) {
+    fetchWrapper
+      .post(`${baseUrl}/revoke-token`, userSubject.value)
+      .catch(() => {
+        console.error("Failed to revoke token during logout.");
+      });
+  }
   stopRefreshTokenTimer();
   userSubject.next(null);
   localStorage.removeItem("user");

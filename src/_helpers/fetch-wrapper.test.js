@@ -6,10 +6,12 @@ jest.mock("../features/Users/user.service");
 describe("fetchWrapper", () => {
   beforeEach(() => {
     global.fetch = jest.fn();
+    jest.spyOn(console, "error").mockImplementation(() => {}); // Mock console.error
   });
 
   afterEach(() => {
     jest.clearAllMocks();
+    jest.restoreAllMocks(); // Restore console.error
   });
 
   it("should make a GET request and return data", async () => {
@@ -23,7 +25,8 @@ describe("fetchWrapper", () => {
 
     expect(global.fetch).toHaveBeenCalledWith("/test-url", {
       method: "GET",
-      headers: {},
+      credentials: "include", // Updated expectation
+      headers: { "Content-Type": "application/json" }, // Updated expectation
     });
     expect(result).toEqual(mockResponse);
   });
@@ -38,6 +41,7 @@ describe("fetchWrapper", () => {
     });
 
     await expect(fetchWrapper.get("/test-url")).rejects.toThrow("Not Found");
+    expect(console.error).toHaveBeenCalledWith("API Error: 404"); // Assert console.error
   });
 
   it("should include Authorization header if user is logged in", async () => {
@@ -52,8 +56,26 @@ describe("fetchWrapper", () => {
 
     expect(global.fetch).toHaveBeenCalledWith("/test-url", {
       method: "GET",
-      headers: { Authorization: "Bearer testToken" },
+      credentials: "include", // Ensure credentials are included
+      headers: {
+        "Content-Type": "application/json", // Ensure Content-Type is included
+        Authorization: "Bearer testToken", // Ensure Authorization header is explicitly included
+      },
     });
     expect(result).toEqual(mockResponse);
+  });
+
+  it("should log an error when processing the API response fails", async () => {
+    global.fetch.mockResolvedValue({
+      ok: true,
+      text: jest.fn().mockRejectedValue(new Error("Processing Error")),
+    });
+
+    await expect(fetchWrapper.get("/test-url")).rejects.toThrow(
+      "Processing Error"
+    );
+    expect(console.error).toHaveBeenCalledWith(
+      "An error occurred while processing the API response."
+    ); // Assert console.error
   });
 });
