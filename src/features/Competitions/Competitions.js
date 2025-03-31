@@ -10,10 +10,7 @@ export default function Competitions() {
       sx={{
         marginTop: 8,
         padding: 4,
-        backgroundColor:
-          theme.palette.mode === "light"
-            ? theme.palette.grey[200]
-            : theme.palette.grey[800],
+        backgroundColor: theme.palette.background.default, // Use default background color
         borderRadius: 2,
       }}
     >

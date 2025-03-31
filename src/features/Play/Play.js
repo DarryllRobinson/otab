@@ -17,31 +17,46 @@ export async function playLoader() {
 
 export default function Play() {
   let { state } = useLocation();
-  const { boards } = useLoaderData();
+  const { boards: initialBoards } = useLoaderData(); // Rename to initialBoards
   const theme = useTheme();
+  const [boards, setBoards] = useState(initialBoards); // Use state for boards
   const [tiles, setTiles] = useState([]);
   const [loading, setLoading] = useState(true); // Track loading state
   const hasCreatedBoard = useRef(false); // Track if CreateBoard has already been called
 
   const handleBoard = useCallback(async () => {
     try {
+      // console.log("State passed to /play:", state); // Debugging log for state
+
+      // Check if a board already exists in the current state
       const existingBoard = boards?.find(
         (board) => board?.competitionId === state?.compId
       );
 
-      if (!existingBoard && !hasCreatedBoard.current) {
-        const createdBoard = await CreateBoard(state);
-        setTiles(createdBoard.tiles);
-      } else if (existingBoard) {
+      // console.log("Existing board found:", existingBoard); // Debugging log for existing board
+
+      if (existingBoard) {
+        // console.log("Loading tiles for existing board...");
         const loadedTiles = await LoadBoard(existingBoard.id);
+        // console.log("Loaded tiles:", loadedTiles); // Debugging log for loaded tiles
         setTiles(loadedTiles);
+      } else if (!hasCreatedBoard.current) {
+        // console.log("No existing board found. Creating a new board...");
+        const createdBoard = await CreateBoard(state);
+        // console.log("Created board:", createdBoard); // Debugging log for created board
+        setBoards((prevBoards) => [
+          ...prevBoards,
+          { id: createdBoard.boardId, competitionId: state.compId },
+        ]); // Add new board to boards state
+        setTiles(createdBoard.tiles);
+        hasCreatedBoard.current = true; // Mark as created to prevent duplicate calls
       }
     } catch (error) {
       console.error("Error handling board:", error);
     } finally {
       setLoading(false);
     }
-  }, [boards, state]);
+  }, [state, boards]);
 
   useEffect(() => {
     handleBoard();
@@ -52,6 +67,7 @@ export default function Play() {
   }
 
   if (!boards || boards.length === 0) {
+    // console.log("No boards available.", boards); // Debugging log for no boards
     return <EmptyState message="No boards available." />;
   }
 

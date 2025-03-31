@@ -1,16 +1,15 @@
 import React, { useState, useMemo } from "react";
-import { Box, Container, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { useOutletContext } from "react-router"; // Import useOutletContext
 
 import Tile from "../Tiles/Tile";
 import ThemeButtons from "../common/ThemeButtons"; // Import reusable component
 
-export default function Board(props) {
+export default React.memo(function Board(props) {
   const { tiles } = props || {};
   const [chosenTheme, setChosenTheme] = useState("Babyblue");
 
   const { boardThemes } = useOutletContext(); // Access board themes from context
-  const theme = useTheme();
   const { themes } = boardThemes?.light.palette || {}; // Use light theme by default
 
   if (!themes) {
@@ -46,7 +45,7 @@ export default function Board(props) {
       return (
         <Grid
           className="tile grid"
-          key={key}
+          key={id} // Use unique `id` as the key
           item
           xs={12 / 5}
           role="listitem"
@@ -123,4 +122,4 @@ export default function Board(props) {
       </Box>
     </Container>
   );
-}
+});

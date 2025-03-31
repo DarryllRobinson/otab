@@ -206,6 +206,7 @@ export default function LandingPage() {
             "&:hover": {
               backgroundColor: "#e64a19",
             },
+            mb: 2, // Add margin-bottom for spacing
           }}
         >
           Play Now

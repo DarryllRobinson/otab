@@ -16,10 +16,7 @@ export default function CompetitionDetails() {
     <Box
       sx={{
         padding: 4,
-        backgroundColor: (theme) =>
-          theme.palette.mode === "light"
-            ? theme.palette.grey[100]
-            : theme.palette.grey[700],
+        backgroundColor: (theme) => theme.palette.background.default, // Use default background color
         borderRadius: 2,
         boxShadow: 3,
         textAlign: "center",
@@ -44,7 +41,7 @@ export default function CompetitionDetails() {
             component={RouterLink}
             to="/play"
             state={{
-              compId: id,
+              compId: id, // Ensure this matches the competition ID
               numTiles,
               numArtists,
             }}
