@@ -30,7 +30,7 @@ const debouncedFlip = debounce((setFlipped) => {
   setFlipped((prev) => !prev);
 }, 300);
 
-export default function Tile(props) {
+export default React.memo(function Tile(props) {
   const {
     id,
     title,
@@ -246,4 +246,4 @@ export default function Tile(props) {
       </form>
     </Box>
   );
-}
+});

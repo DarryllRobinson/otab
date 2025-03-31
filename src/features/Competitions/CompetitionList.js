@@ -8,6 +8,7 @@ import {
   Grid,
   Typography,
   useTheme,
+  Skeleton,
 } from "@mui/material";
 import { competitionService } from "./competition.service";
 
@@ -26,6 +27,10 @@ export default function CompetitionList() {
         <Typography variant="h5" gutterBottom>
           Loading competitions...
         </Typography>
+        {/* Add skeleton loader */}
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+          <Skeleton variant="rectangular" width={300} height={200} />
+        </Box>
       </Box>
     );
   }
