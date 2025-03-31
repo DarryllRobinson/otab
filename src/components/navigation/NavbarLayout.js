@@ -19,7 +19,7 @@ export default function NavbarLayout({ checked, onChange }) {
           <IconButton
             edge="start"
             color="inherit"
-            aria-label="menu"
+            aria-label="Open menu" // Added ARIA label
             sx={{ mr: 2 }}
           >
             <MenuIcon />
@@ -28,13 +28,21 @@ export default function NavbarLayout({ checked, onChange }) {
             OTAB
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Button color="inherit" href="/competitions">
+            <Button
+              color="inherit"
+              href="/competitions"
+              aria-label="Competitions"
+            >
               Competitions
             </Button>
-            <Button color="inherit" href="/boards">
+            <Button color="inherit" href="/boards" aria-label="Boards">
               Boards
             </Button>
-            <MaterialUISwitch checked={checked} onChange={onChange} />
+            <MaterialUISwitch
+              checked={checked}
+              onChange={onChange}
+              inputProps={{ "aria-label": "Toggle dark mode" }} // Added ARIA label
+            />
           </Box>
         </Toolbar>
       </Container>

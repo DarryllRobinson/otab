@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, redirect } from "react-router";
 import {
   Box,
@@ -20,6 +20,10 @@ export async function loginAction({ request }) {
 export default function SignIn() {
   const theme = useTheme();
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    document.getElementById("email").focus(); // Set focus to the email field on load
+  }, []);
 
   const validateForm = (formData) => {
     const newErrors = {};
@@ -68,6 +72,7 @@ export default function SignIn() {
         <Form method="post" id="signin-form" onSubmit={handleSubmit}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
+              id="email"
               label="Email address"
               name="email"
               type="email"
@@ -75,8 +80,10 @@ export default function SignIn() {
               helperText={errors.email}
               fullWidth
               required
+              aria-required="true" // Added ARIA attribute
             />
             <TextField
+              id="password"
               label="Password"
               name="password"
               type="password"
@@ -84,6 +91,7 @@ export default function SignIn() {
               helperText={errors.password}
               fullWidth
               required
+              aria-required="true" // Added ARIA attribute
             />
             <Button
               variant="contained"
@@ -95,6 +103,7 @@ export default function SignIn() {
                 py: 1.5,
                 fontSize: "1rem",
               }}
+              aria-label="Sign in to your account" // Added ARIA label
             >
               Sign In
             </Button>

@@ -1,220 +1,178 @@
 import React, { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router";
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
-  Container,
-  CssBaseline,
   FormControlLabel,
   Grid,
-  Link,
+  Paper,
   TextField,
   Typography,
-  useTheme, // Import useTheme
+  useTheme,
 } from "@mui/material";
-import { LockOutlined } from "@mui/icons-material";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-
-import { userService } from "./user.service";
-import { alertService } from "../../_services";
-
-const theme = createTheme();
 
 export default function SignUp() {
-  const theme = useTheme(); // Use the MUI useTheme hook
-  const navigate = useNavigate();
-
+  const theme = useTheme();
   const [formData, setFormData] = useState({
-    firstName: "Darryll",
-    lastName: "Robinson",
-    email: "darryllrobinson@icloud.com",
-    password: "newpassss",
-    confirmPassword: "newpassss",
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
     acceptTerms: false,
-    acceptMarketing: false,
   });
+  const [errors, setErrors] = useState({});
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: value,
-    }));
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.firstName) newErrors.firstName = "First name is required.";
+    if (!formData.lastName) newErrors.lastName = "Last name is required.";
+    if (!formData.email) newErrors.email = "Email is required.";
+    if (!formData.password) newErrors.password = "Password is required.";
+    if (formData.password !== formData.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match.";
+    if (!formData.acceptTerms)
+      newErrors.acceptTerms = "You must accept the terms and conditions.";
+    return newErrors;
   };
 
-  const handleTermsChange = (event) => {
-    const { name, checked } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: checked,
-    }));
-  };
-
-  const handleMarketingChange = (event) => {
-    const { name, checked } = event.target;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: checked,
+  const handleChange = (event) => {
+    const { name, value, checked, type } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const validationErrors = validateForm();
 
-    userService
-      .register(formData)
-      .then(() => {
-        alertService.success(
-          "Sign up successful, please check your email for verification instructions",
-          {
-            keepAfterRouteChange: true,
-          }
-        );
-        navigate("/user/signin");
-      })
-      .catch((error) => {
-        alertService.caller(
-          error,
-          // { keepAfterRouteChange: true },
-          null,
-          "Sign up problem",
-          "error"
-        );
-      });
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      setErrors({});
+      // Submit the form
+      console.log("Form submitted:", formData);
+    }
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Box
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        backgroundColor: theme.palette.background.default,
+      }}
+    >
+      <Paper
+        elevation={3}
         sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: theme.palette.background.default, // Use theme for background
+          padding: 4,
+          maxWidth: 500,
+          width: "100%",
+          textAlign: "center",
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: theme.palette.secondary.main }}>
-          {" "}
-          {/* Use theme */}
-          <LockOutlined />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
+        <Typography variant="h4" gutterBottom>
+          Sign Up
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
                 label="First Name"
-                autoFocus
-                defaultValue={formData.firstName}
-                onChange={handleInputChange}
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                error={!!errors.firstName}
+                helperText={errors.firstName}
+                fullWidth
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                required
-                fullWidth
-                id="lastName"
                 label="Last Name"
                 name="lastName"
-                autoComplete="family-name"
-                defaultValue={formData.lastName}
-                onChange={handleInputChange}
+                value={formData.lastName}
+                onChange={handleChange}
+                error={!!errors.lastName}
+                helperText={errors.lastName}
+                fullWidth
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
-                fullWidth
-                id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
-                defaultValue={formData.email}
-                onChange={handleInputChange}
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                error={!!errors.email}
+                helperText={errors.email}
+                fullWidth
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
-                fullWidth
-                name="password"
                 label="Password"
+                name="password"
                 type="password"
-                id="password"
-                autoComplete="new-password"
-                defaultValue={formData.password}
-                onChange={handleInputChange}
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                fullWidth
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
-                fullWidth
-                name="confirmPassword"
                 label="Confirm Password"
+                name="confirmPassword"
                 type="password"
-                id="confirmPassword"
-                autoComplete="confirm-password"
-                defaultValue={formData.confirmPassword}
-                onChange={handleInputChange}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword}
+                fullWidth
+                required
               />
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={formData.acceptTerms}
-                    color="primary"
                     name="acceptTerms"
+                    checked={formData.acceptTerms}
+                    onChange={handleChange}
                   />
                 }
                 label="I accept the terms and conditions."
-                onChange={handleTermsChange}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={formData.acceptMarketing}
-                    color="primary"
-                    name="acceptMarketing"
-                  />
-                }
-                label="I want to receive inspiration, marketing promotions and updates via email."
-                onChange={handleMarketingChange}
-              />
+              {errors.acceptTerms && (
+                <Typography variant="body2" color="error">
+                  {errors.acceptTerms}
+                </Typography>
+              )}
             </Grid>
           </Grid>
           <Button
             type="submit"
-            disabled={!formData.acceptTerms}
-            fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            color="primary"
+            fullWidth
+            sx={{ mt: 2, py: 1.5, fontSize: "1rem" }}
           >
             Sign Up
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link component={RouterLink} to="/user/signin" variant="body2">
-                Already have an account? Sign in
-              </Link>
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-    </Container>
+        </form>
+      </Paper>
+    </Box>
   );
 }

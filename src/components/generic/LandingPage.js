@@ -16,6 +16,7 @@ export default function LandingPage() {
 
   return (
     <Box
+      component="main" // Changed to semantic HTML
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -39,6 +40,7 @@ export default function LandingPage() {
           to="/signup"
           variant="contained"
           color="primary"
+          aria-label="Sign up for OTAB" // Added ARIA label
           sx={{
             mx: 1,
             px: 4,
@@ -60,6 +62,7 @@ export default function LandingPage() {
           to="/signin"
           variant="outlined"
           color="secondary"
+          aria-label="Log in to OTAB" // Added ARIA label
           sx={{
             mx: 1,
             px: 4,
@@ -155,6 +158,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <Box
+        component="footer" // Changed to semantic HTML
         sx={{
           mt: 8,
           py: 4,
@@ -164,19 +168,33 @@ export default function LandingPage() {
         }}
       >
         <Typography variant="body2" gutterBottom>
-          <RouterLink to="/rules">Game Rules</RouterLink> |{" "}
-          <RouterLink to="/faq">FAQ</RouterLink> |{" "}
-          <RouterLink to="/support">Support</RouterLink>
+          <RouterLink to="/rules" aria-label="Game Rules">
+            Game Rules
+          </RouterLink>{" "}
+          |{" "}
+          <RouterLink to="/faq" aria-label="Frequently Asked Questions">
+            FAQ
+          </RouterLink>{" "}
+          |{" "}
+          <RouterLink to="/support" aria-label="Support">
+            Support
+          </RouterLink>
         </Typography>
         <Typography variant="body2" gutterBottom>
-          <RouterLink to="/privacy-policy">Privacy Policy</RouterLink> |{" "}
-          <RouterLink to="/terms-of-service">Terms of Service</RouterLink>
+          <RouterLink to="/privacy-policy" aria-label="Privacy Policy">
+            Privacy Policy
+          </RouterLink>{" "}
+          |{" "}
+          <RouterLink to="/terms-of-service" aria-label="Terms of Service">
+            Terms of Service
+          </RouterLink>
         </Typography>
         <Box sx={{ mt: 2 }}>
           <a
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Visit our Facebook page" // Added ARIA label
           >
             <img
               src="/path/to/facebook-icon.png"
@@ -189,6 +207,7 @@ export default function LandingPage() {
             href="https://twitter.com"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Visit our Twitter page" // Added ARIA label
           >
             <img
               src="/path/to/twitter-icon.png"
@@ -201,6 +220,7 @@ export default function LandingPage() {
             href="https://discord.com"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Join our Discord server" // Added ARIA label
           >
             <img
               src="/path/to/discord-icon.png"
