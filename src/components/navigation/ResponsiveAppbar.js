@@ -24,6 +24,8 @@ const pagesLoggedIn = [
   { label: "Competitions", action: (navigate) => navigate("/competitions") },
   { label: "My boards", action: (navigate) => navigate("/boards") },
   { label: "Songs I've missed", action: () => alert("Under development") },
+  { label: "Dashboard", action: (navigate) => navigate("/dashboard") }, // Re-added
+  { label: "Logout", action: (navigate) => userService.logout() }, // Re-added
 ];
 const pagesLoggedOut = [
   { label: "How it works", action: () => alert("Under development") },
@@ -37,15 +39,21 @@ function ResponsiveAppBar(props) {
   const navigate = useNavigate();
 
   const profileMenu = [
-    { label: "Dashboard", action: (navigate) => navigate("/dashboard") },
-    // { label: 'Logout', action: () => onclick={handleLogout} } // Can't get this to work
+    { label: "Dashboard", action: (navigate) => navigate("/dashboard") }, // Ensure Dashboard is accessible
+    { label: "Logout", action: (navigate) => userService.logout() }, // Ensure Logout is accessible
   ];
 
   // Handlers
   const handleOpenNavMenu = (event) => setAnchorElNav(event.currentTarget);
-  const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
+  const handleOpenUserMenu = (event) => {
+    console.log("Opening user menu"); // Debugging
+    setAnchorElUser(event.currentTarget); // Set the anchor element to the clicked Avatar
+  };
   const handleCloseNavMenu = () => setAnchorElNav(null);
-  const handleCloseUserMenu = () => setAnchorElUser(null);
+  const handleCloseUserMenu = () => {
+    console.log("Closing user menu"); // Debugging
+    setAnchorElUser(null); // Reset the anchor element
+  };
   const handleLogout = () => {
     userService.logout();
     handleCloseUserMenu();
@@ -146,14 +154,21 @@ function ResponsiveAppBar(props) {
           display: { xs: "block", md: "none" },
         }}
       >
-        {renderMenuItems(user ? pagesLoggedIn : pagesLoggedOut)}
+        {renderMenuItems(
+          user
+            ? pagesLoggedIn.filter((page) => page.label !== "Logout")
+            : pagesLoggedOut
+        )}
       </Menu>
     </Box>
   );
 
   const desktopMenu = (
     <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-      {(user ? pagesLoggedIn : pagesLoggedOut).map((page, index) => (
+      {(user
+        ? pagesLoggedIn.filter((page) => page.label !== "Logout")
+        : pagesLoggedOut
+      ).map((page, index) => (
         <Button
           key={index}
           onClick={() => page.action(navigate)}
@@ -168,14 +183,24 @@ function ResponsiveAppBar(props) {
   const profileDropdown = (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
+        <IconButton
+          onClick={handleOpenUserMenu}
+          sx={{ p: 0, ml: 2 }} // Add margin for better spacing
+        >
+          <Avatar
+            alt={user?.name || "User Avatar"} // Use user's name or fallback text
+            src={user?.avatar || "/default-avatar.png"} // Ensure fallback avatar path is correct
+            sx={{ width: 40, height: 40, bgcolor: "primary.main" }} // Add background color for initials
+          >
+            {user?.name?.[0]?.toUpperCase() || "U"}{" "}
+            {/* Show the first letter of the user's name or "U" */}
+          </Avatar>
         </IconButton>
       </Tooltip>
       <Menu
         sx={{ mt: "45px" }}
         id="menu-appbar"
-        anchorEl={anchorElUser}
+        anchorEl={anchorElUser} // Link the menu to the Avatar
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -185,13 +210,10 @@ function ResponsiveAppBar(props) {
           vertical: "top",
           horizontal: "right",
         }}
-        open={Boolean(anchorElUser)}
-        onClose={handleCloseUserMenu}
+        open={Boolean(anchorElUser)} // Open the menu when anchorElUser is set
+        onClose={handleCloseUserMenu} // Close the menu when triggered
       >
         {renderProfileItems(profileMenu)}
-        <MenuItem key={1} onClick={handleLogout}>
-          <Typography textAlign="center">Logout</Typography>
-        </MenuItem>
         <MenuItem>
           <MaterialUISwitch
             aria-label="dark-switch"
@@ -215,6 +237,8 @@ function ResponsiveAppBar(props) {
     </ButtonGroup>
   );
 
+  console.log("User object:", user); // Debugging to verify user object
+
   return (
     <>
       <AppBar position="fixed">
@@ -224,7 +248,10 @@ function ResponsiveAppBar(props) {
             {responsiveMenu}
             {logoWithIconResponsive}
             {desktopMenu}
-            {user ? profileDropdown : signInUp}
+            {user && profileDropdown}{" "}
+            {/* Ensure profileDropdown is rendered for logged-in users */}
+            {!user && signInUp}{" "}
+            {/* Show Sign In/Sign Up for logged-out users */}
           </Toolbar>
         </Container>
       </AppBar>

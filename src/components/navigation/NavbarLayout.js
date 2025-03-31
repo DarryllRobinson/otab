@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,6 +15,13 @@ import MaterialUISwitch from "./MaterialUISwitch";
 const NavbarLayout = memo(function NavbarLayout({ checked, onChange }) {
   const navigate = useNavigate(); // Hook for navigation
   const location = useLocation(); // Hook to get the current path
+
+  const handleNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  ); // Memoized navigation function
 
   return (
     <AppBar position="sticky">
@@ -36,7 +43,7 @@ const NavbarLayout = memo(function NavbarLayout({ checked, onChange }) {
               color={
                 location.pathname === "/competitions" ? "secondary" : "inherit"
               } // Highlight active link
-              onClick={() => navigate("/competitions")} // Navigate to competitions
+              onClick={() => handleNavigate("/competitions")} // Navigate to competitions
               aria-label="Competitions"
               sx={{ transition: "color 0.3s ease" }} // Smooth transition
             >
@@ -44,7 +51,7 @@ const NavbarLayout = memo(function NavbarLayout({ checked, onChange }) {
             </Button>
             <Button
               color={location.pathname === "/boards" ? "secondary" : "inherit"} // Highlight active link
-              onClick={() => navigate("/boards")} // Navigate to boards
+              onClick={() => handleNavigate("/boards")} // Navigate to boards
               aria-label="Boards"
               sx={{ transition: "color 0.3s ease" }} // Smooth transition
             >

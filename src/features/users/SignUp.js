@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import debounce from "lodash.debounce"; // Import debounce
 import {
   Box,
   Button,
@@ -26,18 +27,21 @@ export default function SignUp() {
   const [apiError, setApiError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // State for loading indicator
 
-  const validateForm = useCallback(() => {
-    const newErrors = {};
-    if (!formData.firstName) newErrors.firstName = "First name is required.";
-    if (!formData.lastName) newErrors.lastName = "Last name is required.";
-    if (!formData.email) newErrors.email = "Email is required.";
-    if (!formData.password) newErrors.password = "Password is required.";
-    if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match.";
-    if (!formData.acceptTerms)
-      newErrors.acceptTerms = "You must accept the terms and conditions.";
-    return newErrors;
-  }, [formData]);
+  const validateForm = useCallback(
+    debounce(() => {
+      const newErrors = {};
+      if (!formData.firstName) newErrors.firstName = "First name is required.";
+      if (!formData.lastName) newErrors.lastName = "Last name is required.";
+      if (!formData.email) newErrors.email = "Email is required.";
+      if (!formData.password) newErrors.password = "Password is required.";
+      if (formData.password !== formData.confirmPassword)
+        newErrors.confirmPassword = "Passwords do not match.";
+      if (!formData.acceptTerms)
+        newErrors.acceptTerms = "You must accept the terms and conditions.";
+      setErrors(newErrors);
+    }, 300), // Debounce validation
+    [formData]
+  );
 
   const handleChange = (event) => {
     const { name, value, checked, type } = event.target;
@@ -49,13 +53,10 @@ export default function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const validationErrors = validateForm();
+    validateForm();
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
-      setErrors({});
-      setIsLoading(true); // Show loading indicator
+    if (Object.keys(errors).length === 0) {
+      setIsLoading(true);
       try {
         console.log("Form submitted:", formData);
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import debounce from "lodash.debounce"; // Import debounce
 import { Form, redirect } from "react-router";
 import {
   Box,
@@ -28,31 +29,31 @@ export default function SignIn() {
     document.getElementById("email").focus(); // Set focus to the email field on load
   }, []);
 
-  const validateForm = useCallback((formData) => {
-    const newErrors = {};
-    if (!formData.email) newErrors.email = "Email is required.";
-    if (!formData.password) newErrors.password = "Password is required.";
-    return newErrors;
-  }, []); // Memoized function
+  const validateForm = useCallback(
+    debounce((formData) => {
+      const newErrors = {};
+      if (!formData.email) newErrors.email = "Email is required.";
+      if (!formData.password) newErrors.password = "Password is required.";
+      setErrors(newErrors);
+    }, 300), // Debounce validation
+    []
+  );
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const userDetails = Object.fromEntries(formData);
-    const validationErrors = validateForm(userDetails);
+    validateForm(userDetails);
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
-      setErrors({});
-      setIsLoading(true); // Show loading indicator
+    if (Object.keys(errors).length === 0) {
+      setIsLoading(true);
       try {
         await userService.login(userDetails);
         window.location.href = "/dashboard";
       } catch (error) {
         setApiError("Failed to sign in. Please check your credentials.");
       } finally {
-        setIsLoading(false); // Hide loading indicator
+        setIsLoading(false);
       }
     }
   };
