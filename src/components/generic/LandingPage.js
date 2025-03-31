@@ -220,66 +220,6 @@ export default function LandingPage() {
           Sign Up & Get 500 Free Coins!
         </Button>
       </Box>
-
-      {/* Footer */}
-      <Box
-        sx={{
-          mt: 8,
-          py: 4,
-          width: "100%",
-          backgroundColor: "grey.200",
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="body2" gutterBottom>
-          <RouterLink to="/rules">Game Rules</RouterLink> |{" "}
-          <RouterLink to="/faq">FAQ</RouterLink> |{" "}
-          <RouterLink to="/support">Support</RouterLink>
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          <RouterLink to="/privacy-policy">Privacy Policy</RouterLink> |{" "}
-          <RouterLink to="/terms-of-service">Terms of Service</RouterLink>
-        </Typography>
-        <Box sx={{ mt: 2 }}>
-          <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/path/to/facebook-icon.png"
-              alt="Facebook"
-              style={{ width: 24, marginRight: 8 }}
-              loading="lazy"
-            />
-          </a>
-          <a
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/path/to/twitter-icon.png"
-              alt="Twitter"
-              style={{ width: 24, marginRight: 8 }}
-              loading="lazy"
-            />
-          </a>
-          <a
-            href="https://discord.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              src="/path/to/discord-icon.png"
-              alt="Discord"
-              style={{ width: 24 }}
-              loading="lazy"
-            />
-          </a>
-        </Box>
-        <Copyright />
-      </Box>
     </Box>
   );
 }

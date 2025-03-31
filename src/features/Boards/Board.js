@@ -1,12 +1,6 @@
 import React, { useState, useMemo } from "react";
-import {
-  Box,
-  ButtonGroup,
-  Container,
-  Grid,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Container, Grid, Typography, useTheme } from "@mui/material";
+import { useOutletContext } from "react-router"; // Import useOutletContext
 
 import Tile from "../Tiles/Tile";
 import ThemeButtons from "../common/ThemeButtons"; // Import reusable component
@@ -15,18 +9,26 @@ export default function Board(props) {
   const { tiles } = props || {};
   const [chosenTheme, setChosenTheme] = useState("Babyblue");
 
+  const { boardThemes } = useOutletContext(); // Access board themes from context
   const theme = useTheme();
-  const { themes } = theme.palette;
-  const boardTheme = themes.find((x) => x.theming === chosenTheme);
+  const { themes } = boardThemes?.light.palette || {}; // Use light theme by default
+
+  if (!themes) {
+    console.error(
+      "Board themes are undefined. Ensure the correct theme is applied."
+    );
+  }
+
+  const boardTheme = themes?.find((x) => x.theming === chosenTheme) || {};
   const {
-    boardBgColour,
-    boardBorderColour,
-    tileBgColour,
-    tileBgColourHover,
-    tileBorderColour,
-    tileTextColour,
-    tileBorderRadius,
-    tileSpacing,
+    boardBgColour = "#ffffff",
+    boardBorderColour = "#000000",
+    tileBgColour = ["#ffffff"],
+    tileBgColourHover = ["#cccccc"],
+    tileBorderColour = ["#000000"],
+    tileTextColour = ["#000000"],
+    tileBorderRadius = 0,
+    tileSpacing = 1,
   } = boardTheme;
 
   const renderTiles = useMemo(() => {
@@ -80,7 +82,7 @@ export default function Board(props) {
     <Container>
       <Box sx={{ textAlign: "center", mb: 2 }}>
         <ThemeButtons
-          themes={themes}
+          themes={themes || []} // Pass an empty array if themes are undefined
           chosenTheme={chosenTheme}
           setChosenTheme={setChosenTheme}
         />

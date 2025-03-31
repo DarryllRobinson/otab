@@ -58,7 +58,9 @@ export default function Play() {
   return (
     <Box
       sx={{
-        height: "100vh",
+        display: "flex", // Ensure the container uses flexbox
+        flexDirection: "column", // Arrange children in a column
+        minHeight: "100vh", // Ensure it takes up the full viewport height
         backgroundColor: theme.palette.background.default,
         padding: 2,
       }}
@@ -71,7 +73,7 @@ export default function Play() {
       >
         Header can go here
       </Typography>
-      <Grid container justifyContent="center">
+      <Grid container justifyContent="center" flexGrow={1}>
         <Grid item xs={12}>
           <Board boardId={state?.boardId} tiles={tiles} />
         </Grid>
