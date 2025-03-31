@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Form, redirect } from "react-router";
 import {
   Box,
@@ -6,6 +6,7 @@ import {
   Button,
   TextField,
   Paper,
+  CircularProgress, // Import CircularProgress
   useTheme,
 } from "@mui/material";
 import { userService } from "./user.service";
@@ -20,19 +21,21 @@ export async function loginAction({ request }) {
 export default function SignIn() {
   const theme = useTheme();
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState(""); // State for API error messages
+  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
 
   useEffect(() => {
     document.getElementById("email").focus(); // Set focus to the email field on load
   }, []);
 
-  const validateForm = (formData) => {
+  const validateForm = useCallback((formData) => {
     const newErrors = {};
     if (!formData.email) newErrors.email = "Email is required.";
     if (!formData.password) newErrors.password = "Password is required.";
     return newErrors;
-  };
+  }, []); // Memoized function
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const userDetails = Object.fromEntries(formData);
@@ -42,8 +45,15 @@ export default function SignIn() {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      // Submit the form
-      event.target.submit();
+      setIsLoading(true); // Show loading indicator
+      try {
+        await userService.login(userDetails);
+        window.location.href = "/dashboard";
+      } catch (error) {
+        setApiError("Failed to sign in. Please check your credentials.");
+      } finally {
+        setIsLoading(false); // Hide loading indicator
+      }
     }
   };
 
@@ -69,6 +79,11 @@ export default function SignIn() {
         <Typography variant="h4" gutterBottom>
           Sign In
         </Typography>
+        {apiError && (
+          <Typography variant="body2" color="error" gutterBottom>
+            {apiError}
+          </Typography>
+        )}
         <Form method="post" id="signin-form" onSubmit={handleSubmit}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
@@ -104,8 +119,10 @@ export default function SignIn() {
                 fontSize: "1rem",
               }}
               aria-label="Sign in to your account" // Added ARIA label
+              disabled={isLoading} // Disable button while loading
             >
-              Sign In
+              {isLoading ? <CircularProgress size={24} /> : "Sign In"}{" "}
+              {/* Show loading spinner */}
             </Button>
           </Box>
         </Form>

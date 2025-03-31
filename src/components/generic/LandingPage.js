@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Link as RouterLink } from "react-router";
 import {
   Box,
@@ -9,14 +9,14 @@ import {
   CardContent,
   useTheme,
 } from "@mui/material";
-import Copyright from "./Copyright";
+const Copyright = lazy(() => import("./Copyright"));
 
 export default function LandingPage() {
   const theme = useTheme();
 
   return (
     <Box
-      component="main" // Changed to semantic HTML
+      component="main"
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -40,7 +40,7 @@ export default function LandingPage() {
           to="/signup"
           variant="contained"
           color="primary"
-          aria-label="Sign up for OTAB" // Added ARIA label
+          aria-label="Sign up for OTAB"
           sx={{
             mx: 1,
             px: 4,
@@ -62,7 +62,7 @@ export default function LandingPage() {
           to="/signin"
           variant="outlined"
           color="secondary"
-          aria-label="Log in to OTAB" // Added ARIA label
+          aria-label="Log in to OTAB"
           sx={{
             mx: 1,
             px: 4,
@@ -158,7 +158,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <Box
-        component="footer" // Changed to semantic HTML
+        component="footer"
         sx={{
           mt: 8,
           py: 4,
@@ -194,10 +194,10 @@ export default function LandingPage() {
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Visit our Facebook page" // Added ARIA label
+            aria-label="Visit our Facebook page"
           >
             <img
-              src="/path/to/facebook-icon.png"
+              src="/path/to/facebook-icon.webp"
               alt="Facebook"
               style={{ width: 24, marginRight: 8 }}
               loading="lazy"
@@ -207,10 +207,10 @@ export default function LandingPage() {
             href="https://twitter.com"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Visit our Twitter page" // Added ARIA label
+            aria-label="Visit our Twitter page"
           >
             <img
-              src="/path/to/twitter-icon.png"
+              src="/path/to/twitter-icon.webp"
               alt="Twitter"
               style={{ width: 24, marginRight: 8 }}
               loading="lazy"
@@ -220,17 +220,19 @@ export default function LandingPage() {
             href="https://discord.com"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Join our Discord server" // Added ARIA label
+            aria-label="Join our Discord server"
           >
             <img
-              src="/path/to/discord-icon.png"
+              src="/path/to/discord-icon.webp"
               alt="Discord"
               style={{ width: 24 }}
               loading="lazy"
             />
           </a>
         </Box>
-        <Copyright />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Copyright />
+        </Suspense>
       </Box>
     </Box>
   );

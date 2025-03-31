@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -8,6 +8,7 @@ import {
   Paper,
   TextField,
   Typography,
+  CircularProgress, // Import CircularProgress
   useTheme,
 } from "@mui/material";
 
@@ -22,8 +23,10 @@ export default function SignUp() {
     acceptTerms: false,
   });
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors = {};
     if (!formData.firstName) newErrors.firstName = "First name is required.";
     if (!formData.lastName) newErrors.lastName = "Last name is required.";
@@ -34,7 +37,7 @@ export default function SignUp() {
     if (!formData.acceptTerms)
       newErrors.acceptTerms = "You must accept the terms and conditions.";
     return newErrors;
-  };
+  }, [formData]);
 
   const handleChange = (event) => {
     const { name, value, checked, type } = event.target;
@@ -44,7 +47,7 @@ export default function SignUp() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const validationErrors = validateForm();
 
@@ -52,8 +55,16 @@ export default function SignUp() {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      // Submit the form
-      console.log("Form submitted:", formData);
+      setIsLoading(true); // Show loading indicator
+      try {
+        console.log("Form submitted:", formData);
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+        window.location.href = "/welcome";
+      } catch (error) {
+        setApiError("Failed to sign up. Please try again later.");
+      } finally {
+        setIsLoading(false); // Hide loading indicator
+      }
     }
   };
 
@@ -79,6 +90,11 @@ export default function SignUp() {
         <Typography variant="h4" gutterBottom>
           Sign Up
         </Typography>
+        {apiError && (
+          <Typography variant="body2" color="error" gutterBottom>
+            {apiError}
+          </Typography>
+        )}
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -168,8 +184,10 @@ export default function SignUp() {
             color="primary"
             fullWidth
             sx={{ mt: 2, py: 1.5, fontSize: "1rem" }}
+            disabled={isLoading} // Disable button while loading
           >
-            Sign Up
+            {isLoading ? <CircularProgress size={24} /> : "Sign Up"}{" "}
+            {/* Show loading spinner */}
           </Button>
         </form>
       </Paper>
