@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -19,45 +19,14 @@ import {
 } from "@mui/icons-material";
 import { makeStyles } from "@mui/styles";
 import { alpha } from "@mui/material/styles";
-import { createDebouncedFunction } from "../common/utils";
 
 import { tileService } from "./tile.service";
 
+//import useTimer from '../hooks/useTimer';
+
 import "./Tile.css";
 
-const useStyles = makeStyles((theme) => ({
-  flipContainer: {
-    "&.flipped": {
-      transform: "rotateY(180deg)",
-    },
-  },
-  card: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 250,
-    width: 200,
-    border: 1,
-    borderRadius: (props) => props.tileBorderRadius,
-    "&:hover": {
-      backgroundColor: (props) => props.tileBgColourHover,
-      boxShadow: 10,
-    },
-  },
-  frontCard: {
-    backgroundColor: (props) => props.tileBgColour,
-    color: (props) => props.tileTextColour,
-    borderColor: (props) => props.tileBorderColour,
-  },
-  backCard: {
-    borderColor: (props) => props.tileBorderColour,
-  },
-  radioLabel: {
-    fontSize: (props) => (props.title.length > 10 ? 12 : 16),
-  },
-}));
-
-export default React.memo(function Tile(props) {
+export default function Tile(props) {
   const {
     id,
     title,
@@ -67,12 +36,10 @@ export default React.memo(function Tile(props) {
     tileBgColourHover,
     tileBorderColour,
     tileTextColour,
-    tileBorderRadius,
-    debounceFunction = createDebouncedFunction, // Inject debounce function as a prop
+    tileBorderRadius /*, setBox*/,
   } = props;
 
-  const classes = useStyles(props);
-
+  // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
   const [submitted, setSubmitted] = useState(
     props.submitted === 1 ? true : false
@@ -80,28 +47,20 @@ export default React.memo(function Tile(props) {
   const [chosenArtist, setChosenArtist] = useState(
     submitted ? props.chosenArtist : ""
   );
+  // const [songValue, setSongValue] = useState('');
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("Who's singing?");
   const [correctArtist, setCorrectArtist] = useState(props.correctArtist);
   const [correctSong, setCorrectSong] = useState(false);
-  const [checksComplete, setChecksComplete] = useState(false);
+  const [readyToSave, setReadyToSave] = useState(false);
+
   const [disabled, setDisabled] = useState(false);
 
-  const debouncedFlip = useMemo(
-    () => debounceFunction((setFlipped) => setFlipped((prev) => !prev), 300),
-    [debounceFunction]
-  );
+  // Font size setter based on length of title
+  const size = title.length > 10 ? 12 : 16;
 
-  const handleClick = useCallback(
-    () => debouncedFlip(setFlipped),
-    [debouncedFlip]
-  );
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleClick();
-    }
+  const handleClick = () => {
+    setFlipped(!flipped);
   };
 
   const handleChange = (event) => {
@@ -113,132 +72,181 @@ export default React.memo(function Tile(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!chosenArtist) {
+    // Check if spot prize
+
+    // Check if artist is selected - done
+    if (chosenArtist === "") {
       setHelperText("Please choose an artist");
       setError(true);
-      return;
+    } else {
+      setHelperText("Lock it in!");
+      setError(false);
+      setSubmitted(true);
+      // Check if artist is correct
+      checkArtist(chosenArtist);
+      // Check if song is playing
+      checkSong(title);
+      setReadyToSave(true);
+
+      // Start timer to prevent people from over-submitting
+      setDisabled(true);
+      setTimeout(() => {
+        setDisabled(false);
+      }, 3000);
     }
-
-    if (typeof chosenArtist !== "string" || chosenArtist.trim() === "") {
-      setHelperText("Invalid artist selection");
-      setError(true);
-      return;
-    }
-
-    setHelperText("Lock it in!");
-    setError(false);
-    setSubmitted(true);
-    checkArtist(chosenArtist);
-    checkSong(title);
-    setChecksComplete(true);
-
-    setDisabled(true);
-    setTimeout(() => setDisabled(false), 3000);
   };
 
   const checkArtist = (chosenArtist) => {
-    const check = chosenArtist === actualArtist;
+    const check = chosenArtist === actualArtist ? true : false;
+    console.log("checkArtist check: ", check);
     setCorrectArtist(check);
   };
 
   const checkSong = (title) => {
+    // Will need to check against RDS
+    // Tolerance of plus minus a minute maybe?
+    // const currentSong value coming from RDS
+    // Will need to replace "currentSong = title" with actual value
     const currentSong = tileService.getSong();
-    const check = title === currentSong.song;
+    const check = title === currentSong.song ? true : false;
     setCorrectSong(check);
   };
 
   const saveTile = useCallback(() => {
-    tileService.update(id, {
+    console.log("about to update Tile.js: ", {
       id,
-      actualArtist,
       chosenArtist,
       correctArtist,
       correctSong,
       submitted: true,
     });
-  }, [id, actualArtist, chosenArtist, correctArtist, correctSong]);
+    tileService.update(id, {
+      id,
+      chosenArtist,
+      correctArtist,
+      correctSong,
+      submitted: true,
+    });
+  }, [id, chosenArtist, correctArtist, correctSong]);
 
   useEffect(() => {
-    if (checksComplete) {
+    if (readyToSave) {
       saveTile();
       handleClick(); // Flip the tile back
-      setChecksComplete(false); // Reset after saving
+      setReadyToSave(false); // Reset readyToSave after saving
     }
-  }, [checksComplete, saveTile, handleClick]);
+  }, [readyToSave, saveTile]);
 
-  const ArtistOptions = useMemo(() => {
-    return artists.map((artist, index) => (
-      <Typography key={index} sx={{ fontSize: classes.radioLabel.fontSize }}>
+  const useStyles = makeStyles({ radioLabel: { fontSize: size } });
+  const classes = useStyles();
+
+  const renderArtists = artists.map((artist, id) => {
+    //console.log(artist);
+    return (
+      <Typography key={id} sx={{ fontSize: size }}>
         <FormControlLabel
           value={artist}
           control={<Radio size="small" />}
           disabled={submitted}
           label={artist}
           onChange={handleChange}
+          size="small"
+          classes={{ label: classes.radioLabel }}
         />
       </Typography>
-    ));
-  }, [artists, submitted, classes.radioLabel.fontSize]);
+    );
+  });
 
   const displayChosenArtist = () => {
-    if (!chosenArtist) return null;
-
-    const icon = correctArtist ? (
-      <CheckCircleOutlineSharp
-        style={{ color: alpha("#34eb4c", 0.2) }}
-        sx={{ fontSize: 150 }}
-      />
-    ) : (
-      <DangerousOutlined
-        style={{ color: alpha("#eb4334", 0.2) }}
-        sx={{ fontSize: 150 }}
-      />
-    );
-
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {chosenArtist}
+    console.log("displayChosenArtist: ", chosenArtist);
+    console.log("actualArtist: ", actualArtist);
+    console.log("correctArtist: ", correctArtist);
+    if (chosenArtist === "") {
+      return;
+    } else if (correctArtist) {
+      return (
         <Box
           sx={{
-            position: "absolute",
-            zIndex: "tooltip",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          {icon}
+          {chosenArtist}
+          <Box
+            sx={{
+              position: "absolute",
+              zIndex: "tooltip",
+            }}
+          >
+            <CheckCircleOutlineSharp
+              style={{ color: alpha("#34eb4c", 0.2) }}
+              sx={{
+                fontSize: 150,
+              }}
+            />
+          </Box>
         </Box>
-      </Box>
+      );
+    } else {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {chosenArtist}
+          <Box
+            sx={{
+              position: "absolute",
+              zIndex: "tooltip",
+            }}
+          >
+            <DangerousOutlined
+              style={{ color: alpha("#eb4334", 0.2) }}
+              sx={{
+                fontSize: 150,
+              }}
+            />
+          </Box>
+        </Box>
+      );
+    }
+  };
+
+  const displayBackTitle = () => {
+    return (
+      <FormLabel id="tile-song-title" sx={{ fontSize: size }}>
+        {title}
+      </FormLabel>
     );
   };
 
-  const displayBackTitle = () => (
-    <FormLabel
-      id="tile-song-title"
-      sx={{ fontSize: classes.radioLabel.fontSize }}
-    >
-      {title}
-    </FormLabel>
-  );
-
   return (
-    <Box
-      className={`flip-container ${flipped ? "flipped" : ""} ${classes.flipContainer}`}
-      role="button"
-      tabIndex={0}
-      aria-pressed={flipped}
-      data-testid="flip-container" // Add this line
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-    >
+    <Box className={`flip-container ${flipped ? "flipped" : ""}`}>
       <form onSubmit={handleSubmit}>
         <div className="flipper">
-          <div className="front">
-            <Card className={`${classes.card} ${classes.frontCard}`}>
+          <div className="front" onClick={handleClick}>
+            <Card
+              sx={{
+                "&:hover": {
+                  backgroundColor: tileBgColourHover,
+                  boxShadow: 10,
+                },
+                backgroundColor: tileBgColour,
+                color: tileTextColour,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                border: 1,
+                borderColor: tileBorderColour,
+                borderRadius: tileBorderRadius,
+                height: 250,
+                width: 200,
+              }}
+            >
               <CardContent>
                 <Typography align="center" variant="h4" gutterBottom>
                   {title}
@@ -250,7 +258,14 @@ export default React.memo(function Tile(props) {
             </Card>
           </div>
           <div className="back">
-            <Card className={`${classes.card} ${classes.backCard}`}>
+            <Card
+              sx={{
+                border: 1,
+                borderRadius: tileBorderRadius,
+                height: 250,
+                width: 200,
+              }}
+            >
               <CardContent>
                 <FormControl error={error}>
                   {displayBackTitle()}
@@ -258,25 +273,16 @@ export default React.memo(function Tile(props) {
                     aria-labelledby="artists-radio-group-label"
                     name="radio-buttons-group"
                   >
-                    {ArtistOptions}
+                    {renderArtists}
                   </RadioGroup>
                   {!submitted && <FormHelperText>{helperText}</FormHelperText>}
                 </FormControl>
               </CardContent>
               <CardActions>
-                <Button
-                  disabled={submitted}
-                  type="submit"
-                  variant="contained"
-                  aria-label="Submit your answer"
-                >
+                <Button disabled={submitted} type="submit" variant="contained">
                   Submit
                 </Button>
-                <Button
-                  variant="outlined"
-                  onClick={handleClick}
-                  aria-label="Cancel and flip back"
-                >
+                <Button variant="outlined" onClick={handleClick}>
                   Cancel
                 </Button>
               </CardActions>
@@ -286,4 +292,4 @@ export default React.memo(function Tile(props) {
       </form>
     </Box>
   );
-});
+}
