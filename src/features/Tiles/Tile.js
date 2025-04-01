@@ -110,24 +110,34 @@ export default function Tile(props) {
     setCorrectSong(check);
   };
 
-  const saveTile = () => {
-    // Record if song correct in db
-    console.log("about to update Tile.js: ", {
-      id,
-      chosenArtist,
-      correctArtist,
-      correctSong,
-      submitted: true,
-    });
-    tileService.update(id, {
-      id,
-      chosenArtist,
-      correctArtist,
-      correctSong,
-      submitted: true,
-    });
-    // Save tile to database
-    console.log("saveTile");
+  const saveTile = async () => {
+    try {
+      // console.log("about to update Tile.js: ", {
+      //   id,
+      //   chosenArtist,
+      //   correctArtist,
+      //   correctSong,
+      //   submitted: true,
+      // });
+      await tileService.update(id, {
+        id,
+        chosenArtist,
+        correctArtist,
+        correctSong,
+        submitted: true,
+      });
+      // console.log("Tile successfully saved.");
+    } catch (error) {
+      if (error.message === "Tile already submitted") {
+        console.error("Error: This tile has already been submitted.");
+        setHelperText("This tile has already been submitted.");
+        setError(true);
+      } else {
+        console.error("An unexpected error occurred:", error);
+        setHelperText("An unexpected error occurred. Please try again.");
+        setError(true);
+      }
+    }
   };
 
   const useStyles = makeStyles({ radioLabel: { fontSize: size } });
@@ -270,7 +280,7 @@ export default function Tile(props) {
               </CardContent>
               <CardActions>
                 <Button
-                  disabled={submitted && disabled}
+                  disabled={submitted || disabled}
                   type="submit"
                   variant="contained"
                 >
