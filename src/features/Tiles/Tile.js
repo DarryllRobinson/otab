@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -41,18 +41,15 @@ export default function Tile(props) {
 
   // console.log('tileBgColour: ', tileBgColour);
   const [flipped, setFlipped] = useState(false);
-  const [submitted, setSubmitted] = useState(
-    props.submitted === 1 ? true : false
-  );
-  const [chosenArtist, setChosenArtist] = useState(
-    submitted ? props.chosenArtist : ""
-  );
+  const [chosenArtist, setChosenArtist] = useState(props?.chosenArtist || "");
   // const [songValue, setSongValue] = useState('');
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("Who's singing?");
-  const [correctArtist, setCorrectArtist] = useState(props.correctArtist);
+  const [submitted, setSubmitted] = useState(props?.submitted || false);
+  const [correctArtist, setCorrectArtist] = useState(
+    props?.correctArtist || false
+  );
   const [correctSong, setCorrectSong] = useState(false);
-  const [readyToSave, setReadyToSave] = useState(false);
 
   const [disabled, setDisabled] = useState(false);
 
@@ -86,7 +83,9 @@ export default function Tile(props) {
       checkArtist(chosenArtist);
       // Check if song is playing
       checkSong(title);
-      setReadyToSave(true);
+      saveTile();
+      handleClick();
+      //setBox(true);
 
       // Start timer to prevent people from over-submitting
       setDisabled(true);
@@ -98,7 +97,6 @@ export default function Tile(props) {
 
   const checkArtist = (chosenArtist) => {
     const check = chosenArtist === actualArtist ? true : false;
-    console.log("checkArtist check: ", check);
     setCorrectArtist(check);
   };
 
@@ -112,7 +110,8 @@ export default function Tile(props) {
     setCorrectSong(check);
   };
 
-  const saveTile = useCallback(() => {
+  const saveTile = () => {
+    // Record if song correct in db
     console.log("about to update Tile.js: ", {
       id,
       chosenArtist,
@@ -127,15 +126,9 @@ export default function Tile(props) {
       correctSong,
       submitted: true,
     });
-  }, [id, chosenArtist, correctArtist, correctSong]);
-
-  useEffect(() => {
-    if (readyToSave) {
-      saveTile();
-      handleClick(); // Flip the tile back
-      setReadyToSave(false); // Reset readyToSave after saving
-    }
-  }, [readyToSave, saveTile]);
+    // Save tile to database
+    console.log("saveTile");
+  };
 
   const useStyles = makeStyles({ radioLabel: { fontSize: size } });
   const classes = useStyles();
@@ -158,9 +151,6 @@ export default function Tile(props) {
   });
 
   const displayChosenArtist = () => {
-    console.log("displayChosenArtist: ", chosenArtist);
-    console.log("actualArtist: ", actualArtist);
-    console.log("correctArtist: ", correctArtist);
     if (chosenArtist === "") {
       return;
     } else if (correctArtist) {
@@ -279,7 +269,11 @@ export default function Tile(props) {
                 </FormControl>
               </CardContent>
               <CardActions>
-                <Button disabled={submitted} type="submit" variant="contained">
+                <Button
+                  disabled={submitted && disabled}
+                  type="submit"
+                  variant="contained"
+                >
                   Submit
                 </Button>
                 <Button variant="outlined" onClick={handleClick}>
