@@ -69,9 +69,6 @@ export default function Tile(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Check if spot prize
-
-    // Check if artist is selected - done
     if (chosenArtist === "") {
       setHelperText("Please choose an artist");
       setError(true);
@@ -79,15 +76,20 @@ export default function Tile(props) {
       setHelperText("Lock it in!");
       setError(false);
       setSubmitted(true);
-      // Check if artist is correct
-      checkArtist(chosenArtist);
-      // Check if song is playing
-      checkSong(title);
-      saveTile();
-      handleClick();
-      //setBox(true);
 
-      // Start timer to prevent people from over-submitting
+      // Check if artist is correct
+      const isCorrectArtist = chosenArtist === actualArtist;
+      setCorrectArtist(isCorrectArtist);
+
+      // Check if song is playing
+      const currentSong = tileService.getSong();
+      const isCorrectSong = title === currentSong.song;
+      setCorrectSong(isCorrectSong);
+
+      // Save the tile after updating the state
+      saveTile(isCorrectArtist, isCorrectSong);
+
+      handleClick();
       setDisabled(true);
       setTimeout(() => {
         setDisabled(false);
@@ -95,45 +97,20 @@ export default function Tile(props) {
     }
   };
 
-  const checkArtist = (chosenArtist) => {
-    const check = chosenArtist === actualArtist ? true : false;
-    setCorrectArtist(check);
-  };
-
-  const checkSong = (title) => {
-    // Will need to check against RDS
-    // Tolerance of plus minus a minute maybe?
-    // const currentSong value coming from RDS
-    // Will need to replace "currentSong = title" with actual value
-    const currentSong = tileService.getSong();
-    const check = title === currentSong.song ? true : false;
-    setCorrectSong(check);
-  };
-
-  const saveTile = async () => {
+  const saveTile = async (isCorrectArtist, isCorrectSong) => {
     try {
-      // console.log("about to update Tile.js: ", {
-      //   id,
-      //   chosenArtist,
-      //   correctArtist,
-      //   correctSong,
-      //   submitted: true,
-      // });
       await tileService.update(id, {
         id,
         chosenArtist,
-        correctArtist,
-        correctSong,
+        correctArtist: isCorrectArtist,
+        correctSong: isCorrectSong,
         submitted: true,
       });
-      // console.log("Tile successfully saved.");
     } catch (error) {
       if (error.message === "Tile already submitted") {
-        console.error("Error: This tile has already been submitted.");
         setHelperText("This tile has already been submitted.");
         setError(true);
       } else {
-        console.error("An unexpected error occurred:", error);
         setHelperText("An unexpected error occurred. Please try again.");
         setError(true);
       }
@@ -225,7 +202,10 @@ export default function Tile(props) {
   };
 
   return (
-    <Box className={`flip-container ${flipped ? "flipped" : ""}`}>
+    <Box
+      className={`flip-container ${flipped ? "flipped" : ""}`}
+      data-testid="flip-container"
+    >
       <form onSubmit={handleSubmit}>
         <div className="flipper">
           <div className="front" onClick={handleClick}>
